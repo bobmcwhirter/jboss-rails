@@ -8,6 +8,8 @@ $Id:$
 
    <!-- WAR Structure -->
    <bean name="RailsDeployer" class="org.jboss.rails.RailsDeployer">
-   </bean>
+   <property name="mainDeployer">
+   	<inject bean="MainDeployer"></inject></property>
+   <depends>WarDeployer</depends></bean>
 
 </deployment>

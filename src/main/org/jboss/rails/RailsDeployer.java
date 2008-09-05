@@ -27,28 +27,49 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.jacorb.orb.portableInterceptor.RecursionAwareCI;
+import org.jboss.deployers.client.spi.main.MainDeployer;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.spi.deployer.helpers.AbstractDeployer;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
+import org.jboss.deployers.vfs.plugins.structure.AbstractVFSDeploymentContext;
+import org.jboss.deployers.vfs.plugins.structure.AbstractVFSDeploymentUnit;
+import org.jboss.deployers.vfs.spi.client.VFSDeployment;
+import org.jboss.deployers.vfs.spi.client.VFSDeploymentFactory;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
-import org.jboss.metadata.web.spec.WebMetaData;
+import org.jboss.virtual.AssembledDirectory;
 import org.jboss.virtual.VFS;
 import org.jboss.virtual.VirtualFile;
+import org.jboss.virtual.VirtualFileVisitor;
+import org.jboss.virtual.VisitorAttributes;
 
 public class RailsDeployer extends AbstractDeployer
 // implements RailsDeployerMBean
 {
 	private static String NAME = "RailsDeployer";
 
+	private MainDeployer mainDeployer;
+
 	public RailsDeployer() {
-		setStage(DeploymentStages.PRE_REAL);
-		setInput(WebMetaData.class);
+		setStage(DeploymentStages.REAL );
+		setRelativeOrder(300);
+		// setInput(WebMetaData.class);
+		// setOutput(DeploymentUnit.class);
+		// setOutput(VFSDeployment.class);
 		setAllInputs(true);
 	}
 
 	public String getName() {
 		return NAME;
+	}
+
+	public void setMainDeployer(MainDeployer mainDeployer) {
+		this.mainDeployer = mainDeployer;
+	}
+
+	public MainDeployer getMainDeployer() {
+		return mainDeployer;
 	}
 
 	public void start() throws Exception {
@@ -101,7 +122,7 @@ public class RailsDeployer extends AbstractDeployer
 			if (location != null) {
 				URI dirUri = new URI(location);
 				log.info("deploy from referenced directory URI: " + dirUri);
-				VirtualFile dir = VFS.getRoot( dirUri );
+				VirtualFile dir = VFS.getRoot(dirUri);
 				deployRailsDirectory(unit, dir);
 			}
 		} catch (IOException e) {
@@ -113,8 +134,60 @@ public class RailsDeployer extends AbstractDeployer
 		}
 	}
 
-	private void deployRailsDirectory(VFSDeploymentUnit unit, VirtualFile dir) {
+	private void deployRailsDirectory(VFSDeploymentUnit unit, VirtualFile dir)
+			throws DeploymentException {
 		log.info("deploy from a directory");
+
+		//unit.getTransientManagedObjects().addAttachment(JBossAppMetaData.class
+		// , mergedMetaData);
+
+		try {
+			AssembledDirectory warRoot = AssembledDirectory
+					.createAssembledDirectory("rails/" + unit.getSimpleName()
+							+ ".war", unit.getSimpleName() + ".war");
+			for (VirtualFile child : dir.getChildren()) {
+				if (child.isLeaf()) {
+					warRoot.addChild(child);
+				} else {
+					warRoot.addPath(child, null);
+				}
+			}
+
+			final VisitorAttributes va = new VisitorAttributes();
+			va.setLeavesOnly(false);
+			va.setIncludeRoot(true);
+			va.setRecurseFilter(VisitorAttributes.RECURSE_ALL);
+			VirtualFileVisitor visitor = new VirtualFileVisitor() {
+
+				public VisitorAttributes getAttributes() {
+					return va;
+				}
+
+				public void visit(VirtualFile virtualFile) {
+					System.err.println(virtualFile.getPathName() );
+				}
+
+			};
+			warRoot.visit(visitor);
+			log.info("WAR children: " + warRoot.getChildren());
+			VFSDeployment warDeployment = VFSDeploymentFactory.getInstance()
+					.createVFSDeployment(warRoot);
+			unit.getTransientManagedObjects().addAttachment(
+					VFSDeployment.class, warDeployment);
+
+			mainDeployer.addDeployment(warDeployment);
+			mainDeployer.process();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new DeploymentException(e);
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+			throw new DeploymentException(e);
+		} catch (DeploymentException e) {
+			e.printStackTrace();
+			throw new DeploymentException(e);
+		}
 	}
 
 	/*
