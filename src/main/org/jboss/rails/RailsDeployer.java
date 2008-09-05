@@ -21,7 +21,13 @@
  */
 package org.jboss.rails;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +47,10 @@ import org.jboss.metadata.web.spec.Web25MetaData;
 import org.jboss.metadata.web.spec.WebMetaData;
 import org.jboss.mx.util.ObjectNameFactory;
 import org.jboss.security.plugins.JaasSecurityManagerServiceMBean;
+import org.jboss.virtual.VFS;
 import org.jboss.virtual.VirtualFile;
+import org.jboss.virtual.plugins.context.file.FileHandler;
+import org.jboss.virtual.spi.VirtualFileHandler;
 import org.jboss.web.deployers.AbstractWarDeployer;
 import org.jboss.web.deployers.AbstractWarDeployment;
 import org.jboss.web.tomcat.service.deployers.TomcatDeployer;
@@ -90,27 +99,53 @@ public class RailsDeployer extends AbstractDeployer
 	private void deployRailsApplication(VFSDeploymentUnit unit)
 			throws DeploymentException {
 		log.info("deployRailsApplication(" + unit.getSimpleName() + ")");
-		
+
 		VirtualFile file = unit.getRoot();
-		
+
 		try {
-			if ( file.isLeaf() ) {
-				log.info( "deploy from a reference" );
+			if (file.isLeaf()) {
+				deployRailsReference(unit);
 			} else {
-				log.info( "deploy from a directory" );
+				deployRailsDirectory(unit, unit.getRoot());
 			}
 		} catch (IOException e) {
-			throw new DeploymentException( e );
+			throw new DeploymentException(e);
 		}
 	}
 
-	/*
-	public void deploy(VFSDeploymentUnit unit, JBossWebMetaData metaData)
+	private void deployRailsReference(VFSDeploymentUnit unit)
 			throws DeploymentException {
-		log.info("Rails Deployer deploy(" + unit.getSimpleName() + ", "
-				+ metaData + ")");
+		log.info("deploy from a reference");
+		VirtualFile ref = unit.getRoot();
+		try {
+			BufferedReader in = new BufferedReader(new InputStreamReader(ref
+					.openStream()));
+			String location = in.readLine();
+			log.info("deploy from referenced directory: " + location);
+			if (location != null) {
+				URI dirUri = new URI(location);
+				log.info("deploy from referenced directory URI: " + dirUri);
+				VirtualFile dir = VFS.getRoot( dirUri );
+				deployRailsDirectory(unit, dir);
+			}
+		} catch (IOException e) {
+			throw new DeploymentException(e);
+		} catch (URISyntaxException e) {
+			throw new DeploymentException(e);
+		} finally {
+			ref.closeStreams();
+		}
 	}
-	*/
+
+	private void deployRailsDirectory(VFSDeploymentUnit unit, VirtualFile dir) {
+		log.info("deploy from a directory");
+	}
+
+	/*
+	 * public void deploy(VFSDeploymentUnit unit, JBossWebMetaData metaData)
+	 * throws DeploymentException { log.info("Rails Deployer deploy(" +
+	 * unit.getSimpleName() + ", " + metaData + ")"); }
+	 */
 
 	public void create() throws Exception {
 		log.info("Rails Deployer create()");
