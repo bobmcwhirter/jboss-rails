@@ -21,44 +21,20 @@
  */
 package org.jboss.rails;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
-import javax.management.ObjectName;
 
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.spi.deployer.helpers.AbstractDeployer;
-import org.jboss.deployers.structure.spi.ClassLoaderFactory;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
-import org.jboss.metadata.web.jboss.JBoss50WebMetaData;
-import org.jboss.metadata.web.jboss.JBossWebMetaData;
-import org.jboss.metadata.web.spec.Web25MetaData;
 import org.jboss.metadata.web.spec.WebMetaData;
-import org.jboss.mx.util.ObjectNameFactory;
-import org.jboss.security.plugins.JaasSecurityManagerServiceMBean;
 import org.jboss.virtual.VFS;
 import org.jboss.virtual.VirtualFile;
-import org.jboss.virtual.plugins.context.file.FileHandler;
-import org.jboss.virtual.spi.VirtualFileHandler;
-import org.jboss.web.deployers.AbstractWarDeployer;
-import org.jboss.web.deployers.AbstractWarDeployment;
-import org.jboss.web.tomcat.service.deployers.TomcatDeployer;
-import org.jboss.web.tomcat.service.session.SessionIDGenerator;
-import org.jboss.xb.binding.Unmarshaller;
-import org.jboss.xb.binding.UnmarshallerFactory;
-import org.jboss.xb.binding.sunday.unmarshalling.SchemaBinding;
-import org.jboss.xb.builder.JBossXBBuilder;
 
 public class RailsDeployer extends AbstractDeployer
 // implements RailsDeployerMBean
