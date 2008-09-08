@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src/main"/>
+	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="src" output="output/eclipse-resources" path="src/resources"/>
 	<classpathentry exported="true" kind="src" path="/aspects"/>
 	<classpathentry exported="true" kind="src" path="/connector"/>

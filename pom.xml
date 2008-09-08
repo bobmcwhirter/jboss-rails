@@ -9,6 +9,7 @@
   <name>JBossAS 5.0 Rails Deployer</name>
   <description></description>
 
+
   <!-- We need to build auditAspect before commandLineClient
        as the client-aop assembly depends on it. -->
 
@@ -148,6 +149,17 @@
         <enabled>true</enabled>
       </snapshots>
     </pluginRepository>
+    <pluginRepository>
+      <id>snapshots.repository.codehaus.org</id>
+      <name>Codehaus Snapshots Repository</name>
+      <url>http://snapshots.repository.codehaus.org/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </pluginRepository>
   </pluginRepositories>
   <build>
     <plugins> 
@@ -179,6 +191,28 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>rspec-maven-plugin</artifactId>
+        <configuration>
+          <!-- jrubyHome points to the JRuby installation you wish to use (usually ${env.JRUBY_HOME}) -->
+          <jrubyHome>${env.JRUBY_HOME}</jrubyHome>
+          <!-- sourceDirectory references where your RSpec tests reside -->
+          <sourceDirectory>${basedir}/src/test/specs</sourceDirectory>
+          <!-- outputDirectory specifies where the RSpec report should be placed -->
+          <outputDirectory>${basedir}/target</outputDirectory>
+        </configuration>
+        <executions>
+          <execution>
+            <id>test</id>
+            <phase>test</phase>
+            <goals>
+              <goal>spec</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
   </build>
 
