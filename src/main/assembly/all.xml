@@ -1,0 +1,25 @@
+<assembly>
+  <id>all</id>
+  <formats>
+    <format>jar</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <files>
+    <file>
+      <source>src/main/resources/rails-deployer-jboss-beans.xml</source>
+      <destName>META-INF/deployer-beans.xml</destName>
+    </file>
+  </files>
+  <dependencySets>
+    <dependencySet>
+      <outputDirectory>/lib</outputDirectory>
+      <unpack>false</unpack>
+      <scope>runtime</scope>
+     </dependencySet>
+  </dependencySets>
+<!--
+  <componentDescriptors>
+    <componentDescriptor>src/main/assembly/common.xml</componentDescriptor>
+  </componentDescriptors>
+-->
+</assembly>

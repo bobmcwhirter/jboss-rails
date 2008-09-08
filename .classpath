@@ -27,5 +27,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/cluster"/>
 	<classpathentry kind="lib" path="/thirdparty/jboss/jboss-jpa-deployers/lib/jboss-jpa-deployers.jar" sourcepath="/thirdparty/jboss/jboss-jpa-deployers/lib/jboss-jpa-deployers-sources.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/tomcat"/>
+	<classpathentry kind="lib" path="/thirdparty/jboss/jboss-vfs/lib/jboss-vfs.jar" sourcepath="/thirdparty/jboss/jboss-vfs/lib/jboss-vfs-sources.jar"/>
 	<classpathentry kind="output" path="output/eclipse-classes"/>
 </classpath>

@@ -26,15 +26,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 
-import org.jacorb.orb.portableInterceptor.RecursionAwareCI;
 import org.jboss.deployers.client.spi.main.MainDeployer;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.spi.deployer.helpers.AbstractDeployer;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
-import org.jboss.deployers.vfs.plugins.structure.AbstractVFSDeploymentContext;
-import org.jboss.deployers.vfs.plugins.structure.AbstractVFSDeploymentUnit;
 import org.jboss.deployers.vfs.spi.client.VFSDeployment;
 import org.jboss.deployers.vfs.spi.client.VFSDeploymentFactory;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
@@ -43,6 +41,9 @@ import org.jboss.virtual.VFS;
 import org.jboss.virtual.VirtualFile;
 import org.jboss.virtual.VirtualFileVisitor;
 import org.jboss.virtual.VisitorAttributes;
+import org.jboss.virtual.plugins.context.jar.SynthenticDirEntryHandler;
+import org.jboss.virtual.plugins.context.memory.MemoryContextFactory;
+import org.jboss.virtual.spi.VFSContext;
 
 public class RailsDeployer extends AbstractDeployer
 // implements RailsDeployerMBean
@@ -52,7 +53,7 @@ public class RailsDeployer extends AbstractDeployer
 	private MainDeployer mainDeployer;
 
 	public RailsDeployer() {
-		setStage(DeploymentStages.REAL );
+		setStage(DeploymentStages.REAL);
 		setRelativeOrder(300);
 		// setInput(WebMetaData.class);
 		// setOutput(DeploymentUnit.class);
@@ -152,6 +153,16 @@ public class RailsDeployer extends AbstractDeployer
 					warRoot.addPath(child, null);
 				}
 			}
+			
+
+			URL rootWarUrl = new URL("vfsmemory://rails/"
+					+ unit.getSimpleName());
+			VFSContext warContext = MemoryContextFactory.getInstance()
+					.createRoot(rootWarUrl);
+			SynthenticDirEntryHandler warHandler = new SynthenticDirEntryHandler(
+					warContext, null, unit.getSimpleName(), System
+							.currentTimeMillis(), new URL(rootWarUrl, unit
+							.getSimpleName()));
 
 			final VisitorAttributes va = new VisitorAttributes();
 			va.setLeavesOnly(false);
@@ -164,7 +175,7 @@ public class RailsDeployer extends AbstractDeployer
 				}
 
 				public void visit(VirtualFile virtualFile) {
-					System.err.println(virtualFile.getPathName() );
+					System.err.println(virtualFile.getPathName());
 				}
 
 			};
