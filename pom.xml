@@ -3,7 +3,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.jboss.rails</groupId>
-  <artifactId>rails-deployer</artifactId>
+  <artifactId>jboss-rails</artifactId>
   <packaging>jar</packaging>
   <version>1.0.0</version>
   <name>JBossAS 5.0 Rails Deployer</name>
@@ -178,7 +178,7 @@
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
           <descriptors>
-            <descriptor>src/main/assembly/all.xml</descriptor>
+            <descriptor>src/main/assembly/deployer.xml</descriptor>
           </descriptors>
           <finalName>${pom.artifactId}</finalName>
         </configuration>

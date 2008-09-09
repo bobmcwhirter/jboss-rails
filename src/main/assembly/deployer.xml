@@ -1,5 +1,5 @@
 <assembly>
-  <id>all</id>
+  <id>deployer</id>
   <formats>
     <format>jar</format>
   </formats>
