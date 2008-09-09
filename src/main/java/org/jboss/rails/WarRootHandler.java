@@ -22,18 +22,15 @@ public class WarRootHandler extends AbstractVirtualFileHandler implements Struct
 	}
 
 	public VirtualFileHandler getChild(String path) throws IOException {
-		System.err.println( "WarRootHandler.getChild(" + path + ")" );
 		return structuredFindChild( path );
 	}
 	
 	@Override
 	public VirtualFileHandler structuredFindChild(String path) throws IOException {
-		System.err.println( "WarRootHandler.structuredFindChild(" + path + ")" );
 		return super.structuredFindChild(path);
 	}
 
 	public VirtualFileHandler createChildHandler(String name) throws IOException {
-		System.err.println( "WarRootHandler.createChildHandler(" + name + ")" );
 		VirtualFileHandler child = null;
 		
 		if ( "WEB-INF".equals( name ) ) {
@@ -85,7 +82,7 @@ public class WarRootHandler extends AbstractVirtualFileHandler implements Struct
 	}
 
 	public URI toURI() throws URISyntaxException {
-		return new URI( "vfs://rails/" );
+		return getRailsAppContext().getRootURI();
 	}
 	
 	protected RailsAppContext getRailsAppContext() {

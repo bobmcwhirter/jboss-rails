@@ -1,11 +1,6 @@
 
 require File.dirname( __FILE__ ) + '/spec_helper.rb'
 
-import org.jboss.virtual.VFS
-import org.jboss.rails.RailsAppContextFactory
-import org.jboss.rails.RailsAppContext
-import org.jboss.rails.WebInfHandler
-
 describe WebInfHandler do
 
   before(:each) do 

@@ -13,16 +13,16 @@ import org.jboss.virtual.spi.VirtualFileHandler;
 
 public class RailsAppContext extends AbstractVFSContext {
 	
-	public static final String NAME = "rails";
-	
+	private String name;
 	private WarRootHandler warRootHandler;
 	private WebInfHandler webInfHandler;
 	private ByteArrayHandler webXmlHandler;
 	private AssembledDirectoryHandler webInfLibHandler;
 	private VFSContext railsAppDir;
 	
-	public RailsAppContext(String simpleName, VFSContext railsAppDir) throws URISyntaxException, IOException {
-		super(new URI( "rails://" + simpleName + "/" ) );
+	public RailsAppContext(String name, VFSContext railsAppDir) throws URISyntaxException, IOException {
+		super(new URI( "rails://" + name + "/" ) );
+		this.name = name;
 		setUpWarRoot();
 		setUpWebInf();
 		setUpRailsApp( railsAppDir );
@@ -51,7 +51,7 @@ public class RailsAppContext extends AbstractVFSContext {
 	}
 
 	public String getName() {
-		return NAME;
+		return name;
 	}
 
 	public VirtualFileHandler getRoot() throws IOException {

@@ -17,7 +17,6 @@ public class WebInfHandler extends AbstractVirtualFileHandler implements Structu
 	}
 
 	public VirtualFileHandler createChildHandler(String name) throws IOException {
-		System.err.println( "WebInfHandler.createChildHandler(" + name + ")" );
 		
 		VirtualFileHandler child = null;
 		
