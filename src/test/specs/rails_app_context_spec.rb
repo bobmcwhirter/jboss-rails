@@ -1,11 +1,9 @@
 
-require 'java'
+require File.dirname( __FILE__ ) + '/spec_helper.rb'
+
 import org.jboss.virtual.VFS
 import org.jboss.rails.RailsAppContextFactory
 import org.jboss.rails.RailsAppContext
-import java.net.URL
-
-URL.setURLStreamHandlerFactory( org.jboss.net.protocol.URLStreamHandlerFactory.new() )
 
 describe RailsAppContext do
 
@@ -29,6 +27,7 @@ describe RailsAppContext do
       rails_root = @context.get_rails_root
       [ 'public', 
         'app', 
+        'config', 
         'lib' ].each do |name|
         f = rails_root.get_child( name )
         f.should_not be_nil
@@ -39,9 +38,22 @@ describe RailsAppContext do
       rails_root.get_child( 'path/to/no_such_directory' ).should be_nil
     end
 
+    it "should provide navigation between peers" do
+      rails_root = @context.get_rails_root
+
+      app_dir = rails_root.get_child( "app" )
+      app_dir.should_not be_nil
+
+      lib_dir = rails_root.get_child( "lib" )
+      lib_dir.should_not be_nil
+ 
+      app_dir.get_child( "../lib" ).should eql( lib_dir )
+
+      database_yml = app_dir.get_child( "../config/database.yml" )
+      database_yml.should_not be_nil
+      database_yml.get_path_name.should eql( 'config/database.yml' )
+    end
+
   end
 
-  it "should provide the contents of public/ at the root of the .war"  
-  it "should provide WEB-INF/web.xml synthetically"
-  it "should provide WEB-INF/** from the rails app directory"
 end

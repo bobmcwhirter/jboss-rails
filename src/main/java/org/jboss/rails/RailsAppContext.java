@@ -11,13 +11,15 @@ import org.jboss.virtual.spi.VirtualFileHandler;
 
 public class RailsAppContext extends AbstractVFSContext {
 	
-	private RailsAppContextHandler rootHandler;
+	private WarRootHandler warRootHandler;
+	private WebInfHandler webInfHandler;
 	private VFSContext railsAppDir;
 	
 	public RailsAppContext(String simpleName, VFSContext railsAppDir) throws URISyntaxException {
 		super(new URI( "rails://" + simpleName + "/" ) );
-		this.rootHandler = new RailsAppContextHandler( this, simpleName );
-		this.railsAppDir = railsAppDir;
+		this.warRootHandler = new WarRootHandler( this );
+		this.webInfHandler  = new WebInfHandler( this );
+		this.railsAppDir    = railsAppDir;
 	}
 
 	public static final String NAME = "rails";
@@ -27,20 +29,27 @@ public class RailsAppContext extends AbstractVFSContext {
 	}
 
 	public VirtualFileHandler getRoot() throws IOException {
-		return rootHandler;
+		return getWarRootHandler();
+	}
+	
+	public WarRootHandler getWarRootHandler() {
+		return warRootHandler;
 	}
 	
 	public VFSContext getRailsAppDir() {
 		return railsAppDir;
 	}
 	
-	public VirtualFile getRailsRoot() throws IOException {
-		//return railsAppDir.getRootPeer().getVirtualFile();
-		return railsAppDir.getRoot().getVirtualFile();
+	public VirtualFileHandler getRailsRoot() throws IOException {
+		return railsAppDir.getRoot();
 	}
 	
-	public VirtualFile getRailsPublic() throws IOException {
+	public VirtualFileHandler getRailsPublic() throws IOException {
 		return getRailsRoot().getChild("public");
+	}
+
+	public VirtualFileHandler getWebInf() {
+		return webInfHandler;
 	}
 
 }
