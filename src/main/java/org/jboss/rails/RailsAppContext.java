@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 
 import org.jboss.virtual.VirtualFile;
 import org.jboss.virtual.plugins.context.AbstractVFSContext;
+import org.jboss.virtual.plugins.context.DelegatingHandler;
 import org.jboss.virtual.plugins.context.vfs.AssembledDirectoryHandler;
 import org.jboss.virtual.plugins.context.vfs.ByteArrayHandler;
 import org.jboss.virtual.spi.VFSContext;
@@ -17,7 +18,7 @@ public class RailsAppContext extends AbstractVFSContext {
 	private WarRootHandler warRootHandler;
 	private WebInfHandler webInfHandler;
 	private ByteArrayHandler webXmlHandler;
-	private AssembledDirectoryHandler webInfLibHandler;
+	private DelegatingHandler webInfLibHandler;
 	private VFSContext railsAppDir;
 	
 	public RailsAppContext(String name, VFSContext railsAppDir) throws URISyntaxException, IOException {
@@ -39,8 +40,8 @@ public class RailsAppContext extends AbstractVFSContext {
 	}
 	
 	protected void setUpWebInfLib() throws IOException {
-		// TODO: Why must the parent be an AssembledDirectoryHandler?
-		this.webInfLibHandler = new AssembledDirectoryHandler( this, null, "lib" );
+		VirtualFileHandler rawWebInfLibHandler = new AssembledDirectoryHandler( this, null, "lib" );
+		this.webInfLibHandler = new DelegatingHandler( this, webInfHandler, "lib", rawWebInfLibHandler );
 	}
 	
 	protected void setUpWebXml() throws IOException {

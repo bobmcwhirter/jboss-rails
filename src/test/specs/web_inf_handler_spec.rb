@@ -13,16 +13,22 @@ describe WebInfHandler do
     web_xml.should_not be_nil
   end
 
-  it "web.xml should have WEB-INF as its parent" do
+  it "web.xml should have WEB-INF/ as its parent" do
     web_xml = @web_inf.get_child( 'web.xml' )
     web_xml.get_parent.should eql( @web_inf )
     web_xml.get_parent.get_child( 'web.xml').should eql( web_xml )
   end
 
 
-  it "should serve lib from an assembled directory" do
+  it "should serve lib/ from an assembled directory" do
     lib = @web_inf.get_child( 'lib' )
     lib.should_not be_nil
+  end
+
+  it "should set lib/'s parentage as itself" do
+    lib = @web_inf.get_child( 'lib' )
+    lib.should_not be_nil
+    lib.get_parent.should eql( @web_inf )
   end
 
   it "should server non-special paths from RAILS_ROOT" do 
