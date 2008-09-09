@@ -39,6 +39,7 @@ public class RailsAppContext extends AbstractVFSContext {
 	}
 	
 	protected void setUpWebInfLib() throws IOException {
+		// TODO: Why must the parent be an AssembledDirectoryHandler?
 		this.webInfLibHandler = new AssembledDirectoryHandler( this, null, "lib" );
 	}
 	

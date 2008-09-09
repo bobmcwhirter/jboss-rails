@@ -17,6 +17,19 @@ describe WarRootHandler do
     url.to_s.should_not be_nil
   end
 
+  it "should delegate for WEB-INF requests" do
+    web_inf = @root.get_child( 'WEB-INF' )
+    web_inf.should_not be_nil
+    web_xml = web_inf.get_child( 'web.xml' )
+    web_xml.should_not be_nil
+  end
+
+  it "should set the parentage of WEB-INF as itself" do
+    web_inf = @root.get_child( 'WEB-INF' )
+    web_inf.should_not be_nil
+    web_inf.get_parent.should eql( @root )
+  end
+
 
   it "should serve from RAILS_ROOT/public for root-level non-WEB-INF requests" do
     index_html = @root.get_child( 'index.html' )

@@ -13,7 +13,7 @@ import org.jboss.virtual.spi.VirtualFileHandler;
 public class WebInfHandler extends AbstractVirtualFileHandler implements StructuredVirtualFileHandler {
 	
 	public WebInfHandler(RailsAppContext vfsContext) {
-		super( vfsContext, null, "WEB-INF" );
+		super( vfsContext, vfsContext.getWarRootHandler(), "WEB-INF" );
 	}
 
 	public VirtualFileHandler createChildHandler(String name) throws IOException {
