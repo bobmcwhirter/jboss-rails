@@ -18,4 +18,9 @@ describe WebInfHandler do
     web_xml.should_not be_nil
   end
 
+  it "should serve lib from an assembled directory" do
+    lib = @web_inf.get_child( 'lib' )
+    lib.should_not be_nil
+  end
+
 end

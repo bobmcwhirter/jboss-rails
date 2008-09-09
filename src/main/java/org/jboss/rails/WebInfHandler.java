@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.jboss.virtual.plugins.context.AbstractVirtualFileHandler;
 import org.jboss.virtual.plugins.context.StructuredVirtualFileHandler;
-import org.jboss.virtual.plugins.context.memory.MemoryContextHandler;
 import org.jboss.virtual.plugins.context.vfs.ByteArrayHandler;
 import org.jboss.virtual.spi.VirtualFileHandler;
 
@@ -23,6 +22,8 @@ public class WebInfHandler extends AbstractVirtualFileHandler implements Structu
 		
 		if ( "web.xml".equals( name ) ) {
 			return new ByteArrayHandler( getVFSContext(), this, name, "foo".getBytes() );
+		} else if ( "lib".equals( name ) ) {
+			return getRailsAppContext().getWebInfLib();
 		}
 		
 		return null;
@@ -81,5 +82,9 @@ public class WebInfHandler extends AbstractVirtualFileHandler implements Structu
 		// TODO Auto-generated method stub
 		return null;
 	}
+	private RailsAppContext getRailsAppContext() {
+		return (RailsAppContext) getVFSContext();
+	}
+
 
 }
