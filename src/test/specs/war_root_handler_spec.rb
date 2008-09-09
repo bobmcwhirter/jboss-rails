@@ -36,9 +36,27 @@ describe WarRootHandler do
     index_html.should_not be_nil
   end
 
+  it "should serve root-level requests with appropriate parentage" do
+    index_html = @root.get_child( 'index.html' )
+    index_html.should_not be_nil
+    index_html.get_parent.should eql( @root )
+  end
+
   it "should serve from RAILS_ROOT/public/** for nested non-WEB-INF requests" do
     application_js = @root.get_child( 'javascripts/application.js' )
     application_js.should_not be_nil
+  end
+
+  it "should serve nested public requests with appropriate parentage" do
+    application_js = @root.get_child( 'javascripts/application.js' )
+    application_js.should_not be_nil
+
+    javascripts = @root.get_child( 'javascripts' )
+    javascripts.should_not be_nil
+    application_js.get_parent.to_uri.should eql( javascripts.to_uri )
+
+    javascripts.get_parent.should eql( @root )
+
   end
 
   it "should return nil for non-existant root-lavel non-WEB-INF requests" do

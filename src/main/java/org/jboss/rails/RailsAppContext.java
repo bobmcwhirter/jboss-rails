@@ -19,7 +19,10 @@ public class RailsAppContext extends AbstractVFSContext {
 	private WebInfHandler webInfHandler;
 	private ByteArrayHandler webXmlHandler;
 	private DelegatingHandler webInfLibHandler;
+	
 	private VFSContext railsAppDir;
+	
+	private VirtualFileHandler railsPublic;
 	
 	public RailsAppContext(String name, VFSContext railsAppDir) throws URISyntaxException, IOException {
 		super(new URI( "rails://" + name + "/" ) );
@@ -48,8 +51,9 @@ public class RailsAppContext extends AbstractVFSContext {
 		this.webXmlHandler = new ByteArrayHandler( this, webInfHandler, "web.xml", "howdy".getBytes() );
 	}
 	
-	protected void setUpRailsApp(VFSContext railsAppDir) {
+	protected void setUpRailsApp(VFSContext railsAppDir) throws IOException {
 		this.railsAppDir    = railsAppDir;
+		this.railsPublic = new RailsPublicHandler( this );
 	}
 
 	public String getName() {
@@ -72,8 +76,11 @@ public class RailsAppContext extends AbstractVFSContext {
 		return railsAppDir.getRoot();
 	}
 	
-	public VirtualFileHandler getRailsPublic() throws IOException {
-		return getRailsRoot().getChild("public");
+	public VirtualFileHandler getRailsPublic() {
+		return railsPublic;
+	}
+	public VirtualFileHandler getRawRailsPublic() throws IOException {
+		return railsAppDir.getRoot().getChild("public");
 	}
 
 	public VirtualFileHandler getWebInf() {
