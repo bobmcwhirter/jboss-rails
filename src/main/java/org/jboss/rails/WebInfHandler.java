@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.jboss.virtual.plugins.context.AbstractVirtualFileHandler;
 import org.jboss.virtual.plugins.context.StructuredVirtualFileHandler;
-import org.jboss.virtual.plugins.context.vfs.ByteArrayHandler;
 import org.jboss.virtual.spi.VirtualFileHandler;
 
 public class WebInfHandler extends AbstractVirtualFileHandler implements StructuredVirtualFileHandler {
