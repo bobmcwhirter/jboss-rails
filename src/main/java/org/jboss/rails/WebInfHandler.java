@@ -20,13 +20,17 @@ public class WebInfHandler extends AbstractVirtualFileHandler implements Structu
 	public VirtualFileHandler createChildHandler(String name) throws IOException {
 		System.err.println( "WebInfHandler.createChildHandler(" + name + ")" );
 		
+		VirtualFileHandler child = null;
+		
 		if ( "web.xml".equals( name ) ) {
-			return new ByteArrayHandler( getVFSContext(), this, name, "foo".getBytes() );
+			child = getRailsAppContext().getWebXml();
 		} else if ( "lib".equals( name ) ) {
-			return getRailsAppContext().getWebInfLib();
+			child = getRailsAppContext().getWebInfLib();
+		} else {
+			child = getRailsAppContext().getRailsRoot().getChild( name );
 		}
 		
-		return null;
+		return child;
 	}
 
 	public boolean exists() throws IOException {
@@ -79,9 +83,9 @@ public class WebInfHandler extends AbstractVirtualFileHandler implements Structu
 	}
 
 	public URI toURI() throws URISyntaxException {
-		// TODO Auto-generated method stub
-		return null;
+		return getRailsAppContext().getWarRootHandler().toURI().resolve( "WEB-INF" );
 	}
+	
 	private RailsAppContext getRailsAppContext() {
 		return (RailsAppContext) getVFSContext();
 	}

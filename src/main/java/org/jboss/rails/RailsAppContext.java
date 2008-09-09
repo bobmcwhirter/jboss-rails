@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import org.jboss.virtual.VirtualFile;
 import org.jboss.virtual.plugins.context.AbstractVFSContext;
 import org.jboss.virtual.plugins.context.vfs.AssembledDirectoryHandler;
+import org.jboss.virtual.plugins.context.vfs.ByteArrayHandler;
 import org.jboss.virtual.spi.VFSContext;
 import org.jboss.virtual.spi.VirtualFileHandler;
 
@@ -16,19 +17,37 @@ public class RailsAppContext extends AbstractVFSContext {
 	
 	private WarRootHandler warRootHandler;
 	private WebInfHandler webInfHandler;
+	private ByteArrayHandler webXmlHandler;
 	private AssembledDirectoryHandler webInfLibHandler;
 	private VFSContext railsAppDir;
 	
 	public RailsAppContext(String simpleName, VFSContext railsAppDir) throws URISyntaxException, IOException {
 		super(new URI( "rails://" + simpleName + "/" ) );
+		setUpWarRoot();
+		setUpWebInf();
+		setUpRailsApp( railsAppDir );
+	}
+	
+	protected void setUpWarRoot() {
 		this.warRootHandler = new WarRootHandler( this );
+	}
+	
+	protected void setUpWebInf() throws IOException {
 		this.webInfHandler  = new WebInfHandler( this );
-		this.railsAppDir    = railsAppDir;
+		setUpWebXml();
 		setUpWebInfLib();
 	}
 	
 	protected void setUpWebInfLib() throws IOException {
 		this.webInfLibHandler = new AssembledDirectoryHandler( this, null, "lib" );
+	}
+	
+	protected void setUpWebXml() throws IOException {
+		this.webXmlHandler = new ByteArrayHandler( this, webInfHandler, "web.xml", "howdy".getBytes() );
+	}
+	
+	protected void setUpRailsApp(VFSContext railsAppDir) {
+		this.railsAppDir    = railsAppDir;
 	}
 
 	public String getName() {
@@ -61,6 +80,10 @@ public class RailsAppContext extends AbstractVFSContext {
 	
 	public VirtualFileHandler getWebInfLib() {
 		return webInfLibHandler;
+	}
+
+	public VirtualFileHandler getWebXml() {
+		return webXmlHandler;
 	}
 
 }
