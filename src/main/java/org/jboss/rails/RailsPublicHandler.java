@@ -56,38 +56,31 @@ public class RailsPublicHandler extends AbstractVirtualFileHandler implements St
 	}
 
 	public long getLastModified() throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
+		return getRailsAppContext().getRawRailsPublic().getLastModified();
 	}
 
 	public long getSize() throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
+		return getRailsAppContext().getRawRailsPublic().getSize();
 	}
 
 	public boolean isHidden() throws IOException {
-		// TODO Auto-generated method stub
-		return false;
+		return getRailsAppContext().getRawRailsPublic().isHidden();
 	}
 
 	public boolean isLeaf() throws IOException {
-		// TODO Auto-generated method stub
-		return false;
+		return getRailsAppContext().getRawRailsPublic().isLeaf();
 	}
 
 	public boolean isNested() throws IOException {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	public InputStream openStream() throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+		return getRailsAppContext().getRawRailsPublic().openStream();
 	}
 
 	public boolean removeChild(String name) throws IOException {
-		// TODO Auto-generated method stub
-		return false;
+		return getRailsAppContext().getRawRailsPublic().removeChild(name);
 	}
 
 	public URI toURI() throws URISyntaxException {

@@ -56,37 +56,30 @@ public class WarRootHandler extends AbstractVirtualFileHandler implements Struct
 	}
 
 	public long getLastModified() throws IOException {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	public long getSize() throws IOException {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	public boolean isHidden() throws IOException {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	public boolean isLeaf() throws IOException {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	public boolean isNested() throws IOException {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	public InputStream openStream() throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new IOException( "Cannot open stream" );
 	}
 
 	public boolean removeChild(String name) throws IOException {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
