@@ -31,7 +31,6 @@ import org.jboss.virtual.plugins.context.AbstractVFSContext;
 import org.jboss.virtual.plugins.context.DelegatingHandler;
 import org.jboss.virtual.plugins.context.vfs.AssembledDirectoryHandler;
 import org.jboss.virtual.plugins.context.vfs.ByteArrayHandler;
-import org.jboss.virtual.spi.VFSContext;
 import org.jboss.virtual.spi.VirtualFileHandler;
 
 /** The general VFSContext for stitching together a .war for a Ruby on Rails application.
@@ -55,10 +54,10 @@ public class RailsAppContext extends AbstractVFSContext {
 	/** Handler for WEB-INF/lib/ */
 	private DelegatingHandler webInfLibHandler;
 	
-	/** VFS pointing to on-disk RAILS_ROOT directory */
-	private VFSContext railsAppDir;
+	/** Handler pointing to on-disk RAILS_ROOT directory */
+	private VirtualFileHandler railsAppDir;
 	
-	/** Short-cut handle to the public/ RAILS_ROOT directory */
+	/** Short-cut handler to the public/ RAILS_ROOT directory */
 	private VirtualFileHandler railsPublic;
 	
 	/** Construct with a name an RoR application directory context.
@@ -68,12 +67,20 @@ public class RailsAppContext extends AbstractVFSContext {
 	 * @throws URISyntaxException
 	 * @throws IOException
 	 */
-	public RailsAppContext(String name, VFSContext railsAppDir) throws URISyntaxException, IOException {
+	public RailsAppContext(String name, VirtualFileHandler railsAppDir) throws URISyntaxException, IOException {
 		super(new URI( "rails://" + name + "/" ) );
 		this.name = name;
 		setUpWarRoot();
 		setUpWebInf();
 		setUpRailsApp( railsAppDir );
+	}
+	
+	public RailsAppContext(String name, VirtualFile railsAppDir) throws URISyntaxException, IOException {
+		super(new URI( "rails://" + name + "/" ) );
+		this.name = name;
+		setUpWarRoot();
+		setUpWebInf();
+		setUpRailsApp( new VirtualFileDelegatingHandler( railsAppDir ) );
 	}
 	
 	/** Set up the root handler. 
@@ -105,10 +112,10 @@ public class RailsAppContext extends AbstractVFSContext {
 	
 	/** Set up the RoR application handler.
 	 * 
-	 * @param railsAppDir The VFSContext to the RoR application directory.
+	 * @param railsAppDir The handler to the RoR application directory.
 	 * @throws IOException
 	 */
-	protected void setUpRailsApp(VFSContext railsAppDir) throws IOException {
+	protected void setUpRailsApp(VirtualFileHandler railsAppDir) throws IOException {
 		this.railsAppDir    = railsAppDir;
 		this.railsPublic = new RailsPublicHandler( this );
 	}
@@ -125,19 +132,15 @@ public class RailsAppContext extends AbstractVFSContext {
 		return warRootHandler;
 	}
 	
-	public VFSContext getRailsAppDir() {
-		return railsAppDir;
-	}
-	
 	public VirtualFileHandler getRailsRoot() throws IOException {
-		return railsAppDir.getRoot();
+		return railsAppDir;
 	}
 	
 	public VirtualFileHandler getRailsPublic() {
 		return railsPublic;
 	}
 	public VirtualFileHandler getRawRailsPublic() throws IOException {
-		return railsAppDir.getRoot().getChild("public");
+		return railsAppDir.getChild("public");
 	}
 
 	public VirtualFileHandler getWebInf() {

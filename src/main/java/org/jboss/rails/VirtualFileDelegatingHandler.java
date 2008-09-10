@@ -22,6 +22,11 @@ public class VirtualFileDelegatingHandler implements VirtualFileHandler {
 		this.delegate = delegate;
 	}
 	
+	public VirtualFileDelegatingHandler(VirtualFileHandler parent, VirtualFile delegate) {
+		this( delegate );
+		this.parent = parent;
+	}
+	
 	public void close() {
 		// TODO Auto-generated method stub
 	}
