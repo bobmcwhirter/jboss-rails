@@ -34,6 +34,15 @@ import org.jboss.virtual.VFS;
 import org.jboss.virtual.plugins.context.file.FileSystemContextFactory;
 import org.jboss.virtual.spi.VFSContext;
 
+/** Factory for creating RailsAppContexts and registering them for rails:// URLs.
+ * 
+ * <p>
+ * This factory installs a handler for rails:// URLs, and registers new contexts
+ * using the hostname portion of the URL for retrieval by the handler.
+ * </p>
+ * 
+ * @author Bob McWhirter
+ */
 public class RailsAppContextFactory {
 
 	static {
@@ -55,18 +64,34 @@ public class RailsAppContextFactory {
 
 	}
 
+	/** Singleton instance. */
 	private static final RailsAppContextFactory INSTANCE = new RailsAppContextFactory();
 
-	private Map<String, RailsAppContext> railsApps = new HashMap<String, RailsAppContext>();
-
+	/** Retrieve the singleton instance. 
+	 * 
+	 * @return The singleton instance.
+	 */
 	public static RailsAppContextFactory getInstance() {
 		return INSTANCE;
 	}
 
-	public RailsAppContextFactory() {
+	/** Registry of Rails contexts. */
+	private Map<String, RailsAppContext> railsApps = new HashMap<String, RailsAppContext>();
 
+	/** Construct.
+	 */
+	protected RailsAppContextFactory() {
 	}
 
+	/** Create a new RailsAppContext given a name an path to a Rails app directory.
+	 * 
+	 * @param name The name of the rails application, used to register the context.
+	 * @param railsAppPath Path to the directory containing the Rails app
+	 * @return
+	 * @throws URISyntaxException
+	 * @throws MalformedURLException
+	 * @throws IOException
+	 */
 	public RailsAppContext createRoot(String name, String railsAppPath) throws URISyntaxException, MalformedURLException, IOException {
 		File railsAppDir = new File(railsAppPath);
 		VFSContext railsAppDirContext = new FileSystemContextFactory().getVFS(railsAppDir.toURL());
@@ -75,10 +100,25 @@ public class RailsAppContextFactory {
 		return context;
 	}
 
+	/** Find a Rails VFS by the name.
+	 * 
+	 * @param name The name of the context.
+	 * @return The found context, or null if none is registered under the name.
+	 */
 	public VFS getVFS(String name) {
-		return railsApps.get(name).getVFS();
+		RailsAppContext context = railsApps.get( name );
+		if ( context != null ) {
+			return context.getVFS();
+		}
+		
+		return null;
 	}
 
+	/** Find a Rails VFS by the name.
+	 * 
+	 * @param name The name of the context.
+	 * @return The found context, or null if none is registered under the name.
+	 */
 	public static VFS find(String name) {
 		return getInstance().getVFS(name);
 	}
