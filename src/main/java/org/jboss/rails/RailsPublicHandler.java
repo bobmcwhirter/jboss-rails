@@ -34,6 +34,13 @@ import org.jboss.virtual.plugins.context.DelegatingHandler;
 import org.jboss.virtual.plugins.context.StructuredVirtualFileHandler;
 import org.jboss.virtual.spi.VirtualFileHandler;
 
+/** Handler for RAILS_ROOT/public serving from the root of the .war
+ * 
+ * <p>
+ * This handler takes care of parentage of the public/ directory contents.
+ * 
+ * @author Bob McWhirter
+ */
 public class RailsPublicHandler extends AbstractVirtualFileHandler implements StructuredVirtualFileHandler {
 
 	
