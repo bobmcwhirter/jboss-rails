@@ -22,7 +22,10 @@
 
 package org.jboss.rails;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -38,6 +41,8 @@ import org.jboss.virtual.spi.VirtualFileHandler;
  * @author Bob McWhirter
  */
 public class RailsAppContext extends AbstractVFSContext {
+	
+	private static final int MAX_WEB_XML_SIZE = 10240;
 	
 	/** Name of this context, used for registering with the hostname of a URL */
 	private String name;
@@ -107,7 +112,25 @@ public class RailsAppContext extends AbstractVFSContext {
 	/** Set up the WEB-INF/web.xml handler. 
 	 */
 	protected void setUpWebXml() throws IOException {
-		this.webXmlHandler = new ByteArrayHandler( this, webInfHandler, "web.xml", "howdy".getBytes() );
+		InputStream in = getClass().getClassLoader().getResourceAsStream("org/jboss/rails/war/web.xml" );
+		
+		int len = 0;
+		int totalLen = 0;
+		
+		byte[] buf = new byte[ MAX_WEB_XML_SIZE ];
+		
+		while ( ( len = in.read(buf) ) >= 0 ) {
+			totalLen += len;
+			if ( totalLen > MAX_WEB_XML_SIZE ) {
+				throw new IOException( "web.xml input too large: " + MAX_WEB_XML_SIZE );
+			}
+		}
+		
+		byte[] bytes = new byte[totalLen];
+		
+		System.arraycopy(buf, 0, bytes, 0, totalLen);
+		
+		this.webXmlHandler = new ByteArrayHandler( this, webInfHandler, "web.xml", bytes );
 	}
 	
 	/** Set up the RoR application handler.

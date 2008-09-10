@@ -6,8 +6,8 @@
   <includeBaseDirectory>false</includeBaseDirectory>
   <files>
     <file>
-      <source>src/main/resources/rails-deployer-jboss-beans.xml</source>
-      <destName>META-INF/deployer-beans.xml</destName>
+      <source>src/main/resources/META-INF/rails-deployer-jboss-beans.xml</source>
+      <destName>META-INF/jboss-beans.xml</destName>
     </file>
   </files>
   <dependencySets>
