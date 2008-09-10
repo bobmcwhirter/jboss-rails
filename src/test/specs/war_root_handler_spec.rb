@@ -68,5 +68,16 @@ describe WarRootHandler do
     nonesuch = @root.get_child( 'nonesuch/nope' )
     nonesuch.should be_nil
   end
+  
+  it "should provide a complete enumeration of its children from public/ and the WEB-INF/ directory" do
+    children = @root.get_children(true)
+    
+    names = children.collect{|e| e.get_name }
+    names.should include( 'WEB-INF' )
+    names.should include( 'images' )
+    names.should include( 'javascripts' )
+    names.should include( 'index.html' )
+    names.should include( '404.html' )
+  end
 
 end

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.virtual.plugins.context.AbstractVirtualFileHandler;
@@ -42,8 +43,16 @@ public class WarRootHandler extends AbstractVirtualFileHandler implements Struct
 	}
 	
 	public List<VirtualFileHandler> getChildren(boolean ignoreErrors) throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+		List<VirtualFileHandler> children = getRailsAppContext().getRailsPublic().getChildren(ignoreErrors);
+		
+		List<VirtualFileHandler> totalChildren = new ArrayList<VirtualFileHandler>();
+		for ( VirtualFileHandler child : children )  {
+			if ( ! "WEB-INF".equals( child.getName() ) ) {
+				totalChildren.add( child );
+			}
+		}
+		totalChildren.add( getRailsAppContext().getWebInf() );
+		return totalChildren;	
 	}
 
 	public long getLastModified() throws IOException {

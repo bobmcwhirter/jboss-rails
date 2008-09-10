@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.virtual.plugins.context.AbstractVirtualFileHandler;
@@ -40,8 +41,18 @@ public class RailsPublicHandler extends AbstractVirtualFileHandler implements St
 	}
 	
 	public List<VirtualFileHandler> getChildren(boolean ignoreErrors) throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+		List<VirtualFileHandler> children = getRailsAppContext().getRawRailsPublic().getChildren( ignoreErrors );
+		
+		List<VirtualFileHandler> wrappedChildren = new ArrayList<VirtualFileHandler>();
+		
+		RailsAppContext railsAppContext = getRailsAppContext();
+		WarRootHandler warRootHandler = railsAppContext.getWarRootHandler();
+		
+		for ( VirtualFileHandler child : children ) {
+			wrappedChildren.add( new DelegatingHandler( railsAppContext, warRootHandler, child.getName(), child ) );
+		}
+		
+		return wrappedChildren;
 	}
 
 	public long getLastModified() throws IOException {
