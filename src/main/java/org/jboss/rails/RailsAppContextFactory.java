@@ -28,7 +28,7 @@ public class RailsAppContextFactory {
 		try {
 			URL.setURLStreamHandlerFactory(new org.jboss.net.protocol.URLStreamHandlerFactory());
 		} catch (Exception e) {
-			e.printStackTrace();
+			// ignore 
 		}
 
 	}
