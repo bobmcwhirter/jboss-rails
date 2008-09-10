@@ -79,5 +79,12 @@ describe WarRootHandler do
     names.should include( 'index.html' )
     names.should include( '404.html' )
   end
+  
+  it "should be the parent of its children" do
+    children = @root.get_children(true)
+    children.each do |child|
+      child.get_parent.should eql( @root )
+    end
+  end
 
 end
