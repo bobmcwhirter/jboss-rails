@@ -34,18 +34,40 @@ import org.jboss.virtual.plugins.context.vfs.ByteArrayHandler;
 import org.jboss.virtual.spi.VFSContext;
 import org.jboss.virtual.spi.VirtualFileHandler;
 
+/** The general VFSContext for stitching together a .war for a Ruby on Rails application.
+ * 
+ * @author Bob McWhirter
+ */
 public class RailsAppContext extends AbstractVFSContext {
 	
+	/** Name of this context, used for registering with the hostname of a URL */
 	private String name;
+	
+	/** Handler the root of the .war file. */
 	private WarRootHandler warRootHandler;
+	
+	/** Handler for the WEB-INF directory. */
 	private WebInfHandler webInfHandler;
+	
+	/** Handler for synthesized web.xml */
 	private ByteArrayHandler webXmlHandler;
+	
+	/** Handler for WEB-INF/lib/ */
 	private DelegatingHandler webInfLibHandler;
 	
+	/** VFS pointing to on-disk RAILS_ROOT directory */
 	private VFSContext railsAppDir;
 	
+	/** Short-cut handle to the public/ RAILS_ROOT directory */
 	private VirtualFileHandler railsPublic;
 	
+	/** Construct with a name an RoR application directory context.
+	 * 
+	 * @param name The name of the app, ultimately used for registering the 'host' of the rails:// URL
+	 * @param railsAppDir The RoR application directory
+	 * @throws URISyntaxException
+	 * @throws IOException
+	 */
 	public RailsAppContext(String name, VFSContext railsAppDir) throws URISyntaxException, IOException {
 		super(new URI( "rails://" + name + "/" ) );
 		this.name = name;
@@ -54,25 +76,38 @@ public class RailsAppContext extends AbstractVFSContext {
 		setUpRailsApp( railsAppDir );
 	}
 	
+	/** Set up the root handler. 
+	 */
 	protected void setUpWarRoot() {
 		this.warRootHandler = new WarRootHandler( this );
 	}
 	
+	/** Set up the WEB-INF/ handler. 
+	 */
 	protected void setUpWebInf() throws IOException {
 		this.webInfHandler  = new WebInfHandler( this );
 		setUpWebXml();
 		setUpWebInfLib();
 	}
 	
+	/** Set up the WEB-INF/lib/ handler. 
+	 */
 	protected void setUpWebInfLib() throws IOException {
 		VirtualFileHandler rawWebInfLibHandler = new AssembledDirectoryHandler( this, null, "lib" );
 		this.webInfLibHandler = new DelegatingHandler( this, webInfHandler, "lib", rawWebInfLibHandler );
 	}
 	
+	/** Set up the WEB-INF/web.xml handler. 
+	 */
 	protected void setUpWebXml() throws IOException {
 		this.webXmlHandler = new ByteArrayHandler( this, webInfHandler, "web.xml", "howdy".getBytes() );
 	}
 	
+	/** Set up the RoR application handler.
+	 * 
+	 * @param railsAppDir The VFSContext to the RoR application directory.
+	 * @throws IOException
+	 */
 	protected void setUpRailsApp(VFSContext railsAppDir) throws IOException {
 		this.railsAppDir    = railsAppDir;
 		this.railsPublic = new RailsPublicHandler( this );
