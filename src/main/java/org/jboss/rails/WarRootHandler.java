@@ -33,9 +33,25 @@ import org.jboss.virtual.plugins.context.AbstractVirtualFileHandler;
 import org.jboss.virtual.plugins.context.StructuredVirtualFileHandler;
 import org.jboss.virtual.spi.VirtualFileHandler;
 
-public class WarRootHandler extends AbstractVirtualFileHandler implements StructuredVirtualFileHandler {
 
+/** Root-level handler for the synthetic Rails-app .war file.
+ * 
+ * <p>
+ * It delegates to {@code RailsPublicHandler} and {@code WebInfHandler} in
+ * an overlay fashion to handle each request.
+ * </p>
+ * 
+ * @see WebInfHandler
+ * @see RailsPublicHandler
+ * 
+ * @author Bob McWhirter
+ */
+public class WarRootHandler extends AbstractVirtualFileHandler implements StructuredVirtualFileHandler {
 	
+	/** Construct.
+	 * 
+	 * @param vfsContext The Rails VFS context.
+	 */
 	public WarRootHandler(RailsAppContext vfsContext) {
 		super( vfsContext, null, "/" );
 	}
@@ -109,6 +125,10 @@ public class WarRootHandler extends AbstractVirtualFileHandler implements Struct
 		return getRailsAppContext().getRootURI();
 	}
 	
+	/** Retrieve the VFSContext cast to a RailsAppContext.
+	 * 
+	 * @return The VFSContext recast to the actual RailsAppContext.
+	 */
 	protected RailsAppContext getRailsAppContext() {
 		return (RailsAppContext) getVFSContext();
 	}

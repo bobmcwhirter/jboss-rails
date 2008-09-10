@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jboss.virtual.VFS;
+import org.jboss.virtual.VirtualFile;
 import org.jboss.virtual.plugins.context.file.FileSystemContextFactory;
 import org.jboss.virtual.spi.VFSContext;
 
@@ -95,6 +96,13 @@ public class RailsAppContextFactory {
 	public RailsAppContext createRoot(String name, String railsAppPath) throws URISyntaxException, MalformedURLException, IOException {
 		File railsAppDir = new File(railsAppPath);
 		VFSContext railsAppDirContext = new FileSystemContextFactory().getVFS(railsAppDir.toURL());
+		RailsAppContext context = new RailsAppContext(name, railsAppDirContext);
+		railsApps.put(name, context);
+		return context;
+	}
+	
+	public RailsAppContext createRoot(String name, VirtualFile railsAppPath) throws MalformedURLException, IOException, URISyntaxException {
+		VFSContext railsAppDirContext = new FileSystemContextFactory().getVFS(railsAppPath.toURL());
 		RailsAppContext context = new RailsAppContext(name, railsAppDirContext);
 		railsApps.put(name, context);
 		return context;

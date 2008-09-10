@@ -38,12 +38,17 @@ import org.jboss.virtual.spi.VirtualFileHandler;
  * 
  * <p>
  * This handler takes care of parentage of the public/ directory contents.
+ * </p>
  * 
  * @author Bob McWhirter
  */
 public class RailsPublicHandler extends AbstractVirtualFileHandler implements StructuredVirtualFileHandler {
 
 	
+	/** Construct.
+	 * 
+	 * @param vfsContext The root Rails context.
+	 */
 	public RailsPublicHandler(RailsAppContext vfsContext) {
 		super( vfsContext, vfsContext.getWarRootHandler(), "/" );
 	}
@@ -63,6 +68,11 @@ public class RailsPublicHandler extends AbstractVirtualFileHandler implements St
 
 	public VirtualFileHandler createChildHandler(String name) throws IOException {
 		VirtualFileHandler child = getRailsAppContext().getRawRailsPublic().getChild(name);
+		
+		// Since this handler serves public/ only under the war-root,
+		// we need to reparent the children handlers so that the WarRootHandler
+		// is indeed their parent.  DelegatingHandler allows us to delegate 
+		// everything except parentage, overriding it.
 		if ( child != null ) {
 			child = new DelegatingHandler( getRailsAppContext(), getRailsAppContext().getWarRootHandler(), name, child );
 		}
@@ -70,6 +80,11 @@ public class RailsPublicHandler extends AbstractVirtualFileHandler implements St
 	}
 	
 	public List<VirtualFileHandler> getChildren(boolean ignoreErrors) throws IOException {
+		// Since this handler serves public/ only under the war-root,
+		// we need to reparent the children handlers so that the WarRootHandler
+		// is indeed their parent.  DelegatingHandler allows us to delegate 
+		// everything except parentage, overriding it.
+		
 		List<VirtualFileHandler> children = getRailsAppContext().getRawRailsPublic().getChildren( ignoreErrors );
 		
 		List<VirtualFileHandler> wrappedChildren = new ArrayList<VirtualFileHandler>();
@@ -116,6 +131,10 @@ public class RailsPublicHandler extends AbstractVirtualFileHandler implements St
 		return getRailsAppContext().getRootURI();
 	}
 	
+	/** Retrieve the VFSContext cast to a RailsAppContext.
+	 * 
+	 * @return The VFSContext recast to the actual RailsAppContext.
+	 */
 	protected RailsAppContext getRailsAppContext() {
 		return (RailsAppContext) getVFSContext();
 	}

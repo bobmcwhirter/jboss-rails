@@ -24,6 +24,7 @@ package org.jboss.rails;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -94,8 +95,7 @@ public class RailsDeployer extends AbstractDeployer
 		}
 	}
 
-	private void deployRailsApplication(VFSDeploymentUnit unit)
-			throws DeploymentException {
+	private void deployRailsApplication(VFSDeploymentUnit unit) throws DeploymentException {
 		log.info("deployRailsApplication(" + unit.getSimpleName() + ")");
 
 		VirtualFile file = unit.getRoot();
@@ -111,20 +111,20 @@ public class RailsDeployer extends AbstractDeployer
 		}
 	}
 
-	private void deployRailsReference(VFSDeploymentUnit unit)
-			throws DeploymentException {
+	private void deployRailsReference(VFSDeploymentUnit unit) throws DeploymentException {
 		log.info("deploy from a reference");
 		VirtualFile ref = unit.getRoot();
 		try {
-			BufferedReader in = new BufferedReader(new InputStreamReader(ref
-					.openStream()));
+			BufferedReader in = new BufferedReader(new InputStreamReader(ref.openStream()));
 			String location = in.readLine();
 			log.info("deploy from referenced directory: " + location);
 			if (location != null) {
-				URI dirUri = new URI(location);
-				log.info("deploy from referenced directory URI: " + dirUri);
-				VirtualFile dir = VFS.getRoot(dirUri);
-				deployRailsDirectory(unit, dir);
+				log.info("deploy from referenced directory: " + location);
+
+				RailsAppContext context = RailsAppContextFactory.getInstance().createRoot(unit.getName(), location);
+				VirtualFile railsWarRoot = context.getRoot().getVirtualFile();
+
+				deployRailsWar(unit, railsWarRoot);
 			}
 		} catch (IOException e) {
 			throw new DeploymentException(e);
@@ -135,77 +135,30 @@ public class RailsDeployer extends AbstractDeployer
 		}
 	}
 
-	private void deployRailsDirectory(VFSDeploymentUnit unit, VirtualFile dir)
-			throws DeploymentException {
+	private void deployRailsDirectory(VFSDeploymentUnit unit, VirtualFile railsAppDir) throws DeploymentException {
 		log.info("deploy from a directory");
 
-		//unit.getTransientManagedObjects().addAttachment(JBossAppMetaData.class
-		// , mergedMetaData);
-
 		try {
-			AssembledDirectory warRoot = AssembledDirectory
-					.createAssembledDirectory("rails/" + unit.getSimpleName()
-							+ ".war", unit.getSimpleName() + ".war");
-			for (VirtualFile child : dir.getChildren()) {
-				if (child.isLeaf()) {
-					warRoot.addChild(child);
-				} else {
-					warRoot.addPath(child, null);
-				}
-			}
-			
-
-			URL rootWarUrl = new URL("vfsmemory://rails/"
-					+ unit.getSimpleName());
-			VFSContext warContext = MemoryContextFactory.getInstance()
-					.createRoot(rootWarUrl);
-			SynthenticDirEntryHandler warHandler = new SynthenticDirEntryHandler(
-					warContext, null, unit.getSimpleName(), System
-							.currentTimeMillis(), new URL(rootWarUrl, unit
-							.getSimpleName()));
-
-			final VisitorAttributes va = new VisitorAttributes();
-			va.setLeavesOnly(false);
-			va.setIncludeRoot(true);
-			va.setRecurseFilter(VisitorAttributes.RECURSE_ALL);
-			VirtualFileVisitor visitor = new VirtualFileVisitor() {
-
-				public VisitorAttributes getAttributes() {
-					return va;
-				}
-
-				public void visit(VirtualFile virtualFile) {
-					System.err.println(virtualFile.getPathName());
-				}
-
-			};
-			warRoot.visit(visitor);
-			log.info("WAR children: " + warRoot.getChildren());
-			VFSDeployment warDeployment = VFSDeploymentFactory.getInstance()
-					.createVFSDeployment(warRoot);
-			unit.getTransientManagedObjects().addAttachment(
-					VFSDeployment.class, warDeployment);
-
-			mainDeployer.addDeployment(warDeployment);
-			mainDeployer.process();
-
+			RailsAppContext context = RailsAppContextFactory.getInstance().createRoot(unit.getName(), unit.getRoot() );
+			VirtualFile railsWarRoot = context.getRoot().getVirtualFile();
+			deployRailsWar(unit, railsWarRoot);
+		} catch (MalformedURLException e) {
+			throw new DeploymentException( e );
 		} catch (IOException e) {
-			e.printStackTrace();
-			throw new DeploymentException(e);
+			throw new DeploymentException( e );
 		} catch (URISyntaxException e) {
-			e.printStackTrace();
-			throw new DeploymentException(e);
-		} catch (DeploymentException e) {
-			e.printStackTrace();
-			throw new DeploymentException(e);
+			throw new DeploymentException( e );
 		}
+
 	}
 
-	/*
-	 * public void deploy(VFSDeploymentUnit unit, JBossWebMetaData metaData)
-	 * throws DeploymentException { log.info("Rails Deployer deploy(" +
-	 * unit.getSimpleName() + ", " + metaData + ")"); }
-	 */
+	private void deployRailsWar(VFSDeploymentUnit unit, VirtualFile warRoot) throws DeploymentException {
+		VFSDeployment warDeployment = VFSDeploymentFactory.getInstance().createVFSDeployment(warRoot);
+		unit.getTransientManagedObjects().addAttachment(VFSDeployment.class, warDeployment);
+
+		mainDeployer.addDeployment(warDeployment);
+		mainDeployer.process();
+	}
 
 	public void create() throws Exception {
 		log.info("Rails Deployer create()");

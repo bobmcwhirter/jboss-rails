@@ -37,11 +37,26 @@ import org.jboss.virtual.plugins.context.DelegatingHandler;
 import org.jboss.virtual.plugins.context.StructuredVirtualFileHandler;
 import org.jboss.virtual.spi.VirtualFileHandler;
 
+/** Handler for the WEB-INF/ directory of a synthetic Rails WAR VFS.
+ * 
+ * <p>
+ * Primarily this handler proxies for the RAILS_ROOT handler filesystem
+ * handler, it overlays {@code web.xml} handling and {@code lib/} handling
+ * to other handlers.
+ * </p>
+ * 
+ * @author Bob McWhirter
+ */
 public class WebInfHandler extends AbstractVirtualFileHandler implements StructuredVirtualFileHandler {
 	
+	/** Files to not serve directly form the RAILS_ROOT. */
 	private static final String[] RESERVED_NAMES = {  "web.xml",  "lib"  };
 	
 	
+	/** Construct.
+	 * 
+	 * @param vfsContext The Rails application context.
+	 */
 	public WebInfHandler(RailsAppContext vfsContext) {
 		super( vfsContext, vfsContext.getWarRootHandler(), "WEB-INF" );
 	}
@@ -50,6 +65,8 @@ public class WebInfHandler extends AbstractVirtualFileHandler implements Structu
 		
 		VirtualFileHandler child = null;
 		
+		// First do any special-case dispatching, followed by
+		// simple proxying to the RAILS_ROOT handler
 		if ( "web.xml".equals( name ) ) {
 			child = getRailsAppContext().getWebXml();
 		} else if ( "lib".equals( name ) ) {
@@ -62,8 +79,7 @@ public class WebInfHandler extends AbstractVirtualFileHandler implements Structu
 	}
 
 	public boolean exists() throws IOException {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	public VirtualFileHandler getChild(String path) throws IOException {
@@ -78,6 +94,8 @@ public class WebInfHandler extends AbstractVirtualFileHandler implements Structu
 		
 		List<VirtualFileHandler> totalChildren = new ArrayList<VirtualFileHandler>();
 		
+		// Any child produced from WEB-INF needs reparenting through a delegating handler
+		// to setup the WEB-INF as the actual parent.
 		for ( VirtualFileHandler child : children ) {
 			if ( Arrays.binarySearch( RESERVED_NAMES, child.getName() ) < 0 ) {
 				child = new DelegatingHandler( railsAppContext, webInf, child.getName(), child );
@@ -85,6 +103,7 @@ public class WebInfHandler extends AbstractVirtualFileHandler implements Structu
 			}
 		}
 		
+		// Add the overlaid synthetic children handlers.
 		totalChildren.add( getRailsAppContext().getWebXml() );
 		totalChildren.add( getRailsAppContext().getWebInfLib() );
 		
@@ -123,6 +142,10 @@ public class WebInfHandler extends AbstractVirtualFileHandler implements Structu
 		return getRailsAppContext().getWarRootHandler().toURI().resolve( "WEB-INF" );
 	}
 	
+	/** Retrieve the VFSContext cast to a RailsAppContext.
+	 * 
+	 * @return The VFSContext recast to the actual RailsAppContext.
+	 */
 	private RailsAppContext getRailsAppContext() {
 		return (RailsAppContext) getVFSContext();
 	}
