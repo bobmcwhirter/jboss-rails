@@ -18,6 +18,9 @@
 # Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 # 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 
+import java.io.InputStreamReader
+import java.io.BufferedReader
+
 
 require File.dirname( __FILE__ ) + '/spec_helper.rb'
 
@@ -32,13 +35,19 @@ describe WebInfHandler do
     web_xml = @web_inf.get_child( 'web.xml' )
     web_xml.should_not be_nil
   end
-
+  
   it "web.xml should have WEB-INF/ as its parent" do
     web_xml = @web_inf.get_child( 'web.xml' )
     web_xml.get_parent.should eql( @web_inf )
     web_xml.get_parent.get_child( 'web.xml').should eql( web_xml )
   end
-
+  
+  it "web.xml should be JRuby-Rack web.xml" do 
+    web_xml = @web_inf.get_child( 'web.xml' )
+    content = read_fully( web_xml )
+    content.size.should > 0 
+    content.should =~ /org.jruby.rack.rails.RailsServletContextListener/
+  end
 
   it "should serve lib/ from an assembled directory" do
     lib = @web_inf.get_child( 'lib' )
@@ -86,4 +95,15 @@ describe WebInfHandler do
     end
   end
 
+end
+
+def read_fully(virtual_file) 
+  stream = virtual_file.open_stream
+  reader = InputStreamReader.new( stream )
+  buffer = BufferedReader.new( reader ) 
+  content = ''
+  while ( ( l = buffer.read_line ) != nil ) 
+    content += ( l + "\n" )
+  end
+  content
 end
