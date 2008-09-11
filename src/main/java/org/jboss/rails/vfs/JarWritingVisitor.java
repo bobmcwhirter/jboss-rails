@@ -18,7 +18,6 @@ import org.jboss.virtual.plugins.vfs.helpers.MatchAllVirtualFileFilter;
 public class JarWritingVisitor extends AbstractVirtualFileVisitor {
 
 	private JarOutputStream out;
-	private Set<String> paths = new HashSet<String>();
 	
 	public static void writeJar(VirtualFile root, String path) throws IOException {
 		JarWritingVisitor visitor = createVisitor(path);
@@ -55,8 +54,7 @@ public class JarWritingVisitor extends AbstractVirtualFileVisitor {
 		try {
 			addToJar(virtualFile);
 		} catch (IOException e) {
-			//System.err.println(e.getMessage());
-			e.printStackTrace();
+			System.err.println(e.getMessage());
 		}
 	}
 	
@@ -78,12 +76,6 @@ public class JarWritingVisitor extends AbstractVirtualFileVisitor {
 		
 			while ( (len = in.read( buffer ) ) >= 0 ) {
 				out.write( buffer, 0, len );
-			}
-		} else {
-			if ( ! paths.contains( path ) ) {
-				JarEntry entry = new JarEntry( path );
-				out.putNextEntry( entry );
-				paths.add( path );
 			}
 		}
 	}

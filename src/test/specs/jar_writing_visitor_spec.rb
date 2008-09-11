@@ -1,7 +1,7 @@
 
 require File.dirname( __FILE__ ) + '/spec_helper.rb'
 
-jar_file = File.dirname( __FILE__ ) + '/../../../target/jwv.jar'
+jar_file = File.dirname( __FILE__ ) + '/../../../target/ballast.war'
 
 import org.jboss.rails.vfs.JarWritingVisitor
 

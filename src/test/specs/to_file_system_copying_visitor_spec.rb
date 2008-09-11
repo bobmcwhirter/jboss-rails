@@ -3,7 +3,7 @@ require File.dirname( __FILE__ ) + '/spec_helper.rb'
 
 require 'fileutils'
 
-target_dir = File.dirname( __FILE__ ) + '/../../../target/tfscv.tmp/'
+target_dir = File.dirname( __FILE__ ) + '/../../../target/ballast.war.dir/'
 
 import org.jboss.rails.vfs.ToFileSystemCopyingVisitor
 
