@@ -27,7 +27,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 
-import org.jboss.rails.RailsAppContextFactory;
+import org.jboss.rails.vfs.RailsAppContextFactory;
 import org.jboss.virtual.VFS;
 import org.jboss.virtual.VirtualFile;
 import org.jboss.virtual.plugins.vfs.VirtualFileURLConnection;

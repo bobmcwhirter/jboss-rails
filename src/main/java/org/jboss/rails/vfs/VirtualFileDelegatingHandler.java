@@ -1,4 +1,4 @@
-package org.jboss.rails;
+package org.jboss.rails.vfs;
 
 import java.io.IOException;
 import java.io.InputStream;
