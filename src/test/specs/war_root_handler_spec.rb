@@ -75,7 +75,11 @@ describe WarRootHandler do
     application_js.get_parent.to_uri.should eql( javascripts.to_uri )
 
     javascripts.get_parent.should eql( @root )
+  end
 
+  it "should not serve the RAILS_ROOT from the war root" do
+    script = @root.get_child( 'script' )
+    script.should be_nil
   end
 
   it "should return nil for non-existant root-lavel non-WEB-INF requests" do
