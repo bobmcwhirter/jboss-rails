@@ -25,18 +25,22 @@ package org.jboss.rails.vfs;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jboss.virtual.VFS;
 import org.jboss.virtual.VirtualFile;
+import org.jboss.virtual.plugins.context.AbstractContextFactory;
 import org.jboss.virtual.plugins.context.file.FileSystemContextFactory;
 import org.jboss.virtual.spi.VFSContext;
+import org.jboss.virtual.spi.VFSContextFactory;
+import org.jboss.virtual.spi.VFSContextFactoryLocator;
 import org.jboss.virtual.spi.VirtualFileHandler;
 
-/** Factory for creating RailsAppContexts and registering them for rails:// URLs.
+/**
+ * Factory for creating RailsAppContexts and registering them for rails:// URLs.
  * 
  * <p>
  * This factory installs a handler for rails:// URLs, and registers new contexts
@@ -45,7 +49,7 @@ import org.jboss.virtual.spi.VirtualFileHandler;
  * 
  * @author Bob McWhirter
  */
-public class RailsAppContextFactory {
+public class RailsAppContextFactory extends AbstractContextFactory {
 
 	static {
 		String pkgs = System.getProperty("java.protocol.handler.pkgs");
@@ -61,7 +65,7 @@ public class RailsAppContextFactory {
 		try {
 			URL.setURLStreamHandlerFactory(new org.jboss.net.protocol.URLStreamHandlerFactory());
 		} catch (Exception e) {
-			// ignore 
+			// ignore
 		}
 
 	}
@@ -69,7 +73,8 @@ public class RailsAppContextFactory {
 	/** Singleton instance. */
 	private static final RailsAppContextFactory INSTANCE = new RailsAppContextFactory();
 
-	/** Retrieve the singleton instance. 
+	/**
+	 * Retrieve the singleton instance.
 	 * 
 	 * @return The singleton instance.
 	 */
@@ -78,57 +83,83 @@ public class RailsAppContextFactory {
 	}
 
 	/** Registry of Rails contexts. */
-	private Map<String, RailsAppContext> railsApps = new HashMap<String, RailsAppContext>();
+	private Map<String, RailsAppContext> registry = new HashMap<String, RailsAppContext>();
 
-	/** Construct.
+	/**
+	 * Construct.
 	 */
 	protected RailsAppContextFactory() {
 	}
 
-	/** Create a new RailsAppContext given a name an path to a Rails app directory.
+	/**
+	 * Create a new RailsAppContext given a name an path to a Rails app
+	 * directory.
 	 * 
-	 * @param name The name of the rails application, used to register the context.
-	 * @param railsAppPath Path to the directory containing the Rails app
+	 * @param name
+	 *            The name of the rails application, used to register the
+	 *            context.
+	 * @param railsAppPath
+	 *            Path to the directory containing the Rails app
 	 * @return
 	 * @throws URISyntaxException
 	 * @throws MalformedURLException
 	 * @throws IOException
 	 */
-	public RailsAppContext createRoot(String name, String railsAppPath) throws URISyntaxException, MalformedURLException, IOException {
+	public RailsAppContext createRoot(String name, String railsAppPath) throws IOException {
 		File railsAppDir = new File(railsAppPath);
-		VFSContext railsAppDirContext = new FileSystemContextFactory().getVFS(railsAppDir.toURL());
-		VirtualFileHandler railsRoot = railsAppDirContext.getRoot();
-		RailsAppContext context = new RailsAppContext(name, railsRoot);
-		railsApps.put(name, context);
-		return context;
-	}
-	
-	public RailsAppContext createRoot(String name, VirtualFile railsAppPath) throws MalformedURLException, IOException, URISyntaxException {
-		RailsAppContext context = new RailsAppContext(name, railsAppPath);
-		railsApps.put(name, context);
-		return context;
-	}
+		URL railsRootUrl = railsAppDir.toURL();
 
-	/** Find a Rails VFS by the name.
-	 * 
-	 * @param name The name of the context.
-	 * @return The found context, or null if none is registered under the name.
-	 */
-	public VFS getVFS(String name) {
-		RailsAppContext context = railsApps.get( name );
-		if ( context != null ) {
-			return context.getVFS();
+		VFSContextFactory factory = VFSContextFactoryLocator.getFactory(railsRootUrl);
+
+		if (factory == null) {
+			throw new IOException("unable to find context factory: " + railsRootUrl);
 		}
-		
-		return null;
+
+		VFSContext railsRootContext = factory.getVFS(railsRootUrl);
+
+		VirtualFileHandler railsRoot = railsRootContext.getRoot();
+		try {
+			RailsAppContext context = new RailsAppContext(name, railsRoot.getVirtualFile());
+			registerContext(context);
+			return context;
+		} catch (URISyntaxException e) {
+			throw new IOException(e.getMessage());
+		}
 	}
 
-	/** Find a Rails VFS by the name.
-	 * 
-	 * @param name The name of the context.
-	 * @return The found context, or null if none is registered under the name.
-	 */
-	public static VFS find(String name) {
-		return getInstance().getVFS(name);
+	public RailsAppContext createRoot(String name, VirtualFile railsAppPath) throws IOException {
+		try {
+			RailsAppContext context = new RailsAppContext(name, railsAppPath);
+			registerContext(context);
+			return context;
+		} catch (URISyntaxException e) {
+			throw new IOException(e.getMessage());
+		}
 	}
+
+	public VFSContext getVFS(URL rootURL) throws IOException {
+		RailsAppContext context = find(rootURL);
+
+		if (context == null) {
+			throw new IOException("no context: " + rootURL);
+		}
+
+		return createRoot(context.getName(), context.getRailsRoot().getVirtualFile());
+	}
+
+	public VFSContext getVFS(URI rootURI) throws IOException {
+		return getVFS(rootURI.toURL());
+	}
+
+	public RailsAppContext find(URL rootURL) {
+		return registry.get(rootURL.getHost());
+	}
+
+	private void registerContext(RailsAppContext context) {
+		// Only register the first one
+		if (!registry.containsKey(context.getName())) {
+			registry.put(context.getName(), context);
+		}
+	}
+
 }

@@ -31,12 +31,13 @@ import org.jboss.rails.vfs.RailsAppContextFactory;
 import org.jboss.virtual.VFS;
 import org.jboss.virtual.VirtualFile;
 import org.jboss.virtual.plugins.vfs.VirtualFileURLConnection;
+import org.jboss.virtual.spi.VFSContext;
 
 public class Handler extends URLStreamHandler {
 	
 	protected URLConnection openConnection(URL url) throws IOException {
-		String host = url.getHost();
-		VFS vfs = RailsAppContextFactory.find(host);
+		VFSContext context = RailsAppContextFactory.getInstance().find(url);
+		VFS vfs = context.getVFS();
 		if (vfs == null)
 			throw new IOException("VFS does not exist: " + url);
 

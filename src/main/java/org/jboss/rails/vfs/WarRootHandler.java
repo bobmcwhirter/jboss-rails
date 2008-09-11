@@ -30,15 +30,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.virtual.plugins.context.AbstractVirtualFileHandler;
+import org.jboss.virtual.plugins.context.DelegatingHandler;
 import org.jboss.virtual.plugins.context.StructuredVirtualFileHandler;
 import org.jboss.virtual.spi.VirtualFileHandler;
 
-
-/** Root-level handler for the synthetic Rails-app .war file.
+/**
+ * Root-level handler for the synthetic Rails-app .war file.
  * 
  * <p>
- * It delegates to {@code RailsPublicHandler} and {@code WebInfHandler} in
- * an overlay fashion to handle each request.
+ * It delegates to {@code RailsPublicHandler} and {@code WebInfHandler} in an
+ * overlay fashion to handle each request.
  * </p>
  * 
  * @see WebInfHandler
@@ -47,23 +48,25 @@ import org.jboss.virtual.spi.VirtualFileHandler;
  * @author Bob McWhirter
  */
 public class WarRootHandler extends AbstractVirtualFileHandler implements StructuredVirtualFileHandler {
-	
-	/** Construct.
+
+	/**
+	 * Construct.
 	 * 
-	 * @param vfsContext The Rails VFS context.
+	 * @param vfsContext
+	 *            The Rails VFS context.
 	 */
 	public WarRootHandler(RailsAppContext vfsContext) {
-		super( vfsContext, null, "/" );
+		super(vfsContext, null, "/");
 	}
-	
+
 	public boolean exists() throws IOException {
 		return true;
 	}
 
 	public VirtualFileHandler getChild(String path) throws IOException {
-		return structuredFindChild( path );
+		return structuredFindChild(path);
 	}
-	
+
 	@Override
 	public VirtualFileHandler structuredFindChild(String path) throws IOException {
 		return super.structuredFindChild(path);
@@ -71,26 +74,30 @@ public class WarRootHandler extends AbstractVirtualFileHandler implements Struct
 
 	public VirtualFileHandler createChildHandler(String name) throws IOException {
 		VirtualFileHandler child = null;
-		
-		if ( "WEB-INF".equals( name ) ) {
+
+		if ("WEB-INF".equals(name)) {
 			child = getRailsAppContext().getWebInf();
 		} else {
 			child = getRailsAppContext().getRailsPublic().getChild(name);
+			if (child != null) {
+				child = new DelegatingHandler(getRailsAppContext(), this, child.getName(), child);
+			}
 		}
 		return child;
 	}
-	
+
 	public List<VirtualFileHandler> getChildren(boolean ignoreErrors) throws IOException {
 		List<VirtualFileHandler> children = getRailsAppContext().getRailsPublic().getChildren(ignoreErrors);
-		
+
 		List<VirtualFileHandler> totalChildren = new ArrayList<VirtualFileHandler>();
-		for ( VirtualFileHandler child : children )  {
-			if ( ! "WEB-INF".equals( child.getName() ) ) {
-				totalChildren.add( child );
+		for (VirtualFileHandler child : children) {
+			if (!"WEB-INF".equals(child.getName())) {
+				child = new DelegatingHandler(getRailsAppContext(), this, child.getName(), child);
+				totalChildren.add(child);
 			}
 		}
-		totalChildren.add( getRailsAppContext().getWebInf() );
-		return totalChildren;	
+		totalChildren.add(getRailsAppContext().getWebInf());
+		return totalChildren;
 	}
 
 	public long getLastModified() throws IOException {
@@ -114,7 +121,7 @@ public class WarRootHandler extends AbstractVirtualFileHandler implements Struct
 	}
 
 	public InputStream openStream() throws IOException {
-		throw new IOException( "Cannot open stream" );
+		throw new IOException("Cannot open stream");
 	}
 
 	public boolean removeChild(String name) throws IOException {
@@ -124,8 +131,9 @@ public class WarRootHandler extends AbstractVirtualFileHandler implements Struct
 	public URI toURI() throws URISyntaxException {
 		return getRailsAppContext().getRootURI();
 	}
-	
-	/** Retrieve the VFSContext cast to a RailsAppContext.
+
+	/**
+	 * Retrieve the VFSContext cast to a RailsAppContext.
 	 * 
 	 * @return The VFSContext recast to the actual RailsAppContext.
 	 */

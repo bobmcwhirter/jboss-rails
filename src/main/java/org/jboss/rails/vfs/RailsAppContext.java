@@ -22,18 +22,20 @@
 
 package org.jboss.rails.vfs;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 
 import org.jboss.virtual.VirtualFile;
 import org.jboss.virtual.plugins.context.AbstractVFSContext;
 import org.jboss.virtual.plugins.context.DelegatingHandler;
 import org.jboss.virtual.plugins.context.vfs.AssembledDirectoryHandler;
 import org.jboss.virtual.plugins.context.vfs.ByteArrayHandler;
+import org.jboss.virtual.spi.VFSContext;
+import org.jboss.virtual.spi.VFSContextFactory;
+import org.jboss.virtual.spi.VFSContextFactoryLocator;
 import org.jboss.virtual.spi.VirtualFileHandler;
 
 /** The general VFSContext for stitching together a .war for a Ruby on Rails application.
@@ -60,7 +62,7 @@ public class RailsAppContext extends AbstractVFSContext {
 	private DelegatingHandler webInfLibHandler;
 	
 	/** Handler pointing to on-disk RAILS_ROOT directory */
-	private VirtualFileHandler railsAppDir;
+	private VirtualFileHandler railsRoot;
 	
 	/** Short-cut handler to the public/ RAILS_ROOT directory */
 	private VirtualFileHandler railsPublic;
@@ -72,6 +74,7 @@ public class RailsAppContext extends AbstractVFSContext {
 	 * @throws URISyntaxException
 	 * @throws IOException
 	 */
+	/*
 	public RailsAppContext(String name, VirtualFileHandler railsAppDir) throws URISyntaxException, IOException {
 		super(new URI( "rails://" + name + "/" ) );
 		this.name = name;
@@ -79,13 +82,14 @@ public class RailsAppContext extends AbstractVFSContext {
 		setUpWebInf();
 		setUpRailsApp( railsAppDir );
 	}
+	*/
 	
-	public RailsAppContext(String name, VirtualFile railsAppDir) throws URISyntaxException, IOException {
+	public RailsAppContext(String name, VirtualFile railsRoot) throws URISyntaxException, IOException {
 		super(new URI( "rails://" + name + "/" ) );
 		this.name = name;
 		setUpWarRoot();
 		setUpWebInf();
-		setUpRailsApp( new VirtualFileDelegatingHandler( railsAppDir ) );
+		setUpRailsApp( railsRoot );
 	}
 	
 	/** Set up the root handler. 
@@ -135,12 +139,26 @@ public class RailsAppContext extends AbstractVFSContext {
 	
 	/** Set up the RoR application handler.
 	 * 
-	 * @param railsAppDir The handler to the RoR application directory.
+	 * @param railsRoot The handler to the RoR application directory.
 	 * @throws IOException
+	 * @throws URISyntaxException 
 	 */
-	protected void setUpRailsApp(VirtualFileHandler railsAppDir) throws IOException {
-		this.railsAppDir    = railsAppDir;
-		this.railsPublic = new RailsPublicHandler( this );
+	protected void setUpRailsApp(VirtualFile railsRoot) throws IOException, URISyntaxException {
+		
+		URL railsRootUrl = railsRoot.toURL();
+		
+		VFSContextFactory factory = VFSContextFactoryLocator.getFactory( railsRootUrl );
+		
+		if ( factory == null ) {
+			throw new IOException("unable to find context factory: " + railsRootUrl );
+		}
+		
+		VFSContext railsRootContext = factory.getVFS( railsRootUrl );
+		this.railsRoot    = railsRootContext.getRoot();
+		
+		VFSContext railsPublicContext = factory.getVFS( new URL( railsRootUrl, "public" ) );
+		DelegatingHandler railsPublicDelegate = new DelegatingHandler( this, warRootHandler, "", railsPublicContext.getRoot() );
+		this.railsPublic = railsPublicDelegate;
 	}
 
 	public String getName() {
@@ -156,16 +174,13 @@ public class RailsAppContext extends AbstractVFSContext {
 	}
 	
 	public VirtualFileHandler getRailsRoot() throws IOException {
-		return railsAppDir;
+		return railsRoot;
 	}
 	
 	public VirtualFileHandler getRailsPublic() {
 		return railsPublic;
 	}
-	public VirtualFileHandler getRawRailsPublic() throws IOException {
-		return railsAppDir.getChild("public");
-	}
-
+	
 	public VirtualFileHandler getWebInf() {
 		return webInfHandler;
 	}

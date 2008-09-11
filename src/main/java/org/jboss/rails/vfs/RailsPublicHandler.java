@@ -67,7 +67,7 @@ public class RailsPublicHandler extends AbstractVirtualFileHandler implements St
 	}
 
 	public VirtualFileHandler createChildHandler(String name) throws IOException {
-		VirtualFileHandler child = getRailsAppContext().getRawRailsPublic().getChild(name);
+		VirtualFileHandler child = getRailsAppContext().getRailsPublic().getChild(name);
 		
 		// Since this handler serves public/ only under the war-root,
 		// we need to reparent the children handlers so that the WarRootHandler
@@ -85,7 +85,7 @@ public class RailsPublicHandler extends AbstractVirtualFileHandler implements St
 		// is indeed their parent.  DelegatingHandler allows us to delegate 
 		// everything except parentage, overriding it.
 		
-		List<VirtualFileHandler> children = getRailsAppContext().getRawRailsPublic().getChildren( ignoreErrors );
+		List<VirtualFileHandler> children = getRailsAppContext().getRailsPublic().getChildren( ignoreErrors );
 		
 		List<VirtualFileHandler> wrappedChildren = new ArrayList<VirtualFileHandler>();
 		
@@ -100,19 +100,19 @@ public class RailsPublicHandler extends AbstractVirtualFileHandler implements St
 	}
 
 	public long getLastModified() throws IOException {
-		return getRailsAppContext().getRawRailsPublic().getLastModified();
+		return getRailsAppContext().getRailsPublic().getLastModified();
 	}
 
 	public long getSize() throws IOException {
-		return getRailsAppContext().getRawRailsPublic().getSize();
+		return getRailsAppContext().getRailsPublic().getSize();
 	}
 
 	public boolean isHidden() throws IOException {
-		return getRailsAppContext().getRawRailsPublic().isHidden();
+		return getRailsAppContext().getRailsPublic().isHidden();
 	}
 
 	public boolean isLeaf() throws IOException {
-		return getRailsAppContext().getRawRailsPublic().isLeaf();
+		return getRailsAppContext().getRailsPublic().isLeaf();
 	}
 
 	public boolean isNested() throws IOException {
@@ -120,11 +120,11 @@ public class RailsPublicHandler extends AbstractVirtualFileHandler implements St
 	}
 
 	public InputStream openStream() throws IOException {
-		return getRailsAppContext().getRawRailsPublic().openStream();
+		return getRailsAppContext().getRailsPublic().openStream();
 	}
 
 	public boolean removeChild(String name) throws IOException {
-		return getRailsAppContext().getRawRailsPublic().removeChild(name);
+		return getRailsAppContext().getRailsPublic().removeChild(name);
 	}
 
 	public URI toURI() throws URISyntaxException {

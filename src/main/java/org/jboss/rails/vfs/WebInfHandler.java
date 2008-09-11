@@ -88,17 +88,14 @@ public class WebInfHandler extends AbstractVirtualFileHandler implements Structu
 
 	public List<VirtualFileHandler> getChildren(boolean ignoreErrors) throws IOException {
 		RailsAppContext railsAppContext = getRailsAppContext();
-		VirtualFileHandler webInf = railsAppContext.getWebInf();
 		
 		List<VirtualFileHandler> children = railsAppContext.getRailsRoot().getChildren( ignoreErrors );
 		
 		List<VirtualFileHandler> totalChildren = new ArrayList<VirtualFileHandler>();
 		
-		// Any child produced from WEB-INF needs reparenting through a delegating handler
-		// to setup the WEB-INF as the actual parent.
 		for ( VirtualFileHandler child : children ) {
 			if ( Arrays.binarySearch( RESERVED_NAMES, child.getName() ) < 0 ) {
-				child = new DelegatingHandler( railsAppContext, webInf, child.getName(), child );
+				child = new DelegatingHandler( railsAppContext, this, child.getName(), child );
 				totalChildren.add( child );
 			}
 		}

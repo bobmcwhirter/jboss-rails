@@ -128,8 +128,6 @@ public class RailsDeployer extends AbstractDeployer
 			}
 		} catch (IOException e) {
 			throw new DeploymentException(e);
-		} catch (URISyntaxException e) {
-			throw new DeploymentException(e);
 		} finally {
 			ref.closeStreams();
 		}
@@ -142,11 +140,7 @@ public class RailsDeployer extends AbstractDeployer
 			RailsAppContext context = RailsAppContextFactory.getInstance().createRoot(unit.getName(), unit.getRoot() );
 			VirtualFile railsWarRoot = context.getRoot().getVirtualFile();
 			deployRailsWar(unit, railsWarRoot);
-		} catch (MalformedURLException e) {
-			throw new DeploymentException( e );
 		} catch (IOException e) {
-			throw new DeploymentException( e );
-		} catch (URISyntaxException e) {
 			throw new DeploymentException( e );
 		}
 
