@@ -52,7 +52,6 @@ public class ToFileSystemCopyingVisitor extends AbstractVirtualFileVisitor {
 	}
 
 	public void visit(VirtualFile virtualFile) {
-		System.err.println("Visit: " + virtualFile.getPathName());
 		try {
 			copyToFileSystem(virtualFile);
 		} catch (IOException e) {

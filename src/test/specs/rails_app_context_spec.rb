@@ -41,7 +41,6 @@ describe RailsAppContext do
 
     it "should provide access to the RAILS_ROOT of the application" do 
       rails_root = @context.get_rails_root
-      puts rails_root.get_class.inspect
       [ 'public', 
         'app', 
         'config', 
@@ -51,8 +50,8 @@ describe RailsAppContext do
         f.name.should eql( name )
       end
 
-      #rails_root.get_child( 'no_such_directory' ).should be_nil
-      #rails_root.get_child( 'path/to/no_such_directory' ).should be_nil
+      rails_root.get_child( 'no_such_directory' ).should be_nil
+      rails_root.get_child( 'path/to/no_such_directory' ).should be_nil
     end
 
     it "should provide navigation between peers" do

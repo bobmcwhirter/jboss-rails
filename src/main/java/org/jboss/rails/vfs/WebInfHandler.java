@@ -95,8 +95,9 @@ public class WebInfHandler extends AbstractVirtualFileHandler implements Structu
 		
 		for ( VirtualFileHandler child : children ) {
 			if ( Arrays.binarySearch( RESERVED_NAMES, child.getName() ) < 0 ) {
-				child = new DelegatingHandler( railsAppContext, this, child.getName(), child );
-				totalChildren.add( child );
+				RedelegatingHandler childDelegate = new RedelegatingHandler( railsAppContext, this, child.getName(), child );
+				childDelegate.setPathName( "WEB-INF/" + child.getPathName() );
+				totalChildren.add( childDelegate );
 			}
 		}
 		
