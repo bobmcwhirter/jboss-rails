@@ -21,10 +21,16 @@
  */
 package org.jboss.rails.deploy;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.deployers.structure.spi.DeploymentUnit;
+import org.jboss.classloading.spi.metadata.ClassLoadingMetaData;
+import org.jboss.classloading.spi.metadata.ExportAll;
+import org.jboss.classloading.spi.vfs.metadata.VFSClassLoaderFactory;
 import org.jboss.deployers.vfs.spi.deployer.AbstractVFSParsingDeployer;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.metadata.web.spec.FilterMappingMetaData;
@@ -32,27 +38,45 @@ import org.jboss.metadata.web.spec.FilterMetaData;
 import org.jboss.metadata.web.spec.FiltersMetaData;
 import org.jboss.metadata.web.spec.ListenerMetaData;
 import org.jboss.metadata.web.spec.WebMetaData;
+import org.jboss.virtual.VFS;
 import org.jboss.virtual.VirtualFile;
 
-public class RailsDeployer extends AbstractVFSParsingDeployer<WebMetaData>
-// implements RailsDeployerMBean
+public class RailsDeployer extends AbstractVFSParsingDeployer<WebMetaData> implements RailsDeployerMBean
 {
 	public RailsDeployer() {
 		super( WebMetaData.class );
-		setName( "Rails" );
+		addOutput( ClassLoadingMetaData.class );
+		//setName( "jboss-rails" );
+		setSuffix("rails");
+		//setAllInputs(true);
 	}
+	
+	/*
+	@Override
+	protected boolean accepts(VFSDeploymentUnit unit) throws DeploymentException {
+		boolean accepted = unit.getSimpleName().endsWith( ".rails" );
+		log.info( "accepts(" + unit.getSimpleName() + ") -> " + accepted + "     " + unit.getName() );
+		return accepted;
+	}
+	*/
 
 	@Override
 	protected WebMetaData parse(VFSDeploymentUnit unit, VirtualFile file, WebMetaData root) throws Exception {
-		DeploymentUnit railsApp = unit.addComponent( "rails.war" );
+		log.info( "parse(" + unit.getSimpleName() + ", " + file + ",...)" );
+		//DeploymentUnit railsApp = unit.addComponent( "rails.war" );
 		WebMetaData md = new WebMetaData();
 		
 		initFilters(md);
 		initFilterMappings(md);
 		initListeners(md);
-		railsApp.addAttachment( WebMetaData.class, md);
+		unit.addAttachment( WebMetaData.class, md);
+		
+		ClassLoadingMetaData clmd = initClassLoader();
+		unit.addAttachment(ClassLoadingMetaData.class, clmd);
 		return md;
 	}
+	
+	
 	
 	/*
 	protected void initDescriptionGroupMetaData(WebMetaData md) {
@@ -66,6 +90,39 @@ public class RailsDeployer extends AbstractVFSParsingDeployer<WebMetaData>
 	}
 	*/
 	
+	private ClassLoadingMetaData initClassLoader() {
+		VFSClassLoaderFactory md = new VFSClassLoaderFactory();
+		List<String> roots = new ArrayList<String>();
+		
+		addJRubyToClassLoader( roots );
+		md.setRoots(roots);
+		
+	    md.setExportAll(ExportAll.NON_EMPTY);
+	    md.setImportAll(true);
+		
+		//this.
+		return md;
+	}
+
+
+
+	private void addJRubyToClassLoader(List<String> roots) {
+		File libDir = new File( "/Users/bob/workspaces/jbossas/rails/target/jboss-rails-deployer.dir" );
+		
+		for ( File child : libDir.listFiles() ) {
+			try {
+				VirtualFile vfsChild = VFS.getRoot( child.toURL() );
+				roots.add( vfsChild.toURL().toString() );
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 	protected void initFilters(WebMetaData md) {
 		FiltersMetaData filters = new FiltersMetaData();
 		FilterMetaData filter = new FilterMetaData();

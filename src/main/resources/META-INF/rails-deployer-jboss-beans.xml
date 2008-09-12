@@ -7,9 +7,6 @@ $Id:$
 <deployment xmlns="urn:jboss:bean-deployer:2.0">
 
    <!-- WAR Structure -->
-   <bean name="RailsDeployer" class="org.jboss.rails.RailsDeployer">
-   <property name="mainDeployer">
-   	<inject bean="MainDeployer"></inject></property>
-   <depends>WarDeployer</depends></bean>
+   <bean name="RailsDeployer" class="org.jboss.rails.deploy.RailsDeployer"></bean>
 
 </deployment>

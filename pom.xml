@@ -18,56 +18,73 @@
         <groupId>org.jruby</groupId>
         <artifactId>jruby-complete</artifactId>
         <version>1.1.4</version>
+        <scope>runtime</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jruby.rack</groupId>
+        <artifactId>jruby-rack</artifactId>
+        <version>0.9.2</version>
+        <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-kernel</artifactId>
         <version>${mc-release}</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.jboss.deployers</groupId>
         <artifactId>jboss-deployers-client-spi</artifactId>
         <version>${release}</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.jboss.deployers</groupId>
         <artifactId>jboss-deployers-client</artifactId>
         <version>${release}</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.jboss.deployers</groupId>
         <artifactId>jboss-deployers-core-spi</artifactId>
         <version>${release}</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.jboss.deployers</groupId>
         <artifactId>jboss-deployers-core</artifactId>
         <version>${release}</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.jboss.deployers</groupId>
         <artifactId>jboss-deployers-impl</artifactId>
         <version>${release}</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.jboss.deployers</groupId>
         <artifactId>jboss-deployers-spi</artifactId>
         <version>${release}</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.jboss.deployers</groupId>
         <artifactId>jboss-deployers-structure-spi</artifactId>
         <version>${release}</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.jboss.deployers</groupId>
         <artifactId>jboss-deployers-vfs-spi</artifactId>
         <version>${release}</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.jboss.deployers</groupId>
         <artifactId>jboss-deployers-vfs</artifactId>
         <version>${release}</version>
+        <scope>provided</scope>
       </dependency>
 <!--
       <dependency>
@@ -80,22 +97,25 @@
         <groupId>org.jboss.metadata</groupId>
         <artifactId>jboss-metadata</artifactId>
         <version>${md-release}</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.jboss</groupId>
         <artifactId>jboss-vfs</artifactId>
         <version>${release}</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.jboss.aop</groupId>
         <artifactId>jboss-aop</artifactId>
         <version>2.0.0.CR16</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-aop-mc-int</artifactId>
         <version>2.0.0.Beta17</version>
-        <scope>runtime</scope>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>junit</groupId>
