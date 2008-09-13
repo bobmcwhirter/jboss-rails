@@ -27,8 +27,10 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.jboss.virtual.VirtualFile;
 import org.jboss.virtual.plugins.context.AbstractVirtualFileHandler;
 import org.jboss.virtual.plugins.context.DelegatingHandler;
 import org.jboss.virtual.plugins.context.StructuredVirtualFileHandler;
@@ -48,6 +50,8 @@ import org.jboss.virtual.spi.VirtualFileHandler;
  * @author Bob McWhirter
  */
 public class WarRootHandler extends AbstractVirtualFileHandler implements StructuredVirtualFileHandler {
+	
+	private static final String[] RESERVED_NAMES = {  "META-INF", "WEB-INF" };
 
 	/**
 	 * Construct.
@@ -77,6 +81,8 @@ public class WarRootHandler extends AbstractVirtualFileHandler implements Struct
 
 		if ("WEB-INF".equals(name)) {
 			child = getRailsAppContext().getWebInf();
+		} else if ( "META-INF".equals(name)) {
+			child = getRailsAppContext().getMetaInf();
 		} else {
 			child = getRailsAppContext().getRailsPublic().getChild(name);
 			if (child != null) {
@@ -89,14 +95,18 @@ public class WarRootHandler extends AbstractVirtualFileHandler implements Struct
 	public List<VirtualFileHandler> getChildren(boolean ignoreErrors) throws IOException {
 		List<VirtualFileHandler> children = getRailsAppContext().getRailsPublic().getChildren(ignoreErrors);
 
+		RailsAppContext railsAppContext = getRailsAppContext();
+		
 		List<VirtualFileHandler> totalChildren = new ArrayList<VirtualFileHandler>();
-		for (VirtualFileHandler child : children) {
-			if (!"WEB-INF".equals(child.getName())) {
-				child = new DelegatingHandler(getRailsAppContext(), this, child.getName(), child);
-				totalChildren.add(child);
+		for ( VirtualFileHandler child : children ) {
+			if ( Arrays.binarySearch( RESERVED_NAMES, child.getName() ) < 0 ) {
+				RedelegatingHandler childDelegate = new RedelegatingHandler( railsAppContext, this, child.getName(), child );
+				//childDelegate.setPathName( "META-INF/" + child.getPathName() );
+				totalChildren.add( childDelegate );
 			}
 		}
 		totalChildren.add(getRailsAppContext().getWebInf());
+		totalChildren.add(getRailsAppContext().getMetaInf());
 		return totalChildren;
 	}
 
