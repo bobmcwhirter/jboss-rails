@@ -39,8 +39,8 @@ describe WarRootHandler do
   it "should delegate for WEB-INF requests" do
     web_inf = @root.get_child( 'WEB-INF' )
     web_inf.should_not be_nil
-    web_xml = web_inf.get_child( 'web.xml' )
-    web_xml.should_not be_nil
+    jboss_rails_yml = web_inf.get_child( 'jboss-rails.yml' )
+    jboss_rails_yml.should_not be_nil
   end
 
   it "should set the parentage of WEB-INF as itself" do

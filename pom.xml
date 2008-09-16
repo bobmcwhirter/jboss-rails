@@ -226,6 +226,7 @@
           <sourceDirectory>${basedir}/src/test/specs</sourceDirectory>
           <!-- outputDirectory specifies where the RSpec report should be placed -->
           <outputDirectory>${basedir}/target</outputDirectory>
+          <!--<skipTests>true</skipTests>-->
         </configuration>
         <executions>
           <execution>

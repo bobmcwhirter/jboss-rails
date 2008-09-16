@@ -23,7 +23,6 @@
 package org.jboss.rails.vfs;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -46,8 +45,6 @@ import org.jboss.virtual.spi.VirtualFileHandler;
  */
 public class RailsAppContext extends AbstractVFSContext {
 
-	private static final int MAX_WEB_XML_SIZE = 10240;
-
 	/** Name of this context, used for registering with the hostname of a URL */
 	private String name;
 
@@ -57,9 +54,6 @@ public class RailsAppContext extends AbstractVFSContext {
 	/** Handler for the WEB-INF directory. */
 	private WebInfHandler webInfHandler;
 
-	/** Handler for synthesized web.xml */
-	private ByteArrayHandler webXmlHandler;
-
 	/** Handler for WEB-INF/lib/ */
 	private DelegatingHandler webInfLibHandler;
 
@@ -68,8 +62,6 @@ public class RailsAppContext extends AbstractVFSContext {
 
 	/** Short-cut handler to the public/ RAILS_ROOT directory */
 	private VirtualFileHandler railsPublic;
-
-	private VirtualFileHandler metaInfHandler;
 
 	private VirtualFileHandler jbossRailsYmlHandler;
 
@@ -97,7 +89,6 @@ public class RailsAppContext extends AbstractVFSContext {
 		setUpWarRoot();
 		setUpWebInf();
 		setUpRailsApp(railsRoot);
-		setUpMetaInf();
 	}
 
 	/**
@@ -107,24 +98,21 @@ public class RailsAppContext extends AbstractVFSContext {
 		this.warRootHandler = new WarRootHandler(this);
 	}
 
-	protected void setUpMetaInf() throws IOException, URISyntaxException {
-		this.metaInfHandler = new MetaInfHandler( this );
-		setUpJbossRailsYml();
-	}
 	
-	protected void setUpJbossRailsYml() throws IOException, URISyntaxException {
+	protected void setUpJBossRailsYml() throws IOException, URISyntaxException {
 		StringBuilder js = new StringBuilder();
 		js.append( "rails: 2.0" );
-		ByteArrayHandler jbossRailsYmlHandler = new ByteArrayHandler(this, metaInfHandler, "jboss-rails.yml", js.toString().getBytes() );
+		ByteArrayHandler jbossRailsYmlHandler = new ByteArrayHandler(this, webInfHandler, "jboss-rails.yml", js.toString().getBytes() );
 		this.jbossRailsYmlHandler = jbossRailsYmlHandler;
 	}
 
 	/**
 	 * Set up the WEB-INF/ handler.
+	 * @throws URISyntaxException 
 	 */
-	protected void setUpWebInf() throws IOException {
+	protected void setUpWebInf() throws IOException, URISyntaxException {
 		this.webInfHandler = new WebInfHandler(this);
-		setUpWebXml();
+		setUpJBossRailsYml();
 		setUpWebInfLib();
 	}
 
@@ -134,31 +122,6 @@ public class RailsAppContext extends AbstractVFSContext {
 	protected void setUpWebInfLib() throws IOException {
 		VirtualFileHandler rawWebInfLibHandler = new AssembledDirectoryHandler(this, null, "lib");
 		this.webInfLibHandler = new DelegatingHandler(this, webInfHandler, "lib", rawWebInfLibHandler);
-	}
-
-	/**
-	 * Set up the WEB-INF/web.xml handler.
-	 */
-	protected void setUpWebXml() throws IOException {
-		InputStream in = getClass().getClassLoader().getResourceAsStream("org/jboss/rails/war/web.xml");
-
-		int len = 0;
-		int totalLen = 0;
-
-		byte[] buf = new byte[MAX_WEB_XML_SIZE];
-
-		while ((len = in.read(buf)) >= 0) {
-			totalLen += len;
-			if (totalLen > MAX_WEB_XML_SIZE) {
-				throw new IOException("web.xml input too large: " + MAX_WEB_XML_SIZE);
-			}
-		}
-
-		byte[] bytes = new byte[totalLen];
-
-		System.arraycopy(buf, 0, bytes, 0, totalLen);
-
-		this.webXmlHandler = new ByteArrayHandler(this, webInfHandler, "web.xml", bytes);
 	}
 
 	/**
@@ -213,14 +176,6 @@ public class RailsAppContext extends AbstractVFSContext {
 
 	public VirtualFileHandler getWebInfLib() {
 		return webInfLibHandler;
-	}
-
-	public VirtualFileHandler getWebXml() {
-		return webXmlHandler;
-	}
-
-	public VirtualFileHandler getMetaInf() {
-		return metaInfHandler;
 	}
 
 	public VirtualFileHandler getJBossRailsYml() {

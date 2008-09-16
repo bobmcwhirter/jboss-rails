@@ -28,12 +28,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.jboss.virtual.plugins.context.AbstractVirtualFileHandler;
-import org.jboss.virtual.plugins.context.DelegatingHandler;
 import org.jboss.virtual.plugins.context.StructuredVirtualFileHandler;
 import org.jboss.virtual.spi.VirtualFileHandler;
 
@@ -50,7 +47,7 @@ import org.jboss.virtual.spi.VirtualFileHandler;
 public class WebInfHandler extends AbstractVirtualFileHandler implements StructuredVirtualFileHandler {
 	
 	/** Files to not serve directly form the RAILS_ROOT. */
-	private static final String[] RESERVED_NAMES = {  "web.xml",  "lib"  };
+	private static final String[] RESERVED_NAMES = {  "jboss-rails.yml",  "lib"  };
 	
 	
 	/** Construct.
@@ -67,8 +64,8 @@ public class WebInfHandler extends AbstractVirtualFileHandler implements Structu
 		
 		// First do any special-case dispatching, followed by
 		// simple proxying to the RAILS_ROOT handler
-		if ( "web.xml".equals( name ) ) {
-			child = getRailsAppContext().getWebXml();
+		if ( "jboss-rails.yml".equals( name ) ) {
+			child = getRailsAppContext().getJBossRailsYml();
 		} else if ( "lib".equals( name ) ) {
 			child = getRailsAppContext().getWebInfLib();
 		} else {
@@ -102,7 +99,7 @@ public class WebInfHandler extends AbstractVirtualFileHandler implements Structu
 		}
 		
 		// Add the overlaid synthetic children handlers.
-		totalChildren.add( getRailsAppContext().getWebXml() );
+		totalChildren.add( getRailsAppContext().getJBossRailsYml() );
 		totalChildren.add( getRailsAppContext().getWebInfLib() );
 		
 		return totalChildren;

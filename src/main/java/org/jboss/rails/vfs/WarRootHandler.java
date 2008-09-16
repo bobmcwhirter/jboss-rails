@@ -81,8 +81,6 @@ public class WarRootHandler extends AbstractVirtualFileHandler implements Struct
 
 		if ("WEB-INF".equals(name)) {
 			child = getRailsAppContext().getWebInf();
-		} else if ( "META-INF".equals(name)) {
-			child = getRailsAppContext().getMetaInf();
 		} else {
 			child = getRailsAppContext().getRailsPublic().getChild(name);
 			if (child != null) {
@@ -106,7 +104,6 @@ public class WarRootHandler extends AbstractVirtualFileHandler implements Struct
 			}
 		}
 		totalChildren.add(getRailsAppContext().getWebInf());
-		totalChildren.add(getRailsAppContext().getMetaInf());
 		return totalChildren;
 	}
 

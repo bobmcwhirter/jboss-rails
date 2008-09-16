@@ -31,24 +31,17 @@ describe WebInfHandler do
     @web_inf = @context.get_web_inf
   end
 
-  it "should serve web.xml from synthetic file" do
-    web_xml = @web_inf.get_child( 'web.xml' )
-    web_xml.should_not be_nil
+  it "should serve jboss-rails.yml from synthetic file" do
+    jboss_rails_yml = @web_inf.get_child( 'jboss-rails.yml' )
+    jboss_rails_yml.should_not be_nil
   end
   
-  it "web.xml should have WEB-INF/ as its parent" do
-    web_xml = @web_inf.get_child( 'web.xml' )
-    web_xml.get_parent.should eql( @web_inf )
-    web_xml.get_parent.get_child( 'web.xml').should eql( web_xml )
+  it "jboss-rails.yml should have WEB-INF/ as its parent" do
+    jboss_rails_yml = @web_inf.get_child( 'jboss-rails.yml' )
+    jboss_rails_yml.get_parent.should eql( @web_inf )
+    jboss_rails_yml.get_parent.get_child( 'jboss-rails.yml').should eql( jboss_rails_yml )
   end
   
-  it "web.xml should be JRuby-Rack web.xml" do 
-    web_xml = @web_inf.get_child( 'web.xml' )
-    content = read_fully( web_xml )
-    content.size.should > 0 
-    content.should =~ /org.jruby.rack.rails.RailsServletContextListener/
-  end
-
   it "should serve lib/ from an assembled directory" do
     lib = @web_inf.get_child( 'lib' )
     lib.should_not be_nil
@@ -78,14 +71,14 @@ describe WebInfHandler do
   end
   
   
-  it "should provide a complete enumeration of its children from RAILS_ROOT, web.xml, and lib/" do
+  it "should provide a complete enumeration of its children from RAILS_ROOT, jboss-rails.yml, and lib/" do
     children = @web_inf.get_children(true)
     
     names = children.collect{|e| e.get_name }
     names.should include( 'lib' )
     names.should include( 'config' )
     names.should include( 'app' )
-    names.should include( 'web.xml' )
+    names.should include( 'jboss-rails.yml' )
   end
   
   it "should be the parent of its children" do
