@@ -81,6 +81,15 @@ describe WebInfHandler do
     names.should include( 'jboss-rails.yml' )
   end
   
+  it "should provide children of lib/" do
+    lib =  @web_inf.get_child( "lib" )
+    lib.should_not be_nil
+    lib.get_parent.should eql( @web_inf )
+    
+    jars = lib.get_children(false)
+    jars.should_not be_nil
+  end
+  
   it "should be the parent of its children" do
     children = @web_inf.get_children(true)
     children.each do |child|

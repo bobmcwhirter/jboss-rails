@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jboss.virtual.VirtualFile;
 import org.jboss.virtual.plugins.context.AbstractVirtualFileHandler;
 import org.jboss.virtual.plugins.context.DelegatingHandler;
 import org.jboss.virtual.plugins.context.StructuredVirtualFileHandler;
@@ -60,7 +59,7 @@ public class WarRootHandler extends AbstractVirtualFileHandler implements Struct
 	 *            The Rails VFS context.
 	 */
 	public WarRootHandler(RailsAppContext vfsContext) {
-		super(vfsContext, null, "/");
+		super(vfsContext, null, "/" );
 	}
 
 	public boolean exists() throws IOException {
@@ -136,7 +135,10 @@ public class WarRootHandler extends AbstractVirtualFileHandler implements Struct
 	}
 
 	public URI toURI() throws URISyntaxException {
-		return getRailsAppContext().getRootURI();
+		
+		URI uri = getRailsAppContext().getRootURI();
+		log.info( "ROOT URI is " + uri );
+		return uri;
 	}
 
 	/**

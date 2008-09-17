@@ -33,7 +33,6 @@ import java.util.Map;
 
 import org.jboss.virtual.VirtualFile;
 import org.jboss.virtual.plugins.context.AbstractContextFactory;
-import org.jboss.virtual.plugins.context.file.FileSystemContextFactory;
 import org.jboss.virtual.spi.VFSContext;
 import org.jboss.virtual.spi.VFSContextFactory;
 import org.jboss.virtual.spi.VFSContextFactoryLocator;
@@ -52,6 +51,11 @@ import org.jboss.virtual.spi.VirtualFileHandler;
 public class RailsAppContextFactory extends AbstractContextFactory {
 
 	static {
+		RailsAppContextFactory.initializeRailsUrlHandling();
+	}
+
+	public static void initializeRailsUrlHandling() {
+		System.err.println( "factory init rails:// scheme" );
 		String pkgs = System.getProperty("java.protocol.handler.pkgs");
 
 		if (pkgs == null) {
@@ -65,11 +69,15 @@ public class RailsAppContextFactory extends AbstractContextFactory {
 		try {
 			URL.setURLStreamHandlerFactory(new org.jboss.net.protocol.URLStreamHandlerFactory());
 		} catch (Exception e) {
-			// ignore
+			System.err.println( "Exception: error setting url streamhandlerfactory" );
+		} catch (Error e) {
+			System.err.println( "Error: error setting url streamhandlerfactory" );
+		} catch (Throwable e) {
+			System.err.println( "Throwable: error setting url streamhandlerfactory" );
 		}
 
+		
 	}
-
 	/** Singleton instance. */
 	private static final RailsAppContextFactory INSTANCE = new RailsAppContextFactory();
 

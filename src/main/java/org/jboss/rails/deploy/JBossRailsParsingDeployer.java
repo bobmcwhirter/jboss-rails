@@ -21,10 +21,8 @@
  */
 package org.jboss.rails.deploy;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -35,67 +33,138 @@ import org.jboss.classloading.spi.metadata.ClassLoadingMetaData;
 import org.jboss.classloading.spi.metadata.ExportAll;
 import org.jboss.classloading.spi.vfs.metadata.VFSClassLoaderFactory;
 import org.jboss.deployers.spi.DeploymentException;
-import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.vfs.spi.deployer.AbstractVFSParsingDeployer;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
+import org.jboss.metadata.javaee.spec.ParamValueMetaData;
+import org.jboss.metadata.web.jboss.JBossServletMetaData;
+import org.jboss.metadata.web.jboss.JBossServletsMetaData;
 import org.jboss.metadata.web.jboss.JBossWebMetaData;
 import org.jboss.metadata.web.spec.FilterMappingMetaData;
 import org.jboss.metadata.web.spec.FilterMetaData;
 import org.jboss.metadata.web.spec.FiltersMetaData;
 import org.jboss.metadata.web.spec.ListenerMetaData;
+import org.jboss.metadata.web.spec.ServletMappingMetaData;
 import org.jboss.metadata.web.spec.WebMetaData;
 import org.jboss.metadata.web.spec.WelcomeFileListMetaData;
+import org.jboss.rails.vfs.RailsAppContextFactory;
+import org.jboss.rails.vfs.TreeCopyingVisitor;
+import org.jboss.system.server.ServerConfig;
+import org.jboss.system.server.ServerConfigLocator;
 import org.jboss.virtual.VFS;
 import org.jboss.virtual.VirtualFile;
 
 public class JBossRailsParsingDeployer extends AbstractVFSParsingDeployer<JBossWebMetaData> {
+	static {
+		RailsAppContextFactory.initializeRailsUrlHandling();
+	}
 	public JBossRailsParsingDeployer() {
 		super(JBossWebMetaData.class);
 		addOutput(ClassLoadingMetaData.class);
-		setSuffix( null );
 		setName("jboss-rails.yml");
 		setTopLevelOnly(false);
-		setComponentsOnly( false );
-		setParentFirst(false);
-		setAllInputs(true);
 	}
 
 	@Override
 	protected JBossWebMetaData parse(VFSDeploymentUnit unit, VirtualFile file, JBossWebMetaData root) throws Exception {
 		log.info("Parsing " + file + " for " + unit.getRoot());
 		VFSDeploymentUnit vfsUnit = (VFSDeploymentUnit) unit;
-		WebMetaData webMetaData = setUpWebMetaData(vfsUnit);
-		JBossWebMetaData jbossWebMetaData = setUpJBossWebMetaData(vfsUnit, webMetaData);
-		ClassLoadingMetaData classLoadingMetaData = setUpClassLoadingMetaData(vfsUnit, vfsUnit.getRoot());
+		JBossWebMetaData jbossWebMetaData = setUpJBossWebMetaData(vfsUnit);
+		//setUpWebMetaData(vfsUnit, jbossWebMetaData);
+		//ClassLoadingMetaData classLoadingMetaData = setUpClassLoadingMetaData(vfsUnit, vfsUnit.getRoot());
+		expandWar( unit );
 		return jbossWebMetaData;
 	}
 
-	private WebMetaData setUpWebMetaData(VFSDeploymentUnit unit) {
-		WebMetaData md = new WebMetaData();
+	private void expandWar(VFSDeploymentUnit unit) throws IOException, DeploymentException {
+        ServerConfig config = ServerConfigLocator.locate();
 
+        log.info( "simple name--->" + unit.getSimpleName() );
+        File expWarFile = File.createTempFile("rails", "-exp.eor", config.getServerTempDeployDir());
+        expWarFile.delete();
+        if (expWarFile.mkdir() == false) {
+           throw new DeploymentException("Was unable to mkdir: " + expWarFile);
+        }
+        log.debug("Unpacking war to: " + expWarFile);
+        
+        //JarWritingVisitor visitor = JarWritingVisitor.createVisitor( expWarFile );
+        
+        //unit.getRoot().visit( visitor );
+        //visitor.close();
+        //JarWritingVisitor.writeJar(unit.getRoot(), expWarFile);
+        TreeCopyingVisitor.writeTree( unit.getRoot(), expWarFile );
+       
+        
+		URL expandedUrl = expWarFile.toURL();
+		unit.addAttachment("org.jboss.web.expandedWarURL", expandedUrl, URL.class);
+		
+	}
+
+	private void setUpWebMetaData(VFSDeploymentUnit unit, JBossWebMetaData md) {
+
+		initContextParams(md);
 		initFilters(md);
 		initFilterMappings(md);
 		initListeners(md);
 		initWelcomeFiles(md);
-		unit.addAttachment(WebMetaData.class, md);
-
-		return md;
+		initServlets(md);
+		initServletMappings(md);
+		//unit.addAttachment(WebMetaData.class, md);
 	}
 
-	private JBossWebMetaData setUpJBossWebMetaData(VFSDeploymentUnit unit, WebMetaData webMetaData) {
+	private void initServletMappings(JBossWebMetaData md) {
+		List<ServletMappingMetaData> servletMappings = new ArrayList<ServletMappingMetaData>();
+		ServletMappingMetaData servletMapping = new ServletMappingMetaData();
+		servletMapping.setServletName( "default-rails" );
+		List<String> urlPatterns = new ArrayList<String>();
+		urlPatterns.add( "/*" );
+		servletMapping.setUrlPatterns( urlPatterns );
+		servletMappings.add( servletMapping );
+		md.setServletMappings(servletMappings);
+		
+	}
+
+	private void initServlets(JBossWebMetaData md) {
+		JBossServletsMetaData servlets = new JBossServletsMetaData();
+		JBossServletMetaData servlet = new JBossServletMetaData(); 
+		servlet.setServletName( "default-rails" );
+		servlet.setServletClass( "org.jboss.rails.rack.JBossDefaultServlet");
+		servlets.add( servlet );
+		md.setServlets( servlets );
+	}
+	
+
+	private void initContextParams(JBossWebMetaData md) {
+		List<ParamValueMetaData> params = new ArrayList<ParamValueMetaData>();
+		ParamValueMetaData railsEnv = new ParamValueMetaData();
+		railsEnv.setParamName( "rails.env" );
+		railsEnv.setParamValue( "development" );
+		params.add( railsEnv );
+		ParamValueMetaData publicRoot = new ParamValueMetaData();
+		publicRoot.setParamName( "public.root" );
+		publicRoot.setParamValue( "/" );
+		params.add( publicRoot );
+		md.setContextParams( params );
+	}
+
+	private JBossWebMetaData setUpJBossWebMetaData(VFSDeploymentUnit unit) {
 		JBossWebMetaData md = new JBossWebMetaData();
-
+		//JBossWebMetaData md = unit.getAttachment( JBossWebMetaData.class );
+		
+		
+		setUpWebMetaData(unit, md);
 		md.setServletVersion("2.4");
-
-		JBossWebMetaData mergedMd = new JBossWebMetaData();
-		mergedMd.merge(md, webMetaData);
-
+		
 		unit.addAttachment(JBossWebMetaData.class, md);
+		log.info( "JBW: " + md );
+		
+		log.info( "filters: " + md.getFilters() );
 
 		return md;
 	}
 
 	private ClassLoadingMetaData setUpClassLoadingMetaData(VFSDeploymentUnit unit, VirtualFile eorRoot) throws MalformedURLException, URISyntaxException, IOException {
+		
+		ClassLoadingMetaData m = null;
 		VFSClassLoaderFactory md = new VFSClassLoaderFactory();
 		List<String> roots = new ArrayList<String>();
 		roots.add(eorRoot.getChild("WEB-INF/lib").toURL().toString());
@@ -106,31 +175,11 @@ public class JBossRailsParsingDeployer extends AbstractVFSParsingDeployer<JBossW
 
 		md.setExportAll(ExportAll.NON_EMPTY);
 		md.setImportAll(true);
+		
 
-		unit.addAttachment(ClassLoadingMetaData.class, md);
+		log.info( "rails classloading roots: " + roots );
 
 		return md;
-	}
-
-	private void setUpWarUrl(VFSDeploymentUnit unit, String location) throws MalformedURLException {
-
-		URL warUrl = new URL(location + "/public");
-		unit.addAttachment("org.jboss.web.expandedWarURL", warUrl, URL.class);
-		log.info("expandedWarURL=====> " + unit.getAttachment("org.jboss.web.expandedWarURL", URL.class));
-	}
-
-	private String determineLocation(VirtualFile file) throws DeploymentException, IOException {
-		try {
-			BufferedReader in = new BufferedReader(new InputStreamReader(file.openStream()));
-			String location = in.readLine();
-			if (location != null) {
-				log.info("deploy from referenced directory: " + location);
-				return location;
-			}
-			throw new DeploymentException("no location specified in .rails pointer");
-		} finally {
-			file.closeStreams();
-		}
 	}
 
 	private void addJRubyToClassLoader(List<String> roots) {
@@ -152,26 +201,29 @@ public class JBossRailsParsingDeployer extends AbstractVFSParsingDeployer<JBossW
 		}
 	}
 
-	protected void initFilters(WebMetaData md) {
-		FiltersMetaData filters = new FiltersMetaData();
+	protected void initFilters(JBossWebMetaData md) {
 		FilterMetaData filter = new FilterMetaData();
-		filter.setFilterClass("org.jruby.rack.RackFilter");
+		filter.setFilterClass("org.jboss.rails.rack.JBossRackFilter" );
 		filter.setFilterName("RackFilter");
+		
+		FiltersMetaData filters = new FiltersMetaData();
 		filters.add(filter);
 		md.setFilters(filters);
 	}
 
-	protected void initFilterMappings(WebMetaData md) {
-		List<FilterMappingMetaData> filterMappings = new ArrayList<FilterMappingMetaData>();
+	protected void initFilterMappings(JBossWebMetaData md) {
 		FilterMappingMetaData filterMapping = new FilterMappingMetaData();
-		filterMapping.setFilterName("RackFilter");
 		List<String> urlPatterns = new ArrayList<String>();
 		urlPatterns.add("/*");
 		filterMapping.setUrlPatterns(urlPatterns);
+		filterMapping.setFilterName("RackFilter");
+		
+		List<FilterMappingMetaData> filterMappings = new ArrayList<FilterMappingMetaData>();
+		filterMappings.add( filterMapping );
 		md.setFilterMappings(filterMappings);
 	}
 
-	protected void initListeners(WebMetaData md) {
+	protected void initListeners(JBossWebMetaData md) {
 		List<ListenerMetaData> listeners = new ArrayList<ListenerMetaData>();
 		ListenerMetaData listener = new ListenerMetaData();
 		listener.setListenerClass("org.jruby.rack.rails.RailsServletContextListener");
@@ -179,7 +231,7 @@ public class JBossRailsParsingDeployer extends AbstractVFSParsingDeployer<JBossW
 		md.setListeners(listeners);
 	}
 
-	private void initWelcomeFiles(WebMetaData md) {
+	private void initWelcomeFiles(JBossWebMetaData md) {
 		WelcomeFileListMetaData welcomeFileList = new WelcomeFileListMetaData();
 		List<String> welcomeFiles = new ArrayList<String>();
 		welcomeFiles.add("index.html");

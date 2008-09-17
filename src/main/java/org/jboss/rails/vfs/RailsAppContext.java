@@ -121,7 +121,7 @@ public class RailsAppContext extends AbstractVFSContext {
 	 */
 	protected void setUpWebInfLib() throws IOException {
 		VirtualFileHandler rawWebInfLibHandler = new AssembledDirectoryHandler(this, null, "lib");
-		this.webInfLibHandler = new DelegatingHandler(this, webInfHandler, "lib", rawWebInfLibHandler);
+		this.webInfLibHandler = new RedelegatingHandler(this, webInfHandler, "lib", rawWebInfLibHandler);
 	}
 
 	/**

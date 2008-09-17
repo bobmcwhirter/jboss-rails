@@ -24,8 +24,20 @@
         <groupId>org.jruby.rack</groupId>
         <artifactId>jruby-rack</artifactId>
         <version>0.9.2</version>
-        <scope>runtime</scope>
+        <scope>compile</scope>
       </dependency>
+    <dependency>
+        <groupId>org.jboss.jbossas</groupId>
+        <artifactId>jboss-as-server</artifactId>
+        <version>5.0.0.CR1</version>
+        <scope>provided</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.tomcat</groupId>
+        <artifactId>catalina</artifactId>
+        <version>6.0.18</version>
+        <scope>provided</scope>
+    </dependency>
       <dependency>
         <groupId>org.jboss.microcontainer</groupId>
         <artifactId>jboss-kernel</artifactId>

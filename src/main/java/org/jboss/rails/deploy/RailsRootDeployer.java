@@ -7,18 +7,21 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.jboss.deployers.spi.DeploymentException;
-import org.jboss.deployers.spi.deployer.DeploymentStage;
 import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.spi.deployer.helpers.AbstractDeployer;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
-import org.jboss.deployers.vfs.plugins.client.AbstractVFSDeployment;
 import org.jboss.deployers.vfs.spi.client.VFSDeployment;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.rails.vfs.RailsAppContext;
+import org.jboss.rails.vfs.RailsAppContextFactory;
 import org.jboss.virtual.VFS;
 import org.jboss.virtual.VirtualFile;
 
 public class RailsRootDeployer extends AbstractDeployer {
+	
+	static {
+		RailsAppContextFactory.initializeRailsUrlHandling();
+	}
 
 	public RailsRootDeployer() {
 		// addOutput(ClassLoadingMetaData.class);
@@ -54,7 +57,7 @@ public class RailsRootDeployer extends AbstractDeployer {
 
 			RailsAppContext appContext = new RailsAppContext(unit.getSimpleName() + ".eor", railsRoot);
 
-			VFSDeployment railsDeployment = new RailsVFSDeployment(unit.getSimpleName(), appContext.getRoot().getVirtualFile());
+			VFSDeployment railsDeployment = new RailsVFSDeployment("rails://" + unit.getSimpleName() + ".eor/", appContext.getRoot().getVirtualFile());
 			log.debug( "deployment name is " + railsDeployment.getName() );
 			unit.getMainDeployer().addDeployment(railsDeployment);
 			unit.getMainDeployer().process();

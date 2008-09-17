@@ -24,8 +24,10 @@ package org.jboss.rails.vfs;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -53,9 +55,12 @@ public class WebInfHandler extends AbstractVirtualFileHandler implements Structu
 	/** Construct.
 	 * 
 	 * @param vfsContext The Rails application context.
+	 * @throws URISyntaxException 
+	 * @throws MalformedURLException 
 	 */
-	public WebInfHandler(RailsAppContext vfsContext) {
+	public WebInfHandler(RailsAppContext vfsContext) throws MalformedURLException, URISyntaxException {
 		super( vfsContext, vfsContext.getWarRootHandler(), "WEB-INF" );
+		setVfsUrl( new URL(vfsContext.getWarRootHandler().toURL() + "/WEB-INF" ) );
 	}
 
 	public VirtualFileHandler createChildHandler(String name) throws IOException {
@@ -132,9 +137,11 @@ public class WebInfHandler extends AbstractVirtualFileHandler implements Structu
 	public boolean removeChild(String name) throws IOException {
 		return false;
 	}
-
+	
 	public URI toURI() throws URISyntaxException {
-		return getRailsAppContext().getWarRootHandler().toURI().resolve( "WEB-INF" );
+		URI uri = getRailsAppContext().getWarRootHandler().toURI().resolve( "WEB-INF/" );
+		log.info( "WEB-INF URI is " + uri );
+		return uri;
 	}
 	
 	/** Retrieve the VFSContext cast to a RailsAppContext.

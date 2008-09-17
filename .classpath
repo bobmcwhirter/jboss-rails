@@ -30,5 +30,6 @@
 	<classpathentry kind="lib" path="/thirdparty/jboss/jboss-vfs/lib/jboss-vfs.jar" sourcepath="/thirdparty/jboss/jboss-vfs/lib/jboss-vfs-sources.jar"/>
 	<classpathentry kind="lib" path="/thirdparty/jboss/jboss-deployers/lib/jboss-deployers-client-spi.jar" sourcepath="/thirdparty/jboss/jboss-deployers/lib/jboss-deployers-client-spi-sources.jar"/>
 	<classpathentry kind="lib" path="/thirdparty/jboss/jboss-deployers/lib/jboss-deployers-client.jar" sourcepath="/thirdparty/jboss/jboss-deployers/lib/jboss-deployers-client-sources.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jruby-rack-0.9.2.jar"/>
 	<classpathentry kind="output" path="output/eclipse-classes"/>
 </classpath>
