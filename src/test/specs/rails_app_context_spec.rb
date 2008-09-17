@@ -43,7 +43,7 @@ describe RailsAppContext do
       rails_root = @context.get_rails_root
       [ 'public', 
         'app', 
-        'config', 
+        'config',
         'lib' ].each do |name|
         f = rails_root.get_child( name )
         f.should_not be_nil

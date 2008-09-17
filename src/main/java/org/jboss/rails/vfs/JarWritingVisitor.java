@@ -64,11 +64,6 @@ public class JarWritingVisitor extends AbstractVirtualFileVisitor {
 	protected void addToJar(VirtualFile src) throws IOException {
 		String path = src.getPathName();
 		
-		try {
-			System.err.println( "add URL [" + src.toURL() + "] vfs [" + src + "]" );
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
 		if ( src.isLeaf() ) {
 			JarEntry entry = new JarEntry( path );
 			out.putNextEntry( entry );
