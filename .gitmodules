@@ -1,0 +1,3 @@
+[submodule "src/test/ballast/vendor/rails"]
+	path = src/test/ballast/vendor/rails
+	url = git://github.com/rails/rails.git
