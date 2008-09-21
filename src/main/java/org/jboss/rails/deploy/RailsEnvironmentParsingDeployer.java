@@ -19,33 +19,26 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+package org.jboss.rails.deploy;
 
-package org.jboss.rails.protocol.rails;
-
-import java.io.IOException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLStreamHandler;
-
-import org.jboss.rails.vfs.RailsAppContextFactory;
-import org.jboss.virtual.VFS;
+import org.jboss.deployers.vfs.spi.deployer.AbstractVFSParsingDeployer;
+import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
+import org.jboss.rails.metadata.RailsMetaData;
 import org.jboss.virtual.VirtualFile;
-import org.jboss.virtual.plugins.vfs.VirtualFileURLConnection;
-import org.jboss.virtual.spi.VFSContext;
 
-public class Handler extends URLStreamHandler {
-	
-	protected URLConnection openConnection(URL url) throws IOException {
-		VFSContext context = RailsAppContextFactory.getInstance().find(url);
-		VFS vfs = context.getVFS();
-		if (vfs == null)
-			throw new IOException("VFS does not exist: " + url);
-
-		VirtualFile vf = vfs.getChild(url.getPath());
-		if (vf == null)
-			throw new IOException("VFS does not exist: " + url);
-
-		return new VirtualFileURLConnection(url, vf);
+public class RailsEnvironmentParsingDeployer extends AbstractVFSParsingDeployer<RailsMetaData> {
+	public RailsEnvironmentParsingDeployer() {
+		super(RailsMetaData.class);
+		//addOutput(ClassLoadingMetaData.class);
+		setName("environment.rb");
+		setTopLevelOnly(false);
 	}
 
+	@Override
+	protected RailsMetaData parse(VFSDeploymentUnit unit, VirtualFile file, RailsMetaData root) throws Exception {
+		log.info("Parsing " + file + " for " + unit.getRoot());
+		RailsMetaData railsMetaData = new RailsMetaData();
+		unit.addAttachment( RailsMetaData.class, railsMetaData );
+		return railsMetaData;
+	}
 }
