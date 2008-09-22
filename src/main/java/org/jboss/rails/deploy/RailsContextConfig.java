@@ -134,7 +134,9 @@ public class RailsContextConfig extends ContextConfig {
 		log.debug( "setUpDefaultServlet()" );
 		Wrapper wrapper = context.createWrapper();
 		wrapper.setName( "jboss-rails-default" );
-		wrapper.setServletClass( "org.jboss.rails.rack.JBossDefaultServlet" );
+		//wrapper.setServletClass( "org.jboss.rails.rack.JBossDefaultServlet" );
+		wrapper.setName( "jboss-rails-default" );
+		wrapper.setServletClass( "org.apache.catalina.servlets.DefaultServlet" );
 		context.addChild( wrapper );
 		
 		context.addServletMapping( "/*", "jboss-rails-default" );

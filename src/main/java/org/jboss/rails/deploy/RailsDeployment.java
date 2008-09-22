@@ -1,10 +1,5 @@
 package org.jboss.rails.deploy;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 
 import org.apache.catalina.Loader;
@@ -13,13 +8,9 @@ import org.apache.naming.resources.FileDirContext;
 import org.apache.tomcat.util.modeler.Registry;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.logging.Logger;
+import org.jboss.rails.catalina.JBossFileDirContext;
 import org.jboss.rails.metadata.RailsMetaData;
-import org.jboss.virtual.VFS;
-import org.jboss.web.WebApplication;
 import org.jboss.web.tomcat.service.WebCtxLoader;
-import org.jboss.web.tomcat.service.deployers.DeployerConfig;
-import org.jboss.web.tomcat.service.deployers.JBossContextConfig;
-import org.jboss.web.tomcat.service.deployers.VFSDirContext;
 
 public class RailsDeployment implements RailsDeploymentMBean {
 
@@ -43,9 +34,10 @@ public class RailsDeployment implements RailsDeploymentMBean {
 	}
 
 	private void setUpResources(StandardContext context, RailsMetaData metaData) throws Exception {
-		log.debug("setting resources docBase to [" + metaData.getRailsRoot() + "]");
+		log.debug("setting context docBase to [" + metaData.getRailsRoot() + "]");
 		context.setDocBase( metaData.getRailsRoot() );
-		FileDirContext resources = new FileDirContext();
+		FileDirContext resources = new JBossFileDirContext();
+		log.debug("setting resources docBase to [" + metaData.getRailsRoot() + "/public]");
 		resources.setDocBase( metaData.getRailsRoot() + "/public" );
 		context.setResources(resources);
 	}

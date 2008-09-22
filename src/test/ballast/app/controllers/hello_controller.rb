@@ -1,7 +1,7 @@
 class HelloController < ApplicationController
 
   def index
-    @who = "worlds"
+    @who = "world"
   end
 
 end

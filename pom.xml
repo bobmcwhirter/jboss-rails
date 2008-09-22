@@ -242,17 +242,15 @@
           </execution>
         </executions>
       </plugin>
+<!--
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>rspec-maven-plugin</artifactId>
         <configuration>
-          <!-- jrubyHome points to the JRuby installation you wish to use (usually ${env.JRUBY_HOME}) -->
           <jrubyHome>${env.JRUBY_HOME}</jrubyHome>
-          <!-- sourceDirectory references where your RSpec tests reside -->
           <sourceDirectory>${basedir}/src/test/specs</sourceDirectory>
-          <!-- outputDirectory specifies where the RSpec report should be placed -->
           <outputDirectory>${basedir}/target</outputDirectory>
-          <skipTests>true</skipTests>
+          <skipTests>false</skipTests>
         </configuration>
         <executions>
           <execution>
@@ -264,6 +262,7 @@
           </execution>
         </executions>
       </plugin>
+-->
 
     </plugins>
   </build>
