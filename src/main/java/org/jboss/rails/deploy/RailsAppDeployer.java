@@ -21,6 +21,8 @@
  */
 package org.jboss.rails.deploy;
 
+import java.io.File;
+
 import javax.management.ObjectName;
 
 import org.jboss.deployers.spi.DeploymentException;
@@ -32,8 +34,16 @@ import org.jboss.rails.metadata.RailsMetaData;
 import org.jboss.system.metadata.ServiceConstructorMetaData;
 import org.jboss.system.metadata.ServiceMetaData;
 
+/**
+ * Deployer that consules RailsMetaData to deploy a rails application, for real.
+ * 
+ * @author Bob McWhirter
+ */
 public class RailsAppDeployer extends AbstractDeployer {
 
+	/**
+	 * Construct.
+	 */
 	public RailsAppDeployer() {
 		setStage(DeploymentStages.REAL);
 		setTopLevelOnly(true);
@@ -55,6 +65,9 @@ public class RailsAppDeployer extends AbstractDeployer {
 	}
 
 	protected void doDeploy(VFSDeploymentUnit unit, RailsMetaData railsMetaData) throws DeploymentException {
+		if (log.isTraceEnabled()) {
+			log.trace("doDeploy(" + unit.getRoot() + ", ...)");
+		}
 		try {
 			RailsDeployment deployment = new RailsDeployment();
 			ServiceMetaData railsModule = new ServiceMetaData();
@@ -72,9 +85,20 @@ public class RailsAppDeployer extends AbstractDeployer {
 		}
 	}
 
+	/**
+	 * Construct the management object name.
+	 * 
+	 * @param railsMetaData
+	 *            The rails meta-data.
+	 * @return
+	 */
 	private String getObjectName(RailsMetaData railsMetaData) {
-		String ctxPath = "/ballast";
+		String appName = railsMetaData.getApplicationName();
+		String ctxPath = "/" + appName;
 		String objectName = "jboss.rails.deployment:root=" + ctxPath;
+		if (log.isTraceEnabled()) {
+			log.trace("objectName=" + objectName);
+		}
 		return objectName;
 	}
 

@@ -47,7 +47,7 @@ public class RailsDeployment implements RailsDeploymentMBean {
 
 		setUpResources(context, metaData);
 		setUpLoader(context);
-		setUpJMX(context);
+		setUpJMX(context, metaData);
 		setUpConfig(context, metaData);
 
 		context.start();
@@ -70,8 +70,9 @@ public class RailsDeployment implements RailsDeploymentMBean {
 		context.setLoader(loader);
 	}
 
-	private void setUpJMX(StandardContext context) throws Exception {
-		String objectNameS = "jboss.web:j2eeType=WebModule,name=//localhost/ballast,J2EEApplication=none,J2EEServer=none";
+	private void setUpJMX(StandardContext context, RailsMetaData metaData) throws Exception {
+		String applicationName = metaData.getApplicationName();
+		String objectNameS = "jboss.web:j2eeType=WebModule,name=//localhost/" + applicationName + ",J2EEApplication=none,J2EEServer=none";
 		ObjectName objectName = new ObjectName(objectNameS);
 		context.setServer("jboss");
 		registerContext(context, objectName);
@@ -81,7 +82,7 @@ public class RailsDeployment implements RailsDeploymentMBean {
 		log.debug("registerContext(..., " + objectName + ")");
 		ClassLoader cl = Thread.currentThread().getContextClassLoader();
 		if (Registry.getRegistry(cl, null).getMBeanServer().isRegistered(objectName)) {
-			throw new DeploymentException("Web mapping already exists for deployment URL " + "ballast");
+			throw new DeploymentException("Web mapping already exists for deployment URL " + objectName );
 		}
 		Registry.getRegistry(cl, null).registerComponent(context, objectName, DEFAULT_CONTEXT_CLASS_NAME);
 	}

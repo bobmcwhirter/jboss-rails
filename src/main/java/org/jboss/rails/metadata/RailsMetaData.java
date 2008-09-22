@@ -21,27 +21,51 @@
  */
 package org.jboss.rails.metadata;
 
+import java.io.File;
+import java.io.IOException;
+
 public class RailsMetaData {
-	
+
+	private String applicationName;
 	private String environment;
 	private String railsRoot;
 
 	public RailsMetaData() {
 		this.environment = "development";
 	}
-	
+
+	public String getApplicationName() {
+		checkApplicationName();
+		return this.applicationName;
+	}
+
+	private void checkApplicationName() {
+		if (this.applicationName == null) {
+			File railsRootFile = new File(railsRoot);
+			String name = railsRootFile.getName();
+			if ( name.endsWith( ".rails" ) ) {
+				name = name.substring(0, name.length() - 6 );
+			}
+			this.applicationName = name;
+		}
+	}
+
+	public void setApplicationName(String applicationName) {
+		this.applicationName = applicationName;
+	}
+
 	public String getEnvironment() {
 		return this.environment;
 	}
-	
+
 	public void setEnvironment(String environment) {
 		this.environment = environment;
 	}
-	
+
 	public String getRailsRoot() {
 		return this.railsRoot;
 	}
-	
+
 	public void setRailsRoot(String railsRoot) {
 		this.railsRoot = railsRoot;
 	}

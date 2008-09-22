@@ -28,6 +28,11 @@ import javax.naming.directory.Attributes;
 
 import org.apache.naming.resources.FileDirContext;
 
+
+/** A resource context that adjusted for a public/ subdirectory and implicit index.html.
+ * 
+ * @author Bob McWhirter
+ */
 public class JBossFileDirContext extends FileDirContext {
 
 	@Override
@@ -36,6 +41,7 @@ public class JBossFileDirContext extends FileDirContext {
 		base = new File( base, "public" );
     }
 	
+	@Override
 	public String getDocBase() {
 		return super.getDocBase() + "/public";
 	}
@@ -44,9 +50,21 @@ public class JBossFileDirContext extends FileDirContext {
 	public Object lookup(String name) throws NamingException {
 		name = rewriteName( name );
 		Object result = super.lookup(name);
-		System.err.println( "result ---> " + result );
 		return result;
 	}
+	
+	@Override
+    public Attributes getAttributes(String name, String[] attrIds) throws NamingException {
+    	name = rewriteName( name );
+    	Attributes results = super.getAttributes( name, attrIds );
+    	return results;
+    }
+	
+	/** Rewrite the name if it signals an implicit welcome (index.html) file.
+	 * 
+	 * @param name The name to rewrite, maybe.
+	 * @return The original or rewritten name, depending.
+	 */
 	private String rewriteName(String name) {
 		if ( "/.html".equals( name ) ) {
 			name = "/index.html";
@@ -54,11 +72,6 @@ public class JBossFileDirContext extends FileDirContext {
 		return name;
 	}
 	
-    public Attributes getAttributes(String name, String[] attrIds) throws NamingException {
-    	name = rewriteName( name );
-    	Attributes results = super.getAttributes( name, attrIds );
-    	return results;
-    }
 
 	
 }
