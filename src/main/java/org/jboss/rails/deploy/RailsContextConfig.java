@@ -24,9 +24,19 @@ public class RailsContextConfig extends ContextConfig {
 	}
 
 	private void setUpApplicationParamValues() {
+		setUpRailsRoot();
+		setUpRailsEnv();
+	}
+
+	private void setUpRailsEnv() {
 		RailsMetaData metaData =  RailsContextConfig.railsMetaData.get();
 		String environment = metaData.getEnvironment();
 		context.addParameter( "rails.env", environment );
+	}
+
+	private void setUpRailsRoot() {
+		context.addParameter( "rails.root", "/" );
+		context.addParameter( "public.root", "/public/" );
 	}
 
 	@Override
@@ -123,11 +133,11 @@ public class RailsContextConfig extends ContextConfig {
 	private void setUpDefaultServlet() {
 		log.debug( "setUpDefaultServlet()" );
 		Wrapper wrapper = context.createWrapper();
-		wrapper.setName( "default" );
+		wrapper.setName( "jboss-rails-default" );
 		wrapper.setServletClass( "org.jboss.rails.rack.JBossDefaultServlet" );
 		context.addChild( wrapper );
 		
-		context.addServletMapping( "/*", "default" );
+		context.addServletMapping( "/*", "jboss-rails-default" );
 	}
 
 	private void setUpJspMappings() {

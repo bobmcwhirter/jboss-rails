@@ -37,7 +37,10 @@ public class RailsEnvironmentParsingDeployer extends AbstractVFSParsingDeployer<
 	@Override
 	protected RailsMetaData parse(VFSDeploymentUnit unit, VirtualFile file, RailsMetaData root) throws Exception {
 		log.info("Parsing " + file + " for " + unit.getRoot());
+		String railsRoot = unit.getRoot().toURL().getFile();
+		log.info( "rails.root -> " + railsRoot );
 		RailsMetaData railsMetaData = new RailsMetaData();
+		railsMetaData.setRailsRoot( railsRoot );
 		unit.addAttachment( RailsMetaData.class, railsMetaData );
 		return railsMetaData;
 	}

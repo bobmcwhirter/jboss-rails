@@ -9,6 +9,7 @@ import javax.management.ObjectName;
 
 import org.apache.catalina.Loader;
 import org.apache.catalina.core.StandardContext;
+import org.apache.naming.resources.FileDirContext;
 import org.apache.tomcat.util.modeler.Registry;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.logging.Logger;
@@ -31,33 +32,35 @@ public class RailsDeployment implements RailsDeploymentMBean {
 		log.debug("start()");
 		Class<StandardContext> contextClass = (Class<StandardContext>) Class.forName(DEFAULT_CONTEXT_CLASS_NAME);
 		StandardContext context = contextClass.newInstance();
-		
-		setUpResources( context );
-		setUpLoader( context );
-		setUpJMX( context );
+
+		setUpResources(context, metaData);
+		setUpLoader(context);
+		setUpJMX(context);
 		setUpConfig(context, metaData);
 
 		context.start();
 		log.debug("start() complete");
 	}
-	
-	private void setUpResources(StandardContext context) throws Exception {
-		VFSDirContext resources = new VFSDirContext();
-		resources.setVirtualFile(VFS.getRoot(new URL("file:///Users/bob/")));
-		context.setResources(resources);
 
+	private void setUpResources(StandardContext context, RailsMetaData metaData) throws Exception {
+		log.debug("setting resources docBase to [" + metaData.getRailsRoot() + "]");
+		context.setDocBase( metaData.getRailsRoot() );
+		FileDirContext resources = new FileDirContext();
+		resources.setDocBase( metaData.getRailsRoot() + "/public" );
+		context.setResources(resources);
 	}
 
 	private void setUpLoader(StandardContext context) {
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-		
-		Loader loader = new WebCtxLoader( classLoader );
-		context.setLoader( loader );
+
+		Loader loader = new WebCtxLoader(classLoader);
+		context.setLoader(loader);
 	}
-	
+
 	private void setUpJMX(StandardContext context) throws Exception {
-		String objectNameS = "Catalina:j2eeType=RailsModule,name=//localhost/ballast/" + ",J2EEApplication=none,J2EEServer=none";
+		String objectNameS = "jboss.web:j2eeType=WebModule,name=//localhost/ballast,J2EEApplication=none,J2EEServer=none";
 		ObjectName objectName = new ObjectName(objectNameS);
+		context.setServer("jboss");
 		registerContext(context, objectName);
 	}
 
