@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <deployment xmlns="urn:jboss:bean-deployer:2.0">
-
+  <bean name="SoftReferenceDeployer" class="org.jboss.rails.deploy.SoftReferenceDeployer"/>
   <bean name="RailsStructure" class="org.jboss.rails.deploy.RailsStructure"/>
   <bean name="RailsEnvironmentParsingDeployer" class="org.jboss.rails.deploy.RailsEnvironmentParsingDeployer"/>
   <bean name="RailsAppDeployer"  class="org.jboss.rails.deploy.RailsAppDeployer">

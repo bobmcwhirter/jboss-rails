@@ -31,7 +31,7 @@ import org.jboss.virtual.VirtualFile;
 public class RailsStructure extends AbstractVFSStructureDeployer {
 
 	public RailsStructure() {
-		setRelativeOrder( 1000 );
+		setRelativeOrder( -1000 );
 	}
 
 	public boolean determineStructure(StructureContext context) throws DeploymentException {
