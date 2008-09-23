@@ -48,6 +48,7 @@ public class RailsAppDeployer extends AbstractDeployer {
 		setStage(DeploymentStages.REAL);
 		setTopLevelOnly(true);
 		setInput(RailsMetaData.class);
+		addOutput( ServiceMetaData.class );
 	}
 
 	public void deploy(DeploymentUnit unit) throws DeploymentException {
