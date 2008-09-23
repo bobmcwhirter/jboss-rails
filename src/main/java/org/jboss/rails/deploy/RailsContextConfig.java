@@ -29,12 +29,25 @@ import org.apache.catalina.startup.ContextConfig;
 import org.jboss.logging.Logger;
 import org.jboss.rails.metadata.RailsMetaData;
 
+/**
+ * Configures the Catalina context for a rails application.
+ * 
+ * @author Bob McWhirter
+ */
 public class RailsContextConfig extends ContextConfig {
 
+	/**
+	 * Thread-local to pass meta-data between MC deployer and Catalina's
+	 * deployment "stuff".
+	 */
 	public static ThreadLocal<RailsMetaData> railsMetaData = new ThreadLocal<RailsMetaData>();
 
+	/** Our log. */
 	private static Logger log = Logger.getLogger(RailsContextConfig.class);
 
+	/**
+	 * Construct.
+	 */
 	public RailsContextConfig() {
 	}
 
@@ -44,6 +57,9 @@ public class RailsContextConfig extends ContextConfig {
 		setUpApplicationParamValues();
 	}
 
+	/**
+	 * Set the application-specific parameter-values from the meta-data.
+	 */
 	private void setUpApplicationParamValues() {
 		setUpRailsRoot();
 		setUpRailsEnv();
@@ -82,37 +98,51 @@ public class RailsContextConfig extends ContextConfig {
 	}
 
 	private void setUpServletVersion() {
-		log.debug("setUpServletVersion()");
+		if (log.isTraceEnabled()) {
+			log.trace("setUpServletVersion()");
+		}
 		context.setPublicId("/javax/servlet/resources/web-app_2_4.dtd");
 	}
 
 	private void setUpParamValues() {
-		log.debug("setUpParamValues()");
+		if (log.isTraceEnabled()) {
+			log.trace("setUpParamValues()");
+		}
 		// nothing
 	}
 
 	private void setUpDisplayName() {
-		log.debug("setUpDisplayName()");
+		if (log.isTraceEnabled()) {
+			log.trace("setUpDisplayName()");
+		}
 		// nothing
 	}
 
 	private void setUpDistributable() {
-		log.debug("setUpDistributable()");
+		if (log.isTraceEnabled()) {
+			log.trace("setUpDistributable()");
+		}
 		context.setDistributable(false);
 	}
 
 	private void setUpErrorPages() {
-		log.debug("setUpErrorPages()");
+		if (log.isTraceEnabled()) {
+			log.trace("setUpErrorPages()");
+		}
 		// TODO Inject rails error page handling?
 	}
 
 	private void setUpFilters() {
-		log.debug("setUpFilters()");
+		if (log.isTraceEnabled()) {
+			log.trace("setUpFilters()");
+		}
 		setUpRackFilter();
 	}
 
 	private void setUpRackFilter() {
-		log.debug("setUpRackFilter()");
+		if (log.isTraceEnabled()) {
+			log.trace("setUpRackFilter()");
+		}
 		FilterDef filter = new FilterDef();
 		filter.setFilterName("jruby-rack");
 		filter.setFilterClass("org.jruby.rack.RackFilter");
@@ -126,37 +156,51 @@ public class RailsContextConfig extends ContextConfig {
 	}
 
 	private void setUpListeners() {
-		log.debug("setUpListeners()");
+		if (log.isTraceEnabled()) {
+			log.trace("setUpListeners()");
+		}
 		context.addApplicationListener("org.jruby.rack.rails.RailsServletContextListener");
 	}
 
 	private void setUpLogin() {
-		log.debug("setUpLogin()");
+		if (log.isTraceEnabled()) {
+			log.trace("setUpLogin()");
+		}
 		// TODO Auto-generated method stub
 	}
 
 	private void setUpMimeMappings() {
-		log.debug("setUpMimeMappings()");
+		if (log.isTraceEnabled()) {
+			log.trace("setUpMimeMappings()");
+		}
 		// TODO Auto-generated method stub
 	}
 
 	private void setUpSecurity() {
-		log.debug("setUpSecurity()");
+		if (log.isTraceEnabled()) {
+			log.trace("setUpSecurity()");
+		}
 		// TODO Auto-generated method stub
 	}
 
 	private void setUpServlets() {
-		log.debug("setUpServlets()");
+		if (log.isTraceEnabled()) {
+			log.trace("setUpServlets()");
+		}
 		// TODO Auto-generated method stub
 		setUpDefaultServlet();
 	}
 
 	private void setUpDefaultServlet() {
-		log.debug("setUpDefaultServlet()");
+		if (log.isTraceEnabled()) {
+			log.trace("setUpDefaultServlet()");
+		}
 		Wrapper wrapper = context.createWrapper();
 		wrapper.setName("jboss-rails-default");
 		wrapper.setName("jboss-rails-default");
-		wrapper.addInitParameter( "debug", "100" );
+		if (log.isTraceEnabled()) {
+			wrapper.addInitParameter("debug", "1");
+		}
 		wrapper.setServletClass("org.apache.catalina.servlets.DefaultServlet");
 		context.addChild(wrapper);
 
@@ -164,23 +208,31 @@ public class RailsContextConfig extends ContextConfig {
 	}
 
 	private void setUpJspMappings() {
-		log.debug("setUpJspMappings()");
+		if (log.isTraceEnabled()) {
+			log.trace("setUpJspMappings()");
+		}
 		// TODO Auto-generated method stub
 	}
 
 	private void setUpLocaleEncodings() {
-		log.debug("setUpLocaleEncodings()");
+		if (log.isTraceEnabled()) {
+			log.trace("setUpLocaleEncodings()");
+		}
 		// TODO Auto-generated method stub
 	}
 
 	private void setUpWelcomeFiles() {
-		log.debug("setUpWelcomeFiles()");
+		if (log.isTraceEnabled()) {
+			log.trace("setUpWelcomeFiles()");
+		}
 		((StandardContext) context).setReplaceWelcomeFiles(true);
 		context.addWelcomeFile("index.html");
 	}
 
 	private void setUpSessions() {
-		log.debug("setUpSessions()");
+		if (log.isTraceEnabled()) {
+			log.trace("setUpSessions()");
+		}
 		// TODO Auto-generated method stub
 	}
 

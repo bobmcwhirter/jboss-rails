@@ -33,15 +33,23 @@ import org.jboss.rails.catalina.JBossFileDirContext;
 import org.jboss.rails.metadata.RailsMetaData;
 import org.jboss.web.tomcat.service.WebCtxLoader;
 
+/** Leaf managed web-deployment for Rails apps.
+ * 
+ * @author Bob McWhirter
+ */
 public class RailsDeployment implements RailsDeploymentMBean {
 
+	/** The Catalina context class we work with. */
 	public final static String DEFAULT_CONTEXT_CLASS_NAME = "org.apache.catalina.core.StandardContext";
 
+	/** Our logger. */
 	private Logger log = Logger.getLogger(RailsDeployment.class);
 
 	@SuppressWarnings("unchecked")
 	public synchronized void start(RailsMetaData metaData) throws Exception {
-		log.debug("start()");
+		if ( log.isTraceEnabled() ) {
+			log.trace("start()");
+		}
 		Class<StandardContext> contextClass = (Class<StandardContext>) Class.forName(DEFAULT_CONTEXT_CLASS_NAME);
 		StandardContext context = contextClass.newInstance();
 
@@ -51,14 +59,14 @@ public class RailsDeployment implements RailsDeploymentMBean {
 		setUpConfig(context, metaData);
 
 		context.start();
-		log.debug("start() complete");
+		if ( log.isTraceEnabled() ) {
+			log.debug("start() complete");
+		}
 	}
 
 	private void setUpResources(StandardContext context, RailsMetaData metaData) throws Exception {
-		log.debug("setting context docBase to [" + metaData.getRailsRoot() + "]");
 		context.setDocBase( metaData.getRailsRoot() );
 		FileDirContext resources = new JBossFileDirContext();
-		log.debug("setting resources docBase to [" + metaData.getRailsRoot() + "/public]");
 		resources.setDocBase( metaData.getRailsRoot() + "/public" );
 		context.setResources(resources);
 	}

@@ -25,6 +25,16 @@ import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.logging.Logger;
 import org.jboss.rails.metadata.RailsMetaData;
 
+/** Top-level managed deployment object.
+ * 
+ * <p>
+ * The deployment is auto-start()'d by the manager.
+ * </p>
+ * 
+ * @see RailsDeployment
+ * 
+ * @author Bob McWhirter
+ */
 public class RailsModule implements RailsModuleMBean {
 
 	private Logger log = Logger.getLogger(RailsModule.class);
