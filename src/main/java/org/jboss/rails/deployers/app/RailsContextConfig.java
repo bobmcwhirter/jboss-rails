@@ -53,7 +53,9 @@ public class RailsContextConfig extends ContextConfig {
 
 	@Override
 	protected void applicationWebConfig() {
-		log.info("applicationWebConfig()");
+		if ( log.isTraceEnabled() ) {
+			log.trace("applicationWebConfig()");
+		}
 		setUpApplicationParamValues();
 	}
 
@@ -78,7 +80,9 @@ public class RailsContextConfig extends ContextConfig {
 
 	@Override
 	protected void defaultWebConfig() {
-		log.info("defaultWebConfig()");
+		if ( log.isTraceEnabled() ) {
+			log.trace("defaultWebConfig()");
+		}
 
 		setUpServletVersion();
 		setUpParamValues();

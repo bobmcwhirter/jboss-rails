@@ -56,6 +56,7 @@ public class RailsAppDeployer extends AbstractDeployer {
 			throw new DeploymentException("deployment unit must be a VFSDeploymentUnit");
 		}
 
+		log.info( "Deploy: " + unit );
 		VFSDeploymentUnit vfsUnit = (VFSDeploymentUnit) unit;
 		RailsMetaData railsMetaData = vfsUnit.getAttachment(RailsMetaData.class);
 		if (railsMetaData == null) {
@@ -69,6 +70,7 @@ public class RailsAppDeployer extends AbstractDeployer {
 
 	@Override
 	public void undeploy(DeploymentUnit unit) {
+		log.info( "Undeploy: " + unit );
 		super.undeploy(unit);
 	}
 

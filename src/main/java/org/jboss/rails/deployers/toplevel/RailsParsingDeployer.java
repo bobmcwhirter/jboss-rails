@@ -70,12 +70,14 @@ public class RailsParsingDeployer extends AbstractParsingDeployer {
 			return;
 		}
 
+		log.info( "attempting undeploy from: " + unit.getName() );
 		Deployment deployment = unit.getAttachment("jboss.rails.root.deployment", Deployment.class);
 		if (deployment != null) {
 			log.info( "undeploying: " + deployment.getName() );
-			MainDeployer deployer = unit.getMainDeployer();
+			MainDeployer deployer = unit.getAttachment( "jboss.rails.root.deployer", MainDeployer.class );
 			try {
 				deployer.removeDeployment(deployment);
+				deployer.process();
 			} catch (DeploymentException e) {
 				log.error( e );
 			}
@@ -88,6 +90,7 @@ public class RailsParsingDeployer extends AbstractParsingDeployer {
 		deployer.process();
 		deployer.checkComplete(deployment);
 		unit.addAttachment("jboss.rails.root.deployment", deployment);
+		unit.addAttachment("jboss.rails.root.deployer", deployer );
 	}
 
 	private void addStructure(Deployment deployment) {

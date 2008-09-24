@@ -120,7 +120,7 @@ public class RailsDeployment implements RailsDeploymentMBean {
 			// Contexts should be stopped by the host already
 			server.invoke(objectName, "destroy", new Object[] {}, new String[] {});
 		}
-
+		
 	}
 
 	private String getContextPath(RailsMetaData railsMetaData) {
