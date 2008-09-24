@@ -19,7 +19,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.rails.deploy;
+package org.jboss.rails.deployers.app;
 
 import java.io.File;
 
@@ -64,6 +64,13 @@ public class RailsAppDeployer extends AbstractDeployer {
 
 		doDeploy(vfsUnit, railsMetaData);
 	}
+	
+	
+
+	@Override
+	public void undeploy(DeploymentUnit unit) {
+		super.undeploy(unit);
+	}
 
 	protected void doDeploy(VFSDeploymentUnit unit, RailsMetaData railsMetaData) throws DeploymentException {
 		if (log.isTraceEnabled()) {
@@ -94,13 +101,24 @@ public class RailsAppDeployer extends AbstractDeployer {
 	 * @return
 	 */
 	private String getObjectName(RailsMetaData railsMetaData) {
-		String appName = railsMetaData.getApplicationName();
-		String ctxPath = "/" + appName;
-		String objectName = "jboss.rails.deployment:root=" + ctxPath;
+		String contextPath = getContextPath( railsMetaData );
+		String objectName = "jboss.rails.deployment:root=" + contextPath;
 		if (log.isTraceEnabled()) {
 			log.trace("objectName=" + objectName);
 		}
 		return objectName;
+	}
+
+	private String getContextPath(RailsMetaData railsMetaData) {
+		String context = railsMetaData.getContext();
+		if ( context != null ) {
+			return context;
+		}
+		String appName = railsMetaData.getApplicationName();
+		context = "/" + appName;
+		
+		return context;
+		
 	}
 
 }

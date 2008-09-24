@@ -19,29 +19,9 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.rails.deploy;
 
-import org.jboss.deployers.vfs.spi.deployer.AbstractVFSParsingDeployer;
-import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
-import org.jboss.rails.metadata.RailsMetaData;
-import org.jboss.virtual.VirtualFile;
+package org.jboss.rails.deployers.app;
 
-public class RailsEnvironmentParsingDeployer extends AbstractVFSParsingDeployer<RailsMetaData> {
-	public RailsEnvironmentParsingDeployer() {
-		super(RailsMetaData.class);
-		//addOutput(ClassLoadingMetaData.class);
-		setName("environment.rb");
-		setTopLevelOnly(false);
-	}
+public interface RailsDeploymentMBean {
 
-	@Override
-	protected RailsMetaData parse(VFSDeploymentUnit unit, VirtualFile file, RailsMetaData root) throws Exception {
-		log.info("Parsing " + file + " for " + unit.getRoot());
-		String railsRoot = unit.getRoot().toURL().getFile();
-		log.info( "rails.root -> " + railsRoot );
-		RailsMetaData railsMetaData = new RailsMetaData();
-		railsMetaData.setRailsRoot( railsRoot );
-		unit.addAttachment( RailsMetaData.class, railsMetaData );
-		return railsMetaData;
-	}
 }

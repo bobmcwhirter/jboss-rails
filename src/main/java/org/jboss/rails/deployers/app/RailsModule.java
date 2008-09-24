@@ -19,7 +19,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.rails.deploy;
+package org.jboss.rails.deployers.app;
 
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.logging.Logger;
@@ -72,7 +72,7 @@ public class RailsModule implements RailsModuleMBean {
 		if (log.isTraceEnabled()) {
 			log.trace("stop()");
 		}
-		deployment.stop();
+		deployment.stop(unit.getAttachment(RailsMetaData.class));
 	}
 
 }
