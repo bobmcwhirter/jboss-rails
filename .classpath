@@ -1,36 +1,152 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/main/java"/>
-	<classpathentry kind="src" output="output/eclipse-resources" path="src/resources"/>
-	<classpathentry exported="true" kind="src" path="/aspects"/>
-	<classpathentry exported="true" kind="src" path="/connector"/>
-	<classpathentry exported="true" kind="src" path="/iiop"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry exported="true" kind="lib" path="/thirdparty/sun-servlet/lib/jsp-api.jar"/>
-	<classpathentry exported="true" kind="lib" path="/thirdparty/apache-logging/lib/commons-logging.jar"/>
-	<classpathentry exported="true" kind="lib" path="/thirdparty/org/jboss/cluster/lib/jboss-ha-server-api.jar"/>
-	<classpathentry exported="true" kind="lib" path="/thirdparty/jgroups/lib/jgroups.jar"/>
-	<classpathentry exported="true" kind="lib" path="/thirdparty/sun-jsf/lib/jsf-api.jar"/>
-	<classpathentry exported="true" kind="lib" path="/thirdparty/sun-jsf/lib/jsf-impl.jar"/>
-	<classpathentry exported="true" kind="lib" path="/thirdparty/jboss/web/lib/el-api.jar"/>
-	<classpathentry exported="true" kind="lib" path="/thirdparty/jboss/web/lib/jasper-jdt.jar"/>
-	<classpathentry exported="true" kind="lib" path="/thirdparty/jboss/web/lib/jbossweb.jar" sourcepath="/thirdparty/jboss/web/lib/jbossweb-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="/thirdparty/jboss/web/lib/jsp-api.jar"/>
-	<classpathentry exported="true" kind="lib" path="/thirdparty/jboss/web/lib/servlet-api.jar"/>
-	<classpathentry exported="true" kind="lib" path="/thirdparty/org/jboss/ws/native/lib/jbossws-native-jaxws.jar"/>
-	<classpathentry exported="true" kind="lib" path="/thirdparty/jboss/jboss-ejb3-interceptors/lib/jboss-ejb3-interceptors.jar" sourcepath="/thirdparty/jboss/jboss-ejb3-interceptors/lib/jboss-ejb3-interceptors-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="/thirdparty/jboss/jboss-ejb3-core/lib/jboss-ejb3-core.jar"/>
-	<classpathentry exported="true" kind="lib" path="/thirdparty/net/jcip/lib/jcip-annotations.jar"/>
-	<classpathentry kind="lib" path="/thirdparty/jboss/test/lib/jboss-test.jar"/>
-	<classpathentry kind="lib" path="/thirdparty/junit/lib/junit.jar"/>
-	<classpathentry kind="lib" path="/thirdparty/org/jboss/ws/lib/jbossws-spi.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/cluster"/>
-	<classpathentry kind="lib" path="/thirdparty/jboss/jboss-jpa-deployers/lib/jboss-jpa-deployers.jar" sourcepath="/thirdparty/jboss/jboss-jpa-deployers/lib/jboss-jpa-deployers-sources.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/tomcat"/>
-	<classpathentry kind="lib" path="/thirdparty/jboss/jboss-vfs/lib/jboss-vfs.jar" sourcepath="/thirdparty/jboss/jboss-vfs/lib/jboss-vfs-sources.jar"/>
-	<classpathentry kind="lib" path="/thirdparty/jboss/jboss-deployers/lib/jboss-deployers-client-spi.jar" sourcepath="/thirdparty/jboss/jboss-deployers/lib/jboss-deployers-client-spi-sources.jar"/>
-	<classpathentry kind="lib" path="/thirdparty/jboss/jboss-deployers/lib/jboss-deployers-client.jar" sourcepath="/thirdparty/jboss/jboss-deployers/lib/jboss-deployers-client-sources.jar"/>
-	<classpathentry kind="lib" path="target/dependency/jruby-rack-0.9.2.jar"/>
-	<classpathentry kind="lib" path="target/dependency/jyaml-1.3.jar"/>
-	<classpathentry kind="output" path="output/eclipse-classes"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-aop-mc-int.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-aop.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-as-server.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-as-tomcat.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-deployers-client-spi.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-deployers-client.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-deployers-core-spi.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-deployers-core.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-deployers-impl.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-deployers-spi.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-deployers-structure-spi.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-deployers-vfs-spi.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-deployers-vfs.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-kernel.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-metadata.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-vfs.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jbossweb.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jruby-rack.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jyaml.jar"/>
+	<classpathentry kind="lib" path="target/dependency/activation.jar"/>
+	<classpathentry kind="lib" path="target/dependency/ant-junit.jar"/>
+	<classpathentry kind="lib" path="target/dependency/ant-launcher.jar"/>
+	<classpathentry kind="lib" path="target/dependency/ant.jar"/>
+	<classpathentry kind="lib" path="target/dependency/antlr.jar"/>
+	<classpathentry kind="lib" path="target/dependency/asm-attrs.jar"/>
+	<classpathentry kind="lib" path="target/dependency/asm.jar"/>
+	<classpathentry kind="lib" path="target/dependency/avalon-framework.jar"/>
+	<classpathentry kind="lib" path="target/dependency/bcel.jar"/>
+	<classpathentry kind="lib" path="target/dependency/cglib.jar"/>
+	<classpathentry kind="lib" path="target/dependency/commons-collections.jar"/>
+	<classpathentry kind="lib" path="target/dependency/commons-logging.jar"/>
+	<classpathentry kind="lib" path="target/dependency/concurrent.jar"/>
+	<classpathentry kind="lib" path="target/dependency/dom4j.jar"/>
+	<classpathentry kind="lib" path="target/dependency/dtdparser121.jar"/>
+	<classpathentry kind="lib" path="target/dependency/ehcache.jar"/>
+	<classpathentry kind="lib" path="target/dependency/ejb3-persistence.jar"/>
+	<classpathentry kind="lib" path="target/dependency/getopt.jar"/>
+	<classpathentry kind="lib" path="target/dependency/hibernate-annotations.jar"/>
+	<classpathentry kind="lib" path="target/dependency/hibernate-commons-annotations.jar"/>
+	<classpathentry kind="lib" path="target/dependency/hibernate-core.jar"/>
+	<classpathentry kind="lib" path="target/dependency/hibernate-entitymanager.jar"/>
+	<classpathentry kind="lib" path="target/dependency/hibernate.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jaas.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jacc.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jacorb.jar"/>
+	<classpathentry kind="lib" path="target/dependency/java-getopt.jar"/>
+	<classpathentry kind="lib" path="target/dependency/javassist.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jaxb-api.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-aop-deployer-jdk50.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-aop-jboss4-jdk50.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-aop-jdk50.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-as-aspects.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-as-bootstrap.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-as-connector.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-as-deployment.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-as-ejb3.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-as-iiop.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-as-j2se-tests.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-as-j2se.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-as-jmx.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-as-main.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-as-mbeans.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-as-profileservice.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-as-security.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-as-system-jmx.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-as-system.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-classloader.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-classloading-spi.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-classloading-vfs.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-classloading.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-common-core.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-common-logging-spi.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-corba-ots-spi.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-current-invocation-aspects.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-dependency.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-deployment-spi.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-ejb-api.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-ejb3-async.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-ejb3-cache.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-ejb3-common.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-ejb3-core.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-ejb3-ext-api-impl.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-ejb3-ext-api.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-ejb3-interceptors.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-ejb3-metadata.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-ejb3-proxy-clustered.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-ejb3-proxy.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-ejb3-security.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-ejb3-transactions.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-ha-client.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-ha-server-api.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-ha-server-cache-jbc.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-ha-server-cache-spi.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-jacc-api.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-jad-api.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-jaspi-api.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-jaxrpc.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-jaxws.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-jca-api.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-jms-api.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-jpa-deployers.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-logging-log4j.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-logging-spi.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-managed.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-mdr.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-metatype.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-persistence-api.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-profiler-jvmti.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-reflect.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-remoting-aspects.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-remoting.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-security-aspects.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-security-spi.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-serialization.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-server-manager.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-servlet-api.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-standalone-aspect-library-jdk50.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-test.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-transaction-api.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-transaction-aspects.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-transaction-spi.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jbosscache-core.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jbosssx-client.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jbosssx.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jbossws-native-jaxws.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jbossws-native-saaj.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jbossws-spi.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jbossxb.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jcip-annotations.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jgroups.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jnp-client.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jnpserver.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jpl-pattern.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jpl-util.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jsf-api.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jsf-impl.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jta.jar"/>
+	<classpathentry kind="lib" path="target/dependency/log4j.jar"/>
+	<classpathentry kind="lib" path="target/dependency/mail.jar"/>
+	<classpathentry kind="lib" path="target/dependency/qdox.jar"/>
+	<classpathentry kind="lib" path="target/dependency/quartz.jar"/>
+	<classpathentry kind="lib" path="target/dependency/slf4j-api.jar"/>
+	<classpathentry kind="lib" path="target/dependency/stax-api.jar"/>
+	<classpathentry kind="lib" path="target/dependency/trove.jar"/>
+	<classpathentry kind="lib" path="target/dependency/xercesImpl.jar"/>
+	<classpathentry kind="lib" path="target/dependency/xml-apis.jar"/>
+	<classpathentry kind="output" path="target/eclipse-classes"/>
 </classpath>
