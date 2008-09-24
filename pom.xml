@@ -243,10 +243,27 @@
           <execution>
             <phase>package</phase>
             <goals>
-              <goal>directory-inline</goal>
+              <goal>single</goal>
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <configuration>
+          <tasks>
+            <copy file="${basedir}/target/jboss-rails-deployer.jar" tofile="${basedir}/../jboss-as-rails/server/default/deployers/jboss-rails.deployer"/>
+          </tasks>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+
       </plugin>
 <!--
       <plugin>
