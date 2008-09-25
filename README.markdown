@@ -34,3 +34,12 @@ An example for `groundhog-rails.yml`
 * The `application.RAILS_ROOT` entry points to `RAILS_ROOT` of the application to be deployed.
 * The `application.RAILS_ENV` entry sets the RAILS_ENV for the deployment.
 * The `web.context` entry describes the URL to which the application should be bound.
+
+Other Projects
+==============
+
+To facilitate usage of JBoss Rails from a traditional Rails application,
+the [JBoss Rails Plugin](http://github.com/bobmcwhirter/jboss-rails-plugin/tree/master)
+installs easily under your application's `vendor/plugins/` directory and provides
+a set of Rake tasks to make deploying and undeploying applications super-simple.
+
