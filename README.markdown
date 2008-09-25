@@ -25,13 +25,12 @@ a configuration tree specifying the deployment information.
 
 An example for `groundhog-rails.yml`
 
-  application: 
-    RAILS_ROOT: /home/bob/checkouts/groundhog
-    RAILS_ENV: development
-  web: 
-    context: /
+	application: 
+	  RAILS_ROOT: /home/bob/checkouts/groundhog
+	  RAILS_ENV: development
+	web: 
+	  context: /
 
-* The `application.RAILS_ROOT` entry points to the deployed application's
-RAILS_ROOT directory on the filesystem.
+* The `application.RAILS_ROOT` entry points to `RAILS_ROOT` of the application to be deployed.
 * The `application.RAILS_ENV` entry sets the RAILS_ENV for the deployment.
 * The `web.context` entry describes the URL to which the application should be bound.
