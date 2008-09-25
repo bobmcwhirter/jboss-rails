@@ -163,7 +163,8 @@ public class RailsContextConfig extends ContextConfig {
 		if (log.isTraceEnabled()) {
 			log.trace("setUpListeners()");
 		}
-		context.addApplicationListener("org.jruby.rack.rails.RailsServletContextListener");
+		//context.addApplicationListener("org.jruby.rack.rails.RailsServletContextListener");
+		context.addApplicationListener("org.jboss.rails.rack.JBossRailsServletContextListener");
 	}
 
 	private void setUpLogin() {
