@@ -43,3 +43,5 @@ the [JBoss Rails Plugin](http://github.com/bobmcwhirter/jboss-rails-plugin/tree/
 installs easily under your application's `vendor/plugins/` directory and provides
 a set of Rake tasks to make deploying and undeploying applications super-simple.
 
+A pre-configured version of JBoss AS can be installed with via the JBoss Rails Plugin,
+or manually from [GitHub](http://github.com/bobmcwhirter/jboss-as-rails/tree/master).
