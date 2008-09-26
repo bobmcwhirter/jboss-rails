@@ -243,40 +243,6 @@
         </configuration>
       </plugin>  
       <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <configuration>
-          <descriptors>
-            <descriptor>src/main/assembly/deployer.xml</descriptor>
-          </descriptors>
-          <finalName>${pom.artifactId}</finalName>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <configuration>
-          <tasks>
-            <copy file="${basedir}/target/jboss-rails-deployer.jar" tofile="${basedir}/../jboss-as-rails/server/default/deployers/jboss-rails.deployer"/>
-          </tasks>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-        </executions>
-
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
@@ -294,6 +260,70 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptors>
+            <descriptor>src/main/assembly/deployer.xml</descriptor>
+          </descriptors>
+          <finalName>${pom.artifactId}</finalName>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>directory-inline</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>clean-gems</id>
+            <phase>clean</phase>
+            <configuration>
+              <tasks>
+                <exec executable="rake" dir="${basedir}/gems/">
+                  <arg value="clean"/>
+                </exec>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>prepare-gems</id>
+            <phase>compile</phase>
+            <configuration>
+              <tasks>
+                <exec executable="rake" dir="${basedir}/gems/">
+                  <arg value="prepare_gems"/>
+                </exec>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+<!--
+          <execution>
+            <id>install-into-as</id>
+            <phase>package</phase>
+            <configuration>
+              <tasks>
+                <copy file="${basedir}/target/jboss-rails-deployer.jar" tofile="${basedir}/../jboss-as-rails/server/default/deployers/jboss-rails.deployer"/>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+-->
 
 <!--
       <plugin>

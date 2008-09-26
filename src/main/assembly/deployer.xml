@@ -4,14 +4,23 @@
     <format>jar</format>
   </formats>
   <includeBaseDirectory>false</includeBaseDirectory>
-<!--
-  <files>
-    <file>
-      <source>src/main/resources/META-INF/rails-deployer-jboss-beans.xml</source>
-      <destName>META-INF/jboss-beans.xml</destName>
-    </file>
-  </files>
--->
+  <fileSets>
+    <fileSet>
+      <directory>lib/activerecord-jdbc-adapter</directory>
+      <outputDirectory>/</outputDirectory>
+      <includes>
+        <include>**/*.jar</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>target/gems/</directory>
+      <outputDirectory>/gems/</outputDirectory>
+      <excludes>
+        <exclude>cache/**</exclude>
+        <exclude>doc/**</exclude>
+      </excludes>
+    </fileSet>
+  </fileSets>
   <dependencySets>
     <dependencySet>
       <outputDirectory>/</outputDirectory>
