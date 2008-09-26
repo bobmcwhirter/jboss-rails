@@ -16,7 +16,6 @@
       <directory>target/gems/</directory>
       <outputDirectory>/gems/</outputDirectory>
       <excludes>
-        <exclude>cache/**</exclude>
         <exclude>doc/**</exclude>
       </excludes>
     </fileSet>

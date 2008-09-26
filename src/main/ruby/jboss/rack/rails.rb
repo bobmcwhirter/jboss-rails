@@ -15,6 +15,7 @@ module JBoss
       def initialize(servlet_context = nil)
         super
         puts "Initializing JBoss::Rack::RailsServletHelper"
+        initializeJdbc()
         @rails_root = @servlet_context.getInitParameter 'rails.root'
         @rails_root ||= '/WEB-INF'
         @rails_root = expand_root_path @rails_root
@@ -23,6 +24,18 @@ module JBoss
         ENV['RAILS_ROOT'] = @rails_root
         ENV['RAILS_ENV'] = @rails_env
         silence_warnings { Object.const_set("PUBLIC_ROOT", public_root) }
+      end
+      
+      def initializeJdbc()
+        puts "This file #{__FILE__}"
+        this_file = File.dirname( __FILE__ )
+        gems_path = this_file.sub( /\/jboss-rails-.*\.jar.*$/, '' ) + '/gems/gems'
+        puts "JDBC gems path #{gems_path}"
+        gems = Dir[ "#{gems_path}/activerecord-jdbc*" ] + Dir[ "#{gems_path}/jdbc-*" ]
+        gems.each do |gem|
+          puts "adding to LOAD_PATH: #{gem}/lib"
+          $: << "#{gem}/lib"
+        end
       end
 
       def load_environment
