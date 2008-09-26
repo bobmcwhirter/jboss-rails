@@ -24,6 +24,8 @@ module JBoss
         ENV['RAILS_ROOT'] = @rails_root
         ENV['RAILS_ENV'] = @rails_env
         silence_warnings { Object.const_set("PUBLIC_ROOT", public_root) }
+        JRuby::Rack::ServletHelper.instance = self
+        puts "instance is: #{JRuby::Rack::ServletHelper.instance}"
       end
       
       def initializeJdbc()
@@ -39,6 +41,7 @@ module JBoss
       end
 
       def load_environment
+        puts "LOAD ENVIRONMENT"
         require 'cgi/session/java_servlet_store'
         require 'jruby/rack/rails_boot'
         load File.join(rails_root, 'config', 'environment.rb')
@@ -46,6 +49,7 @@ module JBoss
         require 'jruby/rack/rails_ext'
         setup_sessions
         setup_logger
+        puts "LOADED ENVIRONMENT"
       end
 
       # This hook method is called back from within the mechanism installed
@@ -66,6 +70,7 @@ module JBoss
       end
 
       def before_require_frameworks
+        puts "BEFORE REQUIRE FRAMEWORKS"
         Rails.public_path = PUBLIC_ROOT if defined?(Rails.public_path)
       end
 
@@ -112,7 +117,7 @@ module JBoss
       end
 
       def session_options
-        @session_options ||= SESSION_OPTIONS
+        @session_options ||= JRuby::Rack::SESSION_OPTIONS
       end
 
       def session_options_for_request(env)
@@ -164,6 +169,7 @@ module JBoss
     class RailsFactory
       def self.new
         helper = RailsServletHelper.instance
+        puts "RailsFactory::new with #{helper} to load environment"
         helper.load_environment
         ::Rack::Builder.new {
           use RailsSetup, helper

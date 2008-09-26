@@ -19,6 +19,6 @@ public class JBossRailsRackApplicationFactory extends DefaultRackApplicationFact
     @Override
     public IRubyObject createApplicationObject(Ruby runtime) {
         runtime.evalScriptlet("load 'jboss/rack/boot_rails.rb'");
-        return createRackServletWrapper(runtime, "run JRuby::Rack::RailsFactory.new");
+        return createRackServletWrapper(runtime, "run JBoss::Rack::RailsFactory.new");
     }
 }
