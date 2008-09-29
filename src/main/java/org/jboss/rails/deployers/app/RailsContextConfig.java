@@ -126,7 +126,7 @@ public class RailsContextConfig extends ContextConfig {
 		if (log.isTraceEnabled()) {
 			log.trace("setUpDistributable()");
 		}
-		context.setDistributable(false);
+		context.setDistributable(true);
 	}
 
 	private void setUpErrorPages() {

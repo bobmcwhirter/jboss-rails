@@ -9,7 +9,7 @@ task :activerecord_jdbc_adapter=>[ :prepare_target] do
   gem_dir = gems_dir + "/activerecord-jdbc-adapter"
 
   Dir.chdir( gem_dir ) do 
-    `rake all:package`
+    # `rake all:package`
 
     gems = Dir[ "pkg/*.gem" ] + Dir[ "adapters/*/pkg/*.gem" ] + Dir[ "drivers/*/pkg/*.gem" ]
 

@@ -91,10 +91,10 @@ public class RailsParsingDeployer extends AbstractParsingDeployer {
 			return;
 		}
 
-		log.info( "attempting undeploy from: " + unit.getName() );
+		log.trace( "attempting undeploy from: " + unit.getName() );
 		Deployment deployment = unit.getAttachment("jboss.rails.root.deployment", Deployment.class);
 		if (deployment != null) {
-			log.info( "undeploying: " + deployment.getName() );
+			log.debug( "Undeploying: " + deployment.getName() );
 			MainDeployer deployer = unit.getAttachment( "jboss.rails.root.deployer", MainDeployer.class );
 			try {
 				deployer.removeDeployment(deployment);

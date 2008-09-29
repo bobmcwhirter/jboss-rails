@@ -21,7 +21,7 @@ if ( jboss_home.nil? )
   exit 1
 end
 
-deployers_dir = "#{jboss_home}/server/default/deployers/"
+deployers_dir = "#{jboss_home}/server/all/deployers/"
 
 puts "Installing into #{deployers_dir}"
 

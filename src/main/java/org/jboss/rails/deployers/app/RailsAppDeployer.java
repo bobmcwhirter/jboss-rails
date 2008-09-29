@@ -21,8 +21,6 @@
  */
 package org.jboss.rails.deployers.app;
 
-import java.io.File;
-
 import javax.management.ObjectName;
 
 import org.jboss.deployers.spi.DeploymentException;
@@ -30,6 +28,7 @@ import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.spi.deployer.helpers.AbstractDeployer;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
+import org.jboss.mx.util.MBeanServerLocator;
 import org.jboss.rails.metadata.RailsMetaData;
 import org.jboss.system.metadata.ServiceConstructorMetaData;
 import org.jboss.system.metadata.ServiceMetaData;
@@ -80,6 +79,7 @@ public class RailsAppDeployer extends AbstractDeployer {
 		}
 		try {
 			RailsDeployment deployment = new RailsDeployment();
+			deployment.setMBeanServer( MBeanServerLocator.locateJBoss() );
 			ServiceMetaData railsModule = new ServiceMetaData();
 			String name = getObjectName(railsMetaData);
 			ObjectName objectName = new ObjectName(name);

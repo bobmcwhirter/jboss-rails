@@ -21,6 +21,7 @@
  */
 package org.jboss.rails.deployers.app;
 
+import javax.management.Attribute;
 import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
@@ -31,10 +32,18 @@ import org.apache.naming.resources.FileDirContext;
 import org.apache.tomcat.util.modeler.Registry;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.logging.Logger;
+import org.jboss.metadata.web.jboss.JBossWebMetaData;
+import org.jboss.metadata.web.jboss.ReplicationConfig;
+import org.jboss.metadata.web.jboss.ReplicationGranularity;
+import org.jboss.metadata.web.jboss.ReplicationTrigger;
+import org.jboss.metadata.web.jboss.SnapshotMode;
 import org.jboss.mx.util.MBeanServerLocator;
 import org.jboss.rails.metadata.RailsMetaData;
 import org.jboss.rails.naming.JBossFileDirContext;
 import org.jboss.web.tomcat.service.WebCtxLoader;
+import org.jboss.web.tomcat.service.session.AbstractJBossManager;
+import org.jboss.web.tomcat.service.session.JBossCacheManager;
+import org.jboss.web.tomcat.service.session.distributedcache.spi.ClusteringNotSupportedException;
 
 /**
  * Leaf managed web-deployment for Rails apps.
@@ -46,8 +55,12 @@ public class RailsDeployment implements RailsDeploymentMBean {
 	/** The Catalina context class we work with. */
 	public final static String DEFAULT_CONTEXT_CLASS_NAME = "org.apache.catalina.core.StandardContext";
 
+	protected String managerClass = "org.jboss.web.tomcat.service.session.JBossCacheManager";
+
 	/** Our logger. */
 	private Logger log = Logger.getLogger(RailsDeployment.class);
+
+	private MBeanServer server;
 
 	@SuppressWarnings("unchecked")
 	public synchronized void start(RailsMetaData metaData) throws Exception {
@@ -62,11 +75,57 @@ public class RailsDeployment implements RailsDeploymentMBean {
 		setUpLoader(context);
 		setUpJMX(context, metaData);
 		setUpConfig(context, metaData);
-
 		context.start();
 		if (log.isTraceEnabled()) {
 			log.debug("start() complete");
 		}
+		setUpClustering(context, metaData);
+
+	}
+
+	private void setUpClustering(StandardContext context, RailsMetaData metaData) {
+		// Try to initate clustering, fallback to standard if no clustering is
+		// available
+		try {
+			AbstractJBossManager manager = null;
+			String managerClassName = this.managerClass;
+			Class managerClass = Thread.currentThread().getContextClassLoader().loadClass(managerClassName);
+			manager = (AbstractJBossManager) managerClass.newInstance();
+			String hostName = null;
+			String contextPath = getContextPath( metaData );
+			String name = "//" + ((hostName == null) ? "localhost" : hostName) + contextPath;
+			manager.init( name, createJBossWebMetaData(metaData) );
+
+			ObjectName objectName = createObjectName( metaData );
+			server.setAttribute(objectName, new Attribute("manager", manager));
+
+			log.debug("Enabled clustering support for ctxPath=" + contextPath);
+		} catch (ClusteringNotSupportedException e) {
+			// JBAS-3513 Just log a WARN, not an ERROR
+			log.warn("Failed to setup clustering, clustering disabled. ClusteringNotSupportedException: " + e.getMessage());
+		} catch (NoClassDefFoundError ncdf) {
+			// JBAS-3513 Just log a WARN, not an ERROR
+			log.debug("Classes needed for clustered webapp unavailable", ncdf);
+			log.warn("Failed to setup clustering, clustering disabled. NoClassDefFoundError: " + ncdf.getMessage());
+		} catch (Throwable t) {
+			// TODO consider letting this through and fail the deployment
+			log.error("Failed to setup clustering, clustering disabled. Exception: ", t);
+		}
+	}
+
+	
+	private JBossWebMetaData createJBossWebMetaData(RailsMetaData railsMetaData) {
+		JBossWebMetaData jbossWebMetaData = new JBossWebMetaData();
+		ReplicationConfig replicationConfig = new ReplicationConfig();
+		replicationConfig.setReplicationFieldBatchMode(true);
+		replicationConfig.setReplicationGranularity(ReplicationGranularity.SESSION );
+		replicationConfig.setReplicationTrigger(ReplicationTrigger.SET);
+		replicationConfig.setSnapshotMode(SnapshotMode.INTERVAL);
+		replicationConfig.setUseJK(false );
+		replicationConfig.setCacheName( "standard-session-cache" );
+				
+		jbossWebMetaData.setReplicationConfig(replicationConfig);
+		return jbossWebMetaData;
 	}
 
 	private void setUpResources(StandardContext context, RailsMetaData metaData) throws Exception {
@@ -84,7 +143,7 @@ public class RailsDeployment implements RailsDeploymentMBean {
 	}
 
 	private void setUpJMX(StandardContext context, RailsMetaData metaData) throws Exception {
-		ObjectName objectName = createObjectName( metaData );
+		ObjectName objectName = createObjectName(metaData);
 		context.setServer("jboss");
 		registerContext(context, objectName);
 	}
@@ -114,13 +173,13 @@ public class RailsDeployment implements RailsDeploymentMBean {
 			return;
 		}
 
-		ObjectName objectName = createObjectName( metaData );
+		ObjectName objectName = createObjectName(metaData);
 
 		if (server.isRegistered(objectName)) {
 			// Contexts should be stopped by the host already
 			server.invoke(objectName, "destroy", new Object[] {}, new String[] {});
 		}
-		
+
 	}
 
 	private String getContextPath(RailsMetaData railsMetaData) {
@@ -134,11 +193,16 @@ public class RailsDeployment implements RailsDeploymentMBean {
 		return context;
 
 	}
-	
+
 	private ObjectName createObjectName(RailsMetaData metaData) throws MalformedObjectNameException, NullPointerException {
-		String contextPath = getContextPath( metaData );
+		String contextPath = getContextPath(metaData);
 		String objectName = "jboss.web:j2eeType=WebModule,name=//localhost" + contextPath + ",J2EEApplication=none,J2EEServer=none";
 		return new ObjectName(objectName);
+	}
+
+	public void setMBeanServer(MBeanServer server) {
+		this.server = server;
+		
 	}
 
 }
