@@ -5,22 +5,35 @@ target_gems_dir = target_dir + '/gems'
 
 require 'fileutils'
 
-task :activerecord_jdbc_adapter=>[ :prepare_target] do
+if ( ENV['QUICK_BUILD'] != nil ) 
+  task :default do
+    puts "intentionally building nothing"
+  end
+else
+  task :default=>[:build_and_install_gems] do
+    # nothing
+  end
+end
+
+
+task :build_and_install_gems=>[ :build_gems, :install_gems ] do
+  # nothing
+end
+
+task :build_gems=>[ :prepare_target ] do
   gem_dir = gems_dir + "/activerecord-jdbc-adapter"
 
   Dir.chdir( gem_dir ) do 
-    # `rake all:package`
+    `rake all:package`
+  end
+end
 
+task :install_gems do 
+  gem_dir = gems_dir + "/activerecord-jdbc-adapter"
+
+  Dir.chdir( gem_dir ) do 
     gems = Dir[ "pkg/*.gem" ] + Dir[ "adapters/*/pkg/*.gem" ] + Dir[ "drivers/*/pkg/*.gem" ]
-
-    #gems.each do |gem|
-    #  gem = File.dirname( gem ) + '/' + File.basename( gem, ".gem" )
-    #  puts "prepare gem: #{gem}"
-    #  puts `GEM_PATH=#{target_gems_dir} gem install -i #{target_gems_dir} --local --no-ri --no-rdoc #{gem}`
-    #end
-
     puts `GEM_PATH=#{target_gems_dir} gem install -i #{target_gems_dir} --local --no-ri --no-rdoc #{gems.join(' ' )}`
-   
   end
 end
 

@@ -55,7 +55,8 @@ public class RailsDeployment implements RailsDeploymentMBean {
 	/** The Catalina context class we work with. */
 	public final static String DEFAULT_CONTEXT_CLASS_NAME = "org.apache.catalina.core.StandardContext";
 
-	protected String managerClass = "org.jboss.web.tomcat.service.session.JBossCacheManager";
+	//protected String managerClass = "org.jboss.web.tomcat.service.session.JBossCacheManager";
+	protected String managerClass = "org.jboss.rails.tomcat.RailsCacheManager";
 
 	/** Our logger. */
 	private Logger log = Logger.getLogger(RailsDeployment.class);
@@ -70,12 +71,16 @@ public class RailsDeployment implements RailsDeploymentMBean {
 		log.debug("meta data: " + metaData);
 		Class<StandardContext> contextClass = (Class<StandardContext>) Class.forName(DEFAULT_CONTEXT_CLASS_NAME);
 		StandardContext context = contextClass.newInstance();
-
+		
+		context.setPath( metaData.getContext() );
+		
 		setUpResources(context, metaData);
 		setUpLoader(context);
 		setUpJMX(context, metaData);
 		setUpConfig(context, metaData);
+		
 		context.start();
+		
 		if (log.isTraceEnabled()) {
 			log.debug("start() complete");
 		}
@@ -91,12 +96,14 @@ public class RailsDeployment implements RailsDeploymentMBean {
 			String managerClassName = this.managerClass;
 			Class managerClass = Thread.currentThread().getContextClassLoader().loadClass(managerClassName);
 			manager = (AbstractJBossManager) managerClass.newInstance();
+			
 			String hostName = null;
-			String contextPath = getContextPath( metaData );
+			String contextPath = metaData.getContext();
 			String name = "//" + ((hostName == null) ? "localhost" : hostName) + contextPath;
 			manager.init( name, createJBossWebMetaData(metaData) );
 
 			ObjectName objectName = createObjectName( metaData );
+			
 			server.setAttribute(objectName, new Attribute("manager", manager));
 
 			log.debug("Enabled clustering support for ctxPath=" + contextPath);
@@ -182,20 +189,11 @@ public class RailsDeployment implements RailsDeploymentMBean {
 
 	}
 
-	private String getContextPath(RailsMetaData railsMetaData) {
-		String context = railsMetaData.getContext();
-		if (context != null) {
-			return context;
-		}
-		String appName = railsMetaData.getApplicationName();
-		context = "/" + appName;
-
-		return context;
-
-	}
-
 	private ObjectName createObjectName(RailsMetaData metaData) throws MalformedObjectNameException, NullPointerException {
-		String contextPath = getContextPath(metaData);
+		String contextPath = metaData.getContext();
+		if ( contextPath == null || contextPath.equals( "" ) )  {
+			contextPath = "/";
+		}
 		String objectName = "jboss.web:j2eeType=WebModule,name=//localhost" + contextPath + ",J2EEApplication=none,J2EEServer=none";
 		return new ObjectName(objectName);
 	}

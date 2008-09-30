@@ -133,6 +133,12 @@ public class RailsMetaData {
 	}
 
 	public String getContext() {
+		if (this.context == null) {
+			return "/" + this.applicationName;
+		}
+		if (this.context.equals("/") || this.context.equals("ROOT")) {
+			return "";
+		}
 		return this.context;
 	}
 
@@ -141,8 +147,6 @@ public class RailsMetaData {
 	}
 
 	public String toString() {
-		return "[RailsMetaData: railsRoot=" + this.railsRoot 
-		+ "; context=" + this.context 
-		+ "; environment=" + this.environment;
+		return "[RailsMetaData: railsRoot=" + this.railsRoot + "; context=" + this.context + "; environment=" + this.environment;
 	}
 }

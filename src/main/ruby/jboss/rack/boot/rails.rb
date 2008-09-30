@@ -17,58 +17,23 @@
 # License along with this software; if not, write to the Free
 # Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 # 02110-1301 USA, or see the FSF site: http://www.fsf.org.
-
+ 
 #--
 # Copyright 2007-2008 Sun Microsystems, Inc.
 # This source code is available under the MIT license.
 # See the file LICENSE.txt for details.
 #++
 
-require 'jruby/rack'
-require 'jruby/rack/rails'
+require 'jboss/rack/rails'
 
-import org.jboss.logging.Logger
-
-module JBoss
+module JRuby
   module Rack
-    class JBossRailsServletHelper < JRuby::Rack::RailsServletHelper
-      
-      def initialize(servlet_context = nil)
-        super(servlet_context)
-      end
-      
-      def logdev
-        @logdev ||= JBossServletLog.new @servlet_context
-      end
-      
-    end
-    
-    class JBossServletLog
-      
-      def initialize(context = $servlet_context)
-        @context = context
-      end
-      def puts(msg)
-        write msg.to_s
-      end
-      def write(msg)
-        @context.log(msg.strip)
-      end
-      def flush; end
-      def close; end
-    end
-    
-    Bootstrap = JBossRailsServletHelper
-    
-    class RailsFactory
-      def self.new
-        helper = JRuby::Rack::ServletHelper.instance
-        helper.load_environment
-        ::Rack::Builder.new {
-          use ::JRuby::Rack::RailsSetup, helper
-          run ::Rack::Adapter::Rails.new(helper.options)
-        }.to_app
-      end
+    silence_warnings do
+      const_set('Bootstrap', JBoss::Rack::JBossRailsServletHelper)
     end
   end
 end
+
+#require 'jruby/rack/servlet_helper'
+require 'rack/adapter/rails'
+

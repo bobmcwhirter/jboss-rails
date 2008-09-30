@@ -148,5 +148,6 @@
 	<classpathentry kind="lib" path="target/dependency/trove.jar"/>
 	<classpathentry kind="lib" path="target/dependency/xercesImpl.jar"/>
 	<classpathentry kind="lib" path="target/dependency/xml-apis.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jruby-complete.jar"/>
 	<classpathentry kind="output" path="target/eclipse-classes"/>
 </classpath>

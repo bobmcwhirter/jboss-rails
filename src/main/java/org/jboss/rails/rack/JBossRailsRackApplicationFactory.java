@@ -18,7 +18,7 @@ import org.jruby.runtime.builtin.IRubyObject;
 public class JBossRailsRackApplicationFactory extends DefaultRackApplicationFactory {
     @Override
     public IRubyObject createApplicationObject(Ruby runtime) {
-        runtime.evalScriptlet("load 'jboss/rack/boot_rails.rb'");
+        runtime.evalScriptlet("load 'jboss/rack/boot/rails.rb'");
         return createRackServletWrapper(runtime, "run JBoss::Rack::RailsFactory.new");
     }
 }

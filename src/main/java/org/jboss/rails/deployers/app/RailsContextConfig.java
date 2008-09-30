@@ -202,7 +202,6 @@ public class RailsContextConfig extends ContextConfig {
 		}
 		Wrapper wrapper = context.createWrapper();
 		wrapper.setName("jboss-rails-default");
-		wrapper.setName("jboss-rails-default");
 		if (log.isTraceEnabled()) {
 			wrapper.addInitParameter("debug", "1");
 		}

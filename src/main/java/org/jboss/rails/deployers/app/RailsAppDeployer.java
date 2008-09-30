@@ -104,6 +104,9 @@ public class RailsAppDeployer extends AbstractDeployer {
 	 */
 	private String getObjectName(RailsMetaData railsMetaData) {
 		String contextPath = getContextPath( railsMetaData );
+		if ( contextPath == null || contextPath.equals( "" ) ) {
+			contextPath = "/ROOT";
+		}
 		String objectName = "jboss.rails.deployment:root=" + contextPath;
 		if (log.isTraceEnabled()) {
 			log.trace("objectName=" + objectName);

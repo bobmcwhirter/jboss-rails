@@ -299,9 +299,7 @@
             <phase>compile</phase>
             <configuration>
               <tasks>
-                <exec executable="rake" dir="${basedir}/gems/">
-                  <arg value="prepare_gems"/>
-                </exec>
+                <exec executable="rake" dir="${basedir}/gems/" />
               </tasks>
             </configuration>
             <goals>
