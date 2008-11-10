@@ -4,6 +4,8 @@ target_dir = gems_dir + '/../target'
 target_gems_dir = target_dir + '/gems'
 
 require 'fileutils'
+require 'rubygems'
+require 'hoe'
 
 if ( ENV['QUICK_BUILD'] != nil ) 
   task :default do
