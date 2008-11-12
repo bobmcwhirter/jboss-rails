@@ -61,6 +61,6 @@ task :release_dist do
   version = determine_version
 
   FileUtils.chdir( "#{dist_stage}" ) do 
-    puts `scp jboss-rails-deployer-#{version}.zip oddthesis.org:/opt/oddthesis/repo/`
+    puts `scp -q jboss-rails-deployer-#{version}.zip oddthesis.org:/opt/oddthesis/repo/`
   end
 end
