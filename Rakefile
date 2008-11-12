@@ -47,9 +47,13 @@ task :dist do
 
   FileUtils.cp_r( deployer_dir, simple_dir )
   FileUtils.cp( "#{project_root}/INSTALL.txt", dist_stage )
+  FileUtils.cp( "#{project_root}/README.markdown", dist_stage )
+  Dir[ "#{project_root}/LICENSE*.txt" ].each do |l|
+    FileUtils.cp( l, dist_stage )
+  end
 
   FileUtils.chdir( "#{dist_stage}" ) do 
-    puts `zip -r jboss-rails-deployer-#{version}.zip jboss-rails.deployer INSTALL.txt`
+    puts `zip -r jboss-rails-deployer-#{version}.zip jboss-rails.deployer *.txt *.markdown`
   end
 end
 
