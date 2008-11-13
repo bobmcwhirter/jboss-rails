@@ -37,6 +37,8 @@ public class RailsStructure extends AbstractVFSStructureDeployer {
 	public boolean determineStructure(StructureContext context) throws DeploymentException {
 		boolean recognized = false;
 		VirtualFile root = context.getRoot();
+		
+		log.debug( "Determining structure for " + context.getFile() );
 
 		try {
 			if ( root.isLeaf() ) {

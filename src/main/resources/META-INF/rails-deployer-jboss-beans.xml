@@ -11,5 +11,8 @@
   </bean>
 
   <bean name="RailsEnvironmentParsingDeployer" class="org.jboss.rails.deployers.RailsEnvironmentParsingDeployer"/>
+
+  <bean name="ScheduleDeployer" class="org.jboss.rails.deployers.schedule.ScheduleDeployer"/>
+  <bean name="RubyScheduleDeployer" class="org.jboss.rails.deployers.schedule.RubyScheduleDeployer"/>
   
 </deployment>

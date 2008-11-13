@@ -11,7 +11,7 @@
 	<classpathentry kind="lib" path="target/dependency/jboss-deployers-core-spi.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-deployers-core.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-deployers-impl.jar"/>
-	<classpathentry kind="lib" path="target/dependency/jboss-deployers-spi.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-deployers-spi.jar" sourcepath="/Users/bob/checkouts/jboss-deployers/deployers-spi/src/main"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-deployers-structure-spi.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-deployers-vfs-spi.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-deployers-vfs.jar"/>
@@ -82,7 +82,7 @@
 	<classpathentry kind="lib" path="target/dependency/jboss-ejb3-async.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-ejb3-cache.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-ejb3-common.jar"/>
-	<classpathentry kind="lib" path="target/dependency/jboss-ejb3-core.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-ejb3-core.jar" sourcepath="/Users/bob/checkouts/jbossas/ejb3/src/main"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-ejb3-ext-api-impl.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-ejb3-ext-api.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-ejb3-interceptors.jar"/>
