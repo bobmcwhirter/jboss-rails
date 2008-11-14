@@ -70,7 +70,7 @@ public class RubyScheduleDeployer extends AbstractVFSParsingDeployer<ScheduleMet
 			throw new DeploymentException(e);
 		}
 	}
-
+	
 	private String buildCronExpression(Map<String, String> jobSpec) {
 
 		String cronExpr = jobSpec.get("cron");
@@ -79,28 +79,6 @@ public class RubyScheduleDeployer extends AbstractVFSParsingDeployer<ScheduleMet
 			return cronExpr.trim();
 		}
 
-		String seconds = jobSpec.get("seconds");
-		if (seconds == null || seconds.trim().equals("")) {
-			seconds = "*";
-		} else {
-			seconds = seconds.trim();
-		}
-
-		String minutes = jobSpec.get("minutes");
-		if (minutes == null || minutes.trim().equals("")) {
-			minutes = "*";
-		} else {
-			minutes = minutes.trim();
-		}
-
-		String hours = jobSpec.get("hours");
-		if (hours == null || hours.trim().equals("")) {
-			hours = "*";
-		} else {
-			hours = hours.trim();
-		}
-
-		cronExpr = seconds + " " + minutes + " " + hours + " * * ?";
 		return cronExpr;
 	}
 }

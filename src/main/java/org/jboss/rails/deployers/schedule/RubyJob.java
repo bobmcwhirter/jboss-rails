@@ -17,7 +17,9 @@ public class RubyJob implements Job, StatefulJob {
 	public void execute(JobExecutionContext context) throws JobExecutionException {
 		JobDataMap data = context.getMergedJobDataMap();
 		Ruby runtime = (Ruby) data.get( "ruby.runtime" );
+		log.info( "Starting job" );
 		runtime.evalScriptlet( "$task.run\n" );
+		log.info( "Completed job" );
 		
 	}
 
