@@ -35,6 +35,21 @@ An example for `groundhog-rails.yml`
 * The `application.RAILS_ENV` entry sets the RAILS_ENV for the deployment.
 * The `web.context` entry describes the URL to which the application should be bound.
 
+Scheduler
+---------
+
+Scheduled tasks can now be deployed with your application.
+
+An example of `config/jboss-scheduler.yml`
+
+	github.commit.poller:
+	  description: Poll projects for GitHub commits
+	  cron: 0 */15 * * * ?
+	  task: Github::CommitPoller
+
+This will call the `run()` method on  `RAILS_ROOT/app/scheduler/github/commit_poller.rb`
+every 15 minutes.
+
 Other Projects
 ==============
 
