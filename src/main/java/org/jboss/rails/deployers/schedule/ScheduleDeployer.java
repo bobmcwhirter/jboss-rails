@@ -47,7 +47,7 @@ public class ScheduleDeployer extends AbstractDeployer {
 				
 				Map<String,Object> taskData = task.getTaskData();
 				JobDataMap data =  jobDetail.getJobDataMap();
-				data.put( "ruby.class", taskData.get( "ruby.class" ) );
+				data.putAll( taskData );
 				
 				String expr = task.getCronExpression();
 				
