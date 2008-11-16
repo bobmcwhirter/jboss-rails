@@ -13,7 +13,7 @@
 	<classpathentry kind="lib" path="target/dependency/jboss-deployers-impl.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-deployers-spi.jar" sourcepath="/Users/bob/checkouts/jboss-deployers/deployers-spi/src/main"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-deployers-structure-spi.jar"/>
-	<classpathentry kind="lib" path="target/dependency/jboss-deployers-vfs-spi.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-deployers-vfs-spi.jar" sourcepath="/vfs/src/main/java"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-deployers-vfs.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-kernel.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-metadata.jar"/>

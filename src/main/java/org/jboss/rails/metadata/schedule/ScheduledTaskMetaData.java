@@ -4,6 +4,7 @@ import java.util.Map;
 
 public class ScheduledTaskMetaData {
 
+	private String group;
 	private String name;
 	private String description;
 	private Map<String, Object> taskData;
@@ -43,5 +44,13 @@ public class ScheduledTaskMetaData {
 	
 	public String getCronExpression() {
 		return this.cronExpression;
+	}
+	
+	public void setGroup(String group) {
+		this.group = group;
+	}
+
+	public String getGroup() {
+		return this.group;
 	}
 }

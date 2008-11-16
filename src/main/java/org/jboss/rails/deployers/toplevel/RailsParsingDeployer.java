@@ -51,6 +51,7 @@ public class RailsParsingDeployer extends AbstractParsingDeployer {
 	public RailsParsingDeployer() {
 		setAllInputs(true);
 		setStage(DeploymentStages.REAL);
+		addOutput( RailsMetaData.class );
 	}
 
 	public void deploy(DeploymentUnit unit) throws DeploymentException {

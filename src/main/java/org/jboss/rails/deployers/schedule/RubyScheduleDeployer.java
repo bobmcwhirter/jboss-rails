@@ -20,7 +20,7 @@ public class RubyScheduleDeployer extends AbstractVFSParsingDeployer<ScheduleMet
 
 	public RubyScheduleDeployer() {
 		super(ScheduleMetaData.class);
-		setAllInputs(true);
+		addInput( RailsMetaData.class );
 		setName("jboss-scheduler.yml");
 	}
 
@@ -43,6 +43,7 @@ public class RubyScheduleDeployer extends AbstractVFSParsingDeployer<ScheduleMet
 			for ( String jobName : results.keySet() ) {
 				Map<String,String> jobSpec = results.get( jobName );
 				ScheduledTaskMetaData task = new ScheduledTaskMetaData();
+				task.setGroup( railsRoot );
 				task.setName( jobName );
 				task.setDescription( jobSpec.get( "description" ) );
 				
