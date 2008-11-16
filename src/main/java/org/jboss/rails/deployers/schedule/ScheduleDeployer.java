@@ -76,6 +76,7 @@ public class ScheduleDeployer extends AbstractSimpleRealDeployer<ScheduleMetaDat
 		try {
 			Scheduler scheduler = factory.getScheduler();
 			for (ScheduledTaskMetaData task : deployment.getScheduledTasks()) {
+				log.info( "Undeploying scheduled task " + task.getName() + ".trigger // " + task.getGroup() );
 				scheduler.unscheduleJob( task.getName() + ".trigger", task.getGroup() );
 			}
 		} catch (SchedulerException e) {
