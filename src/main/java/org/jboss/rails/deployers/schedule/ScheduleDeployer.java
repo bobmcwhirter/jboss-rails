@@ -22,8 +22,6 @@ public class ScheduleDeployer extends AbstractSimpleRealDeployer<ScheduleMetaDat
 
 	public ScheduleDeployer() {
 		super(ScheduleMetaData.class);
-		// setInput( ScheduleMetaData.class );
-		// setStage( DeploymentStages.REAL );
 		setParentFirst(true);
 	}
 

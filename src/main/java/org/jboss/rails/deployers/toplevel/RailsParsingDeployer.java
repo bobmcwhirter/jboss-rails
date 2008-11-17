@@ -38,37 +38,27 @@ import org.jboss.deployers.spi.structure.StructureMetaData;
 import org.jboss.deployers.spi.structure.StructureMetaDataFactory;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.deployers.vfs.plugins.client.AbstractVFSDeployment;
+import org.jboss.deployers.vfs.spi.deployer.AbstractVFSParsingDeployer;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.logging.Logger;
 import org.jboss.rails.metadata.RailsMetaData;
 import org.jboss.virtual.VFS;
 import org.jboss.virtual.VirtualFile;
 
-public class RailsParsingDeployer extends AbstractParsingDeployer {
+public class RailsParsingDeployer extends AbstractVFSParsingDeployer<RailsMetaData> {
 
 	private Logger log = Logger.getLogger(RailsParsingDeployer.class);
 
 	public RailsParsingDeployer() {
-		setAllInputs(true);
+		super( RailsMetaData.class );
+		setSuffix( "-rails.yml" );
 		setStage(DeploymentStages.REAL);
-		addOutput( RailsMetaData.class );
+		setTopLevelOnly( true );
 	}
 
-	public void deploy(DeploymentUnit unit) throws DeploymentException {
-		if (!(unit instanceof VFSDeploymentUnit)) {
-			log.info("DeploymentUnit must be a VFSDeploymentUnit");
-			return;
-		}
-		VFSDeploymentUnit vfsUnit = (VFSDeploymentUnit) unit;
+	@Override
+	protected RailsMetaData parse(VFSDeploymentUnit vfsUnit, VirtualFile file, RailsMetaData root) throws Exception {
 
-		if (!vfsUnit.getRoot().getName().endsWith("-rails.yml")) {
-			log.debug("skipping: " + vfsUnit.getRoot());
-			return;
-		}
-		if (!vfsUnit.isTopLevel()) {
-			log.debug("not top-level; skipping: " + vfsUnit.getRoot());
-			return;
-		}
 		log.debug("deploying: " + vfsUnit.getRoot());
 
 		RailsMetaData metaData = parseDescriptor(vfsUnit.getRoot());
@@ -82,16 +72,15 @@ public class RailsParsingDeployer extends AbstractParsingDeployer {
 		} catch (IOException e) {
 			throw new DeploymentException(e);
 		}
+		
+		return null;
 
 	}
+	
+	
 
 	@Override
 	public void undeploy(DeploymentUnit unit) {
-		if (!(unit instanceof VFSDeploymentUnit)) {
-			log.info("DeploymentUnit must be a VFSDeploymentUnit");
-			return;
-		}
-
 		log.trace( "attempting undeploy from: " + unit.getName() );
 		Deployment deployment = unit.getAttachment("jboss.rails.root.deployment", Deployment.class);
 		if (deployment != null) {
@@ -163,5 +152,7 @@ public class RailsParsingDeployer extends AbstractParsingDeployer {
 			throw new DeploymentException(e);
 		}
 	}
+
+
 
 }
