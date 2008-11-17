@@ -73,6 +73,10 @@ public class RailsParsingDeployer extends AbstractVFSParsingDeployer<RailsMetaDa
 			throw new DeploymentException(e);
 		}
 		
+		// Returning null since the RailsMetaData is actually
+		// attached as a predetermined managed object on the
+		// sub-deployment, and not directly applicable
+		// to *this* deployment unit.
 		return null;
 
 	}
