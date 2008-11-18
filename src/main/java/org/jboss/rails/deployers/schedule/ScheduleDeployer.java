@@ -27,9 +27,6 @@ public class ScheduleDeployer extends AbstractSimpleRealDeployer<ScheduleMetaDat
 
 	@Override
 	public void deploy(DeploymentUnit unit, ScheduleMetaData deployment) throws DeploymentException {
-		if (deployment == null) {
-			return;
-		}
 		log.info("deploying " + deployment);
 
 		StdSchedulerFactory factory = new StdSchedulerFactory();
