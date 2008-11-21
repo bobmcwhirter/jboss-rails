@@ -1,4 +1,4 @@
-package org.jboss.rails.deployers.schedule;
+package org.jboss.rails.enterprise.scheduler.deployers;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -6,11 +6,11 @@ import java.util.Map;
 import java.util.Random;
 
 import org.jboss.deployers.spi.DeploymentException;
-import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.spi.deployer.helpers.AbstractSimpleRealDeployer;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
-import org.jboss.rails.metadata.schedule.ScheduleMetaData;
-import org.jboss.rails.metadata.schedule.ScheduledTaskMetaData;
+import org.jboss.rails.enterprise.scheduler.RubyJob;
+import org.jboss.rails.enterprise.scheduler.metadata.ScheduleMetaData;
+import org.jboss.rails.enterprise.scheduler.metadata.ScheduledTaskMetaData;
 import org.quartz.CronTrigger;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -56,13 +56,14 @@ public class ScheduleDeployer extends AbstractSimpleRealDeployer<ScheduleMetaDat
 				Date startTime = new Date(System.currentTimeMillis() + randomOffset);
 				trigger.setStartTime(startTime);
 				scheduler.scheduleJob(jobDetail, trigger);
+
 			}
 		} catch (SchedulerException e) {
 			log.error(e);
 		} catch (ParseException e) {
 			log.error(e);
 		}
-
+		
 	}
 
 	@Override
@@ -71,8 +72,8 @@ public class ScheduleDeployer extends AbstractSimpleRealDeployer<ScheduleMetaDat
 		try {
 			Scheduler scheduler = factory.getScheduler();
 			for (ScheduledTaskMetaData task : deployment.getScheduledTasks()) {
-				log.info( "Undeploying scheduled task " + task.getName() + ".trigger // " + task.getGroup() );
-				scheduler.unscheduleJob( task.getName() + ".trigger", task.getGroup() );
+				log.info("Undeploying scheduled task " + task.getName() + ".trigger // " + task.getGroup());
+				scheduler.unscheduleJob(task.getName() + ".trigger", task.getGroup());
 			}
 		} catch (SchedulerException e) {
 			// TODO Auto-generated catch block

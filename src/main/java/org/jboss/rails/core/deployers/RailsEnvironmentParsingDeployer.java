@@ -19,11 +19,11 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.rails.deployers;
+package org.jboss.rails.core.deployers;
 
 import org.jboss.deployers.vfs.spi.deployer.AbstractVFSParsingDeployer;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
-import org.jboss.rails.metadata.RailsMetaData;
+import org.jboss.rails.core.metadata.RailsMetaData;
 import org.jboss.virtual.VirtualFile;
 
 public class RailsEnvironmentParsingDeployer extends AbstractVFSParsingDeployer<RailsMetaData> {

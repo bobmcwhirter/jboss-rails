@@ -1,4 +1,4 @@
-package org.jboss.rails.deployers.schedule;
+package org.jboss.rails.enterprise.scheduler;
 
 import org.jboss.logging.Logger;
 import org.jruby.Ruby;

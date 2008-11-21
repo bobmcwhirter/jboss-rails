@@ -1,4 +1,4 @@
-package org.jboss.rails.deployers.schedule;
+package org.jboss.rails.enterprise.scheduler.deployers;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -8,9 +8,9 @@ import org.ho.yaml.Yaml;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.vfs.spi.deployer.AbstractVFSParsingDeployer;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
-import org.jboss.rails.metadata.RailsMetaData;
-import org.jboss.rails.metadata.schedule.ScheduleMetaData;
-import org.jboss.rails.metadata.schedule.ScheduledTaskMetaData;
+import org.jboss.rails.core.metadata.RailsMetaData;
+import org.jboss.rails.enterprise.scheduler.metadata.ScheduleMetaData;
+import org.jboss.rails.enterprise.scheduler.metadata.ScheduledTaskMetaData;
 import org.jboss.rails.util.RuntimeUtils;
 import org.jboss.virtual.VirtualFile;
 import org.jruby.Ruby;
@@ -22,6 +22,7 @@ public class RubyScheduleDeployer extends AbstractVFSParsingDeployer<ScheduleMet
 		super(ScheduleMetaData.class);
 		addInput( RailsMetaData.class );
 		setName("jboss-scheduler.yml");
+		setBuildManagedObject(true);
 	}
 
 	@Override

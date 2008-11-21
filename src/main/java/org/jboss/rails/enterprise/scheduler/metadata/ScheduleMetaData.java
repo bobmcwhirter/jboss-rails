@@ -1,9 +1,15 @@
-package org.jboss.rails.metadata.schedule;
+package org.jboss.rails.enterprise.scheduler.metadata;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ScheduleMetaData {
+public class ScheduleMetaData implements Serializable {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5243123742456609507L;
 	
 	private List<ScheduledTaskMetaData> scheduledTasks;
 	
@@ -18,6 +24,5 @@ public class ScheduleMetaData {
 	public List<ScheduledTaskMetaData> getScheduledTasks() {
 		return this.scheduledTasks;
 	}
-	
 
 }

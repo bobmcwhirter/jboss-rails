@@ -19,9 +19,42 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+package org.jboss.rails.core.deployers;
 
-package org.jboss.rails.deployers.app;
+import java.io.IOException;
 
-public interface RailsDeploymentMBean {
+import org.jboss.deployers.spi.DeploymentException;
+import org.jboss.deployers.vfs.plugins.structure.AbstractVFSStructureDeployer;
+import org.jboss.deployers.vfs.spi.structure.StructureContext;
+import org.jboss.virtual.VirtualFile;
 
+public class RailsStructure extends AbstractVFSStructureDeployer {
+
+	public RailsStructure() {
+		setRelativeOrder( -1000 );
+	}
+
+	public boolean determineStructure(StructureContext context) throws DeploymentException {
+		boolean recognized = false;
+		VirtualFile root = context.getRoot();
+		
+		log.debug( "Determining structure for " + context.getFile() );
+
+		try {
+			if ( root.isLeaf() ) {
+				return false;
+			}
+			VirtualFile config = root.getChild("config");
+			if (config != null) {
+				if (config.getChild("environment.rb") != null) {
+					createContext(context, "config");
+					recognized = true;
+				}
+			}
+		} catch (IOException e) {
+			throw new DeploymentException(e);
+		}
+
+		return recognized;
+	}
 }

@@ -19,7 +19,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.rails.deployers.app;
+package org.jboss.rails.core.deployers;
 
 import javax.management.Attribute;
 import javax.management.MBeanServer;
@@ -38,7 +38,7 @@ import org.jboss.metadata.web.jboss.ReplicationGranularity;
 import org.jboss.metadata.web.jboss.ReplicationTrigger;
 import org.jboss.metadata.web.jboss.SnapshotMode;
 import org.jboss.mx.util.MBeanServerLocator;
-import org.jboss.rails.metadata.RailsMetaData;
+import org.jboss.rails.core.metadata.RailsMetaData;
 import org.jboss.rails.naming.JBossFileDirContext;
 import org.jboss.web.tomcat.service.WebCtxLoader;
 import org.jboss.web.tomcat.service.session.AbstractJBossManager;
@@ -166,7 +166,7 @@ public class RailsDeployment implements RailsDeploymentMBean {
 
 	protected void setUpConfig(StandardContext context, RailsMetaData metaData) {
 		log.debug("setUpConfig(...)");
-		context.setConfigClass("org.jboss.rails.deployers.app.RailsContextConfig");
+		context.setConfigClass("org.jboss.rails.core.deployers.RailsContextConfig");
 		RailsContextConfig.railsMetaData.set(metaData);
 	}
 

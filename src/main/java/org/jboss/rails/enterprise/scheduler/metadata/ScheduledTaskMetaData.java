@@ -1,4 +1,4 @@
-package org.jboss.rails.metadata.schedule;
+package org.jboss.rails.enterprise.scheduler.metadata;
 
 import java.util.Map;
 

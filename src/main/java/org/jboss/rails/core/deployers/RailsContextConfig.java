@@ -19,7 +19,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.rails.deployers.app;
+package org.jboss.rails.core.deployers;
 
 import org.apache.catalina.Wrapper;
 import org.apache.catalina.core.StandardContext;
@@ -27,7 +27,7 @@ import org.apache.catalina.deploy.FilterDef;
 import org.apache.catalina.deploy.FilterMap;
 import org.apache.catalina.startup.ContextConfig;
 import org.jboss.logging.Logger;
-import org.jboss.rails.metadata.RailsMetaData;
+import org.jboss.rails.core.metadata.RailsMetaData;
 
 /**
  * Configures the Catalina context for a rails application.

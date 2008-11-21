@@ -2,17 +2,17 @@
 
 <deployment xmlns="urn:jboss:bean-deployer:2.0">
 
-  <bean name="RailsParsingDeployer" class="org.jboss.rails.deployers.toplevel.RailsParsingDeployer"/>
+  <bean name="RailsParsingDeployer" class="org.jboss.rails.core.deployers.RailsParsingDeployer"/>
 
-  <bean name="RailsStructure" class="org.jboss.rails.deployers.structure.RailsStructure"/>
+  <bean name="RailsStructure" class="org.jboss.rails.core.deployers.RailsStructure"/>
 
-  <bean name="RailsAppDeployer"  class="org.jboss.rails.deployers.app.RailsAppDeployer">
+  <bean name="RailsAppDeployer"  class="org.jboss.rails.core.deployers.RailsAppDeployer">
     <depends>WarDeployer</depends>
   </bean>
 
-  <bean name="RailsEnvironmentParsingDeployer" class="org.jboss.rails.deployers.RailsEnvironmentParsingDeployer"/>
+  <bean name="RailsEnvironmentParsingDeployer" class="org.jboss.rails.core.deployers.RailsEnvironmentParsingDeployer"/>
 
-  <bean name="ScheduleDeployer" class="org.jboss.rails.deployers.schedule.ScheduleDeployer"/>
-  <bean name="RubyScheduleDeployer" class="org.jboss.rails.deployers.schedule.RubyScheduleDeployer"/>
+  <bean name="ScheduleDeployer"     class="org.jboss.rails.enterprise.scheduler.deployers.ScheduleDeployer"/>
+  <bean name="RubyScheduleDeployer" class="org.jboss.rails.enterprise.scheduler.deployers.RubyScheduleDeployer"/>
   
 </deployment>
