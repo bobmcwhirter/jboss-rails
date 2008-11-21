@@ -20,7 +20,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.rails.tomcat;
+package org.jboss.rails.core.tomcat;
 
 import javax.management.MBeanServer;
 import javax.management.ObjectName;

@@ -330,7 +330,10 @@
             <phase>package</phase>
             <configuration>
               <tasks>
-                <delete dir="${basedir}/target/${artifactId}.deployer" failonerror="false"/>
+                <exec executable="rm" dir="${basedir}/target">
+                  <arg value="-f"/>
+                  <arg value="${artifactId}.deployer"/>
+                </exec>
                 <exec executable="ln" dir="${basedir}/target/">
                   <arg value="-s"/>
                   <arg value="${artifactId}-${version}-deployer.dir"/>

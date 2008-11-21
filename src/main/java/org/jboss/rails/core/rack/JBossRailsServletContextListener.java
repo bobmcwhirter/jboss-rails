@@ -4,7 +4,7 @@
  * See the file LICENSE.txt for details.
  */
 
-package org.jboss.rails.rack;
+package org.jboss.rails.core.rack;
 
 import javax.servlet.ServletContext;
 

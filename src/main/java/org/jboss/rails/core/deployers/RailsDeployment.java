@@ -55,8 +55,7 @@ public class RailsDeployment implements RailsDeploymentMBean {
 	/** The Catalina context class we work with. */
 	public final static String DEFAULT_CONTEXT_CLASS_NAME = "org.apache.catalina.core.StandardContext";
 
-	//protected String managerClass = "org.jboss.web.tomcat.service.session.JBossCacheManager";
-	protected String managerClass = "org.jboss.rails.tomcat.RailsCacheManager";
+	protected String managerClass = "org.jboss.rails.core.tomcat.RailsCacheManager";
 
 	/** Our logger. */
 	private Logger log = Logger.getLogger(RailsDeployment.class);
