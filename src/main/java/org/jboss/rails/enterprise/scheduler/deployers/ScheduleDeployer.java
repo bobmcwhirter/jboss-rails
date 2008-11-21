@@ -40,7 +40,7 @@ public class ScheduleDeployer extends AbstractSimpleRealDeployer<ScheduleMetaDat
 				jobDetail.setGroup(task.getGroup());
 				jobDetail.setName(task.getName());
 				jobDetail.setDescription(task.getDescription());
-				jobDetail.setJobClass(RubyJob.class);
+				jobDetail.setJobClass(task.getJobClass());
 
 				Map<String, Object> taskData = task.getTaskData();
 				JobDataMap data = jobDetail.getJobDataMap();

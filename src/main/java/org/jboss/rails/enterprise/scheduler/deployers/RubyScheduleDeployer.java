@@ -9,6 +9,7 @@ import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.vfs.spi.deployer.AbstractVFSParsingDeployer;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.rails.core.metadata.RailsMetaData;
+import org.jboss.rails.enterprise.scheduler.RubyJob;
 import org.jboss.rails.enterprise.scheduler.metadata.ScheduleMetaData;
 import org.jboss.rails.enterprise.scheduler.metadata.ScheduledTaskMetaData;
 import org.jboss.rails.util.RuntimeUtils;
@@ -47,6 +48,7 @@ public class RubyScheduleDeployer extends AbstractVFSParsingDeployer<ScheduleMet
 				task.setGroup( railsRoot );
 				task.setName( jobName );
 				task.setDescription( jobSpec.get( "description" ) );
+				task.setJobClass( RubyJob.class );
 				
 				Map<String,Object> taskData = new HashMap<String,Object>();
 				

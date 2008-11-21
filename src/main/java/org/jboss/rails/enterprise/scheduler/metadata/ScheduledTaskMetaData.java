@@ -2,6 +2,8 @@ package org.jboss.rails.enterprise.scheduler.metadata;
 
 import java.util.Map;
 
+import org.quartz.Job;
+
 public class ScheduledTaskMetaData {
 
 	private String group;
@@ -9,6 +11,7 @@ public class ScheduledTaskMetaData {
 	private String description;
 	private Map<String, Object> taskData;
 	private String cronExpression;
+	private Class<? extends Job> jobClass;
 
 	public ScheduledTaskMetaData() {
 		
@@ -28,6 +31,14 @@ public class ScheduledTaskMetaData {
 	
 	public String getDescription() {
 		return this.description;
+	}
+	
+	public Class<? extends Job> getJobClass() {
+		return jobClass;
+	}
+	
+	public void setJobClass(Class<? extends Job> jobClass) {
+		this.jobClass = jobClass;
 	}
 
 	public void setTaskData(Map<String, Object> taskData) {

@@ -42,7 +42,6 @@ import org.jboss.rails.core.metadata.RailsMetaData;
 import org.jboss.rails.naming.JBossFileDirContext;
 import org.jboss.web.tomcat.service.WebCtxLoader;
 import org.jboss.web.tomcat.service.session.AbstractJBossManager;
-import org.jboss.web.tomcat.service.session.JBossCacheManager;
 import org.jboss.web.tomcat.service.session.distributedcache.spi.ClusteringNotSupportedException;
 
 /**
