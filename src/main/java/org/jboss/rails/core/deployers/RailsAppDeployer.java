@@ -74,14 +74,14 @@ public class RailsAppDeployer extends AbstractDeployer {
 			log.trace("doDeploy(" + unit.getRoot() + ", ...)");
 		}
 		try {
-			RailsDeployment deployment = new RailsDeployment();
-			deployment.setMBeanServer(MBeanServerLocator.locateJBoss());
-			BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder("jboss.rails." + unit.getSimpleName(), RailsModule.class.getName());
-			builder.addConstructorParameter(VFSDeploymentUnit.class.getName(), unit);
-			builder.addConstructorParameter(RailsAppDeployer.class.getName(), this);
-			builder.addConstructorParameter(RailsDeployment.class.getName(), deployment);
-			BeanMetaData railsModule = builder.getBeanMetaData();
-			unit.addAttachment(BeanMetaData.class.getName() + "$RailsModule", railsModule, BeanMetaData.class);
+			//RailsDeployment deployment = new RailsDeployment();
+			//deployment.setMBeanServer(MBeanServerLocator.locateJBoss());
+			//BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder("jboss.rails." + unit.getSimpleName(), RailsModule.class.getName());
+			BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder("jboss.rails." + unit.getSimpleName(), RailsDeployment.class.getName());
+			builder.addPropertyMetaData( "MBeanServer", MBeanServerLocator.locateJBoss() );
+			builder.addPropertyMetaData( "railsMetaData", railsMetaData );
+			BeanMetaData railsDeployment = builder.getBeanMetaData();
+			unit.addAttachment(BeanMetaData.class.getName() + "$RailsDeployment", railsDeployment, BeanMetaData.class);
 		} catch (Throwable e) {
 			throw new DeploymentException(e);
 		}

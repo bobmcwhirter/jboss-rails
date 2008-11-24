@@ -30,11 +30,8 @@ import org.apache.catalina.Loader;
 import org.apache.catalina.core.StandardContext;
 import org.apache.naming.resources.FileDirContext;
 import org.apache.tomcat.util.modeler.Registry;
-import org.jboss.aop.microcontainer.aspects.jmx.JMX;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.logging.Logger;
-import org.jboss.managed.api.annotation.ManagementObject;
-import org.jboss.managed.api.annotation.ManagementProperties;
 import org.jboss.metadata.web.jboss.JBossWebMetaData;
 import org.jboss.metadata.web.jboss.ReplicationConfig;
 import org.jboss.metadata.web.jboss.ReplicationGranularity;
@@ -60,32 +57,53 @@ public class RailsDeployment implements RailsDeploymentMBean {
 	protected String managerClass = "org.jboss.rails.core.tomcat.RailsCacheManager";
 
 	/** Our logger. */
-	private Logger log = Logger.getLogger(RailsDeployment.class);
+	private static Logger log = Logger.getLogger(RailsDeployment.class);
 
-	private MBeanServer server;
+	private MBeanServer mbeanServer;
+	private RailsMetaData railsMetaData;
+	
+	public RailsDeployment() {
+		
+	}
+	
+	public void setMBeanServer(MBeanServer mbeanServer) {
+		this.mbeanServer = mbeanServer;
+	}
+	
+	public MBeanServer getMBeanServer() {
+		return this.mbeanServer;
+	}
+	
+	public void setRailsMetaData(RailsMetaData metaData) {
+		this.railsMetaData = metaData;
+	}
+	
+	public RailsMetaData getRailsMetaData() {
+		return this.railsMetaData;
+	}
 
 	@SuppressWarnings("unchecked")
-	public synchronized void start(RailsMetaData metaData) throws Exception {
+	public synchronized void start() throws Exception {
 		if (log.isTraceEnabled()) {
 			log.trace("start()");
 		}
-		log.debug("meta data: " + metaData);
+		log.debug("meta data: " + railsMetaData);
 		Class<StandardContext> contextClass = (Class<StandardContext>) Class.forName(DEFAULT_CONTEXT_CLASS_NAME);
 		StandardContext context = contextClass.newInstance();
 		
-		context.setPath( metaData.getContext() );
+		context.setPath( railsMetaData.getContext() );
 		
-		setUpResources(context, metaData);
+		setUpResources(context);
 		setUpLoader(context);
-		setUpJMX(context, metaData);
-		setUpConfig(context, metaData);
+		setUpJMX(context);
+		setUpConfig(context);
 		
 		context.start();
 		
 		if (log.isTraceEnabled()) {
 			log.debug("start() complete");
 		}
-		setUpClustering(context, metaData);
+		setUpClustering(context, railsMetaData);
 
 	}
 
@@ -95,7 +113,7 @@ public class RailsDeployment implements RailsDeploymentMBean {
 		try {
 			AbstractJBossManager manager = null;
 			String managerClassName = this.managerClass;
-			Class managerClass = Thread.currentThread().getContextClassLoader().loadClass(managerClassName);
+			Class<?> managerClass = Thread.currentThread().getContextClassLoader().loadClass( managerClassName );
 			manager = (AbstractJBossManager) managerClass.newInstance();
 			
 			String hostName = null;
@@ -105,7 +123,7 @@ public class RailsDeployment implements RailsDeploymentMBean {
 
 			ObjectName objectName = createObjectName( metaData );
 			
-			server.setAttribute(objectName, new Attribute("manager", manager));
+			mbeanServer.setAttribute(objectName, new Attribute("manager", manager));
 
 			log.debug("Enabled clustering support for ctxPath=" + contextPath);
 		} catch (ClusteringNotSupportedException e) {
@@ -136,10 +154,10 @@ public class RailsDeployment implements RailsDeploymentMBean {
 		return jbossWebMetaData;
 	}
 
-	private void setUpResources(StandardContext context, RailsMetaData metaData) throws Exception {
-		context.setDocBase(metaData.getRailsRoot());
+	private void setUpResources(StandardContext context) throws Exception {
+		context.setDocBase(railsMetaData.getRailsRoot());
 		FileDirContext resources = new JBossFileDirContext();
-		resources.setDocBase(metaData.getRailsRoot() + "/public");
+		resources.setDocBase(railsMetaData.getRailsRoot() + "/public");
 		context.setResources(resources);
 	}
 
@@ -150,8 +168,8 @@ public class RailsDeployment implements RailsDeploymentMBean {
 		context.setLoader(loader);
 	}
 
-	private void setUpJMX(StandardContext context, RailsMetaData metaData) throws Exception {
-		ObjectName objectName = createObjectName(metaData);
+	private void setUpJMX(StandardContext context) throws Exception {
+		ObjectName objectName = createObjectName(railsMetaData);
 		context.setServer("jboss");
 		registerContext(context, objectName);
 	}
@@ -165,13 +183,13 @@ public class RailsDeployment implements RailsDeploymentMBean {
 		Registry.getRegistry(cl, null).registerComponent(context, objectName, DEFAULT_CONTEXT_CLASS_NAME);
 	}
 
-	protected void setUpConfig(StandardContext context, RailsMetaData metaData) {
+	protected void setUpConfig(StandardContext context) {
 		log.debug("setUpConfig(...)");
 		context.setConfigClass("org.jboss.rails.core.deployers.RailsContextConfig");
-		RailsContextConfig.railsMetaData.set(metaData);
+		RailsContextConfig.railsMetaData.set(railsMetaData);
 	}
 
-	public synchronized void stop(RailsMetaData metaData) throws Exception {
+	public synchronized void stop() throws Exception {
 		log.debug("stop()");
 
 		// TODO: Need to remove the dependency on MBeanServer
@@ -181,7 +199,7 @@ public class RailsDeployment implements RailsDeploymentMBean {
 			return;
 		}
 
-		ObjectName objectName = createObjectName(metaData);
+		ObjectName objectName = createObjectName(railsMetaData);
 
 		if (server.isRegistered(objectName)) {
 			// Contexts should be stopped by the host already
@@ -197,11 +215,6 @@ public class RailsDeployment implements RailsDeploymentMBean {
 		}
 		String objectName = "jboss.web:j2eeType=WebModule,name=//localhost" + contextPath + ",J2EEApplication=none,J2EEServer=none";
 		return new ObjectName(objectName);
-	}
-
-	public void setMBeanServer(MBeanServer server) {
-		this.server = server;
-		
 	}
 
 }
