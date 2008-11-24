@@ -29,7 +29,6 @@ import org.jboss.virtual.VirtualFile;
 public class RailsEnvironmentParsingDeployer extends AbstractVFSParsingDeployer<RailsMetaData> {
 	public RailsEnvironmentParsingDeployer() {
 		super(RailsMetaData.class);
-		//addOutput(ClassLoadingMetaData.class);
 		setName("environment.rb");
 		setTopLevelOnly(false);
 	}
@@ -38,7 +37,6 @@ public class RailsEnvironmentParsingDeployer extends AbstractVFSParsingDeployer<
 	protected RailsMetaData parse(VFSDeploymentUnit unit, VirtualFile file, RailsMetaData root) throws Exception {
 		log.info("Parsing " + file + " for " + unit.getRoot());
 		String railsRoot = unit.getRoot().toURL().getFile();
-		log.info( "rails.root -> " + railsRoot );
 		if ( unit.isAttachmentPresent( RailsMetaData.class ) ) {
 			log.info( "RailsMetaData present, doing nothing." );
 			return root;

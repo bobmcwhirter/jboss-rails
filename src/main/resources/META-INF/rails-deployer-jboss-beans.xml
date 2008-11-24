@@ -8,13 +8,18 @@
 
   <bean name="RailsEnvironmentParsingDeployer" class="org.jboss.rails.core.deployers.RailsEnvironmentParsingDeployer"/>
 
+  <bean name="RailsVersionDeployer" class="org.jboss.rails.core.deployers.RailsVersionDeployer"/>
+
   <bean name="RailsWebDeployer" class="org.jboss.rails.core.deployers.RailsWebDeployer">
     <property name="mbeanServer"><inject bean="JMXKernel" property="mbeanServer"/></property>
     <depends>jboss:service=WebService</depends>
   </bean>
 
+  <bean name="RailsScheduleDescribeDeployer"  class="org.jboss.rails.scheduler.deployers.RailsScheduleDescribeDeployer"/>
+  <bean name="RailsRuntimeFactoryDeployer"    class="org.jboss.rails.runtime.deployers.RailsRuntimeFactoryDeployer"/>
 
   <bean name="ScheduleDeployer"            class="org.jboss.ruby.enterprise.scheduler.deployers.ScheduleDeployer"/>
   <bean name="YamlScheduleParsingDeployer" class="org.jboss.ruby.enterprise.scheduler.deployers.YamlScheduleParsingDeployer"/>
+
   
 </deployment>

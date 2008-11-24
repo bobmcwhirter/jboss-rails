@@ -3,24 +3,27 @@ package org.jboss.ruby.enterprise.scheduler;
 import org.jboss.logging.Logger;
 import org.jruby.Ruby;
 import org.quartz.Job;
-import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.StatefulJob;
 
 public class RubyJob implements Job, StatefulJob {
-	Logger log = Logger.getLogger( RubyJob.class );
+	private Logger log;
 	
 	public RubyJob() {
 	}
 
 	public void execute(JobExecutionContext context) throws JobExecutionException {
-		JobDataMap data = context.getMergedJobDataMap();
-		Ruby runtime = (Ruby) data.get( "ruby.runtime" );
-		log.info( "Starting job" );
-		runtime.evalScriptlet( "$task.run\n" );
-		log.info( "Completed job" );
+		String taskClass = (String) context.getJobDetail().getJobDataMap().get( "task.class.name");
+		log = Logger.getLogger( taskClass );
 		
+		Ruby runtime = (Ruby) context.getJobDetail().getJobDataMap().get( "ruby.runtime" );
+		String name= context.getJobDetail().getName();
+		
+		log.info( "Starting job: " + name );
+		String script = "$TASKS['" + name + "'].run\n";
+		runtime.evalScriptlet( script );
+		log.info( "Completed job: " + name );
 	}
 
 }

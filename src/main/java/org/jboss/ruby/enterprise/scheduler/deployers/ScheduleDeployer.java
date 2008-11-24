@@ -1,12 +1,14 @@
 package org.jboss.ruby.enterprise.scheduler.deployers;
 
 import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.helpers.AbstractSimpleRealDeployer;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.ruby.enterprise.scheduler.ScheduleDeployment;
 import org.jboss.ruby.enterprise.scheduler.metadata.ScheduleMetaData;
+import org.jboss.ruby.runtime.RubyRuntimeFactory;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
@@ -27,7 +29,10 @@ public class ScheduleDeployer extends AbstractSimpleRealDeployer<ScheduleMetaDat
 		try {
 			Scheduler scheduler = factory.getScheduler();
 			BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder("jboss.ruby.scheduler:unit="+unit.getSimpleName() , ScheduleDeployment.class.getName() );
+			
+			ValueMetaData factoryValue = builder.createInject( "jboss.ruby.runtime.factory." + unit.getSimpleName() );
 			builder.addConstructorParameter( ScheduleMetaData.class.getName(), deployment);
+			builder.addConstructorParameter( RubyRuntimeFactory.class.getName(), factoryValue );
 			builder.addPropertyMetaData( "scheduler", scheduler );
 			builder.addAnnotation("@org.jboss.aop.microcontainer.aspects.jmx.JMX(registerDirectly=true, exposedInterface=void.class, name=\"jboss.ruby.scheduler:app=" + unit.getSimpleName() + "\")");
 			BeanMetaData schedulerBean = builder.getBeanMetaData();

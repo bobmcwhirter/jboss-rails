@@ -9,9 +9,8 @@ public class ScheduleTaskMetaData {
 	private String group;
 	private String name;
 	private String description;
-	private Map<String, Object> taskData;
 	private String cronExpression;
-	private Class<? extends Job> jobClass;
+	private String rubyClass;
 
 	public ScheduleTaskMetaData() {
 		
@@ -33,22 +32,6 @@ public class ScheduleTaskMetaData {
 		return this.description;
 	}
 	
-	public Class<? extends Job> getJobClass() {
-		return jobClass;
-	}
-	
-	public void setJobClass(Class<? extends Job> jobClass) {
-		this.jobClass = jobClass;
-	}
-
-	public void setTaskData(Map<String, Object> taskData) {
-		this.taskData = taskData;
-	}
-	
-	public Map<String, Object> getTaskData() {
-		return this.taskData;
-	}
-
 	public void setCronExpression(String cronExpression) {
 		this.cronExpression = cronExpression;
 	}
@@ -63,5 +46,13 @@ public class ScheduleTaskMetaData {
 
 	public String getGroup() {
 		return this.group;
+	}
+
+	public void setRubyClass(String rubyClass) {
+		this.rubyClass = rubyClass;
+	}
+	
+	public String getRubyClass() {
+		return this.rubyClass;
 	}
 }

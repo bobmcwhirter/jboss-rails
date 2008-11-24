@@ -4,11 +4,13 @@ import java.io.Serializable;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.jboss.logging.Logger;
 import org.jboss.ruby.enterprise.scheduler.metadata.ScheduleMetaData;
 import org.jboss.ruby.enterprise.scheduler.metadata.ScheduleTaskMetaData;
+import org.jboss.ruby.runtime.RubyRuntimeFactory;
+import org.jruby.Ruby;
+import org.jruby.runtime.builtin.IRubyObject;
 import org.quartz.CronTrigger;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -24,11 +26,16 @@ public class ScheduleDeployment implements ScheduleDeploymentMBean, Serializable
 	private Scheduler scheduler;
 
 	private ScheduleMetaData metaData;
-	
+
 	private String status = "STOPPED";
 
-	public ScheduleDeployment(ScheduleMetaData metaData) {
+	private RubyRuntimeFactory runtimeFactory;
+
+	private Ruby sharedInstance;
+
+	public ScheduleDeployment(ScheduleMetaData metaData, RubyRuntimeFactory runtimeFactory) {
 		this.metaData = metaData;
+		this.runtimeFactory = runtimeFactory;
 	}
 
 	// ----------------------------------------
@@ -36,7 +43,7 @@ public class ScheduleDeployment implements ScheduleDeploymentMBean, Serializable
 	public String getStatus() {
 		return status;
 	}
-	
+
 	public int getNumberOfTasks() {
 		return metaData.getScheduledTasks().size();
 	}
@@ -58,10 +65,10 @@ public class ScheduleDeployment implements ScheduleDeploymentMBean, Serializable
 		try {
 			for (ScheduleTaskMetaData task : metaData.getScheduledTasks()) {
 				startTask(task);
-				startedTasks.add( task );
+				startedTasks.add(task);
 			}
 		} catch (Exception e) {
-			for ( ScheduleTaskMetaData task : startedTasks ) {
+			for (ScheduleTaskMetaData task : startedTasks) {
 				stopTask(task);
 			}
 			throw e;
@@ -75,20 +82,63 @@ public class ScheduleDeployment implements ScheduleDeploymentMBean, Serializable
 		jobDetail.setGroup(task.getGroup());
 		jobDetail.setName(task.getName());
 		jobDetail.setDescription(task.getDescription());
-		jobDetail.setJobClass(task.getJobClass());
+		jobDetail.setJobClass(RubyJob.class);
 
-		Map<String, Object> taskData = task.getTaskData();
+		JobDataMap jobData = jobDetail.getJobDataMap();
 
-		JobDataMap data = jobDetail.getJobDataMap();
-		data.putAll(taskData);
+		jobData.put("task.class.name", task.getRubyClass());
+		jobData.put("ruby.runtime", createRubyTaskObject( task ) );
 
 		String expr = task.getCronExpression();
 
-		log.info("starting task: " + jobDetail.getName() + " -- " + expr + " taskData: " + taskData);
+		log.info("scheduling task: " + jobDetail.getName() + " -- " + expr );
 
 		CronTrigger trigger = new CronTrigger(getTriggerName(task), task.getGroup(), expr);
 		scheduler.scheduleJob(jobDetail, trigger);
 
+	}
+
+	protected Ruby createRubyTaskObject(ScheduleTaskMetaData taskMetaData) {
+		Ruby ruby = getRuntime();
+
+		StringBuilder script = new StringBuilder();
+		script.append("s = '" + taskMetaData.getRubyClass() + "'\n");
+		script.append("s = s.gsub( /::/, '/' )\n");
+		script.append("s = s.gsub( /([^\\/][A-Z])/ ) { |m| \"#{m[0,1]}_#{m[1,1].downcase}\" }\n");
+		script.append("s = s.gsub( /([\\/][A-Z])/ ) { |m| \"/#{m[1,1].downcase}\" }\n");
+		script.append("s = s.downcase\n");
+		script.append("require s\n");
+		script.append("$TASKS['" + taskMetaData.getName() + "'] = " + taskMetaData.getRubyClass() + ".new\n");
+
+		ruby.evalScriptlet(script.toString());
+		
+		return ruby;
+	}
+
+	protected Ruby getRuntime() {
+		if (this.metaData.isThreadSafe()) {
+			synchronized (this) {
+				log.info("using shared runtime");
+				if (this.sharedInstance == null) {
+					this.sharedInstance = initializeRuntime(this.runtimeFactory.createRubyRuntime());
+				}
+				return this.sharedInstance;
+			}
+		}
+
+		log.info("using unique runtime");
+		return initializeRuntime(this.runtimeFactory.createRubyRuntime());
+	}
+
+	protected Ruby initializeRuntime(Ruby ruby) {
+		StringBuilder script = new StringBuilder();
+		for (String path : this.metaData.getLoadPaths()) {
+			script.append("$: << '" + path + "'\n");
+			script.append( "$TASKS = {}\n" );
+		}
+		log.info("initialize with: " + script);
+		ruby.evalScriptlet(script.toString());
+		return ruby;
 	}
 
 	private String getTriggerName(ScheduleTaskMetaData task) {
@@ -105,7 +155,7 @@ public class ScheduleDeployment implements ScheduleDeploymentMBean, Serializable
 				log.error(e);
 			}
 		}
-		
+
 		this.status = "STOPPED";
 	}
 

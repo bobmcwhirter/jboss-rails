@@ -44,6 +44,7 @@ import org.jboss.rails.core.metadata.RailsMetaData;
 import org.jboss.virtual.VFS;
 import org.jboss.virtual.VirtualFile;
 
+//public class RailsParsingDeployer extends AbstractVFSParsingDeployer<RailsMetaData> {
 public class RailsParsingDeployer extends AbstractVFSParsingDeployer<RailsMetaData> {
 
 	private Logger log = Logger.getLogger(RailsParsingDeployer.class);
