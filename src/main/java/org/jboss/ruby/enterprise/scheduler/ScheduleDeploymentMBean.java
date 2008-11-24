@@ -5,5 +5,6 @@ public interface ScheduleDeploymentMBean {
 	public void start() throws Exception;
 	public void stop();
 	public String getStatus();
+	public int getNumberOfTasks();
 
 }

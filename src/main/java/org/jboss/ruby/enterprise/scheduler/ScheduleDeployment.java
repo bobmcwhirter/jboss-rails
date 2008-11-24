@@ -35,6 +35,10 @@ public class ScheduleDeployment implements ScheduleDeploymentMBean, Serializable
 	public String getStatus() {
 		return status;
 	}
+	
+	public int getNumberOfTasks() {
+		return metaData.getScheduledTasks().size();
+	}
 
 	// ----------------------------------------
 
