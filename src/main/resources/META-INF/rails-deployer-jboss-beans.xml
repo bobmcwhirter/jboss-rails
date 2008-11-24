@@ -2,26 +2,19 @@
 
 <deployment xmlns="urn:jboss:bean-deployer:2.0">
 
-  <!-- 
-    Rails deployers
-  -->
-
   <bean name="RailsParsingDeployer" class="org.jboss.rails.core.deployers.RailsParsingDeployer"/>
-
   <bean name="RailsStructure" class="org.jboss.rails.core.deployers.RailsStructure"/>
 
-  <bean name="RailsAppDeployer" class="org.jboss.rails.core.deployers.RailsAppDeployer">
-    <depends>WarDeployer</depends>
-  </bean>
-
-  <!-- 
-    Schedule deployers
-  -->
 
   <bean name="RailsEnvironmentParsingDeployer" class="org.jboss.rails.core.deployers.RailsEnvironmentParsingDeployer"/>
 
-  <bean name="ScheduleDeployer" class="org.jboss.ruby.enterprise.scheduler.deployers.ScheduleDeployer"/>
+  <bean name="RailsWebDeployer" class="org.jboss.rails.core.deployers.RailsWebDeployer">
+    <property name="mbeanServer"><inject bean="JMXKernel" property="mbeanServer"/></property>
+    <depends>jboss:service=WebService</depends>
+  </bean>
 
+
+  <bean name="ScheduleDeployer"            class="org.jboss.ruby.enterprise.scheduler.deployers.ScheduleDeployer"/>
   <bean name="YamlScheduleParsingDeployer" class="org.jboss.ruby.enterprise.scheduler.deployers.YamlScheduleParsingDeployer"/>
   
 </deployment>

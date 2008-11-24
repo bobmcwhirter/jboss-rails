@@ -6,8 +6,8 @@ import java.util.Map;
 
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.logging.Logger;
-import org.jboss.ruby.enterprise.scheduler.metadata.ScheduleTaskMetaData;
 import org.jboss.ruby.enterprise.scheduler.metadata.ScheduleMetaData;
+import org.jboss.ruby.enterprise.scheduler.metadata.ScheduleTaskMetaData;
 import org.quartz.CronTrigger;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;

@@ -37,8 +37,8 @@ import org.jboss.metadata.web.jboss.ReplicationConfig;
 import org.jboss.metadata.web.jboss.ReplicationGranularity;
 import org.jboss.metadata.web.jboss.ReplicationTrigger;
 import org.jboss.metadata.web.jboss.SnapshotMode;
-import org.jboss.mx.util.MBeanServerLocator;
 import org.jboss.rails.core.metadata.RailsMetaData;
+import org.jboss.rails.core.tomcat.RailsContextConfig;
 import org.jboss.rails.naming.JBossFileDirContext;
 import org.jboss.web.tomcat.service.WebCtxLoader;
 import org.jboss.web.tomcat.service.session.AbstractJBossManager;
@@ -49,35 +49,35 @@ import org.jboss.web.tomcat.service.session.distributedcache.spi.ClusteringNotSu
  * 
  * @author Bob McWhirter
  */
-public class RailsDeployment implements RailsDeploymentMBean {
+public class RailsWebDeployment implements RailsDeploymentMBean {
 
 	/** The Catalina context class we work with. */
 	public final static String DEFAULT_CONTEXT_CLASS_NAME = "org.apache.catalina.core.StandardContext";
 
+	/** Catalina context configuration class name. */
+	protected String contextConfigClass = "org.jboss.rails.core.tomcat.RailsContextConfig";
+
+	/** Cache manager class name. */
 	protected String managerClass = "org.jboss.rails.core.tomcat.RailsCacheManager";
 
 	/** Our logger. */
-	private static Logger log = Logger.getLogger(RailsDeployment.class);
+	private static Logger log = Logger.getLogger(RailsWebDeployment.class);
 
-	private MBeanServer mbeanServer;
+	/** Meta-data. */
 	private RailsMetaData railsMetaData;
-	
-	public RailsDeployment() {
-		
+
+	/**
+	 * Construct.
+	 * 
+	 */
+	public RailsWebDeployment() {
+
 	}
-	
-	public void setMBeanServer(MBeanServer mbeanServer) {
-		this.mbeanServer = mbeanServer;
-	}
-	
-	public MBeanServer getMBeanServer() {
-		return this.mbeanServer;
-	}
-	
+
 	public void setRailsMetaData(RailsMetaData metaData) {
 		this.railsMetaData = metaData;
 	}
-	
+
 	public RailsMetaData getRailsMetaData() {
 		return this.railsMetaData;
 	}
@@ -90,16 +90,16 @@ public class RailsDeployment implements RailsDeploymentMBean {
 		log.debug("meta data: " + railsMetaData);
 		Class<StandardContext> contextClass = (Class<StandardContext>) Class.forName(DEFAULT_CONTEXT_CLASS_NAME);
 		StandardContext context = contextClass.newInstance();
-		
-		context.setPath( railsMetaData.getContext() );
-		
+
+		context.setPath(railsMetaData.getContext());
+
 		setUpResources(context);
 		setUpLoader(context);
 		setUpJMX(context);
 		setUpConfig(context);
-		
+
 		context.start();
-		
+
 		if (log.isTraceEnabled()) {
 			log.debug("start() complete");
 		}
@@ -108,22 +108,22 @@ public class RailsDeployment implements RailsDeploymentMBean {
 	}
 
 	private void setUpClustering(StandardContext context, RailsMetaData metaData) {
-		// Try to initate clustering, fallback to standard if no clustering is
+		// Try to initiate clustering, fall back to standard if no clustering is
 		// available
 		try {
 			AbstractJBossManager manager = null;
 			String managerClassName = this.managerClass;
-			Class<?> managerClass = Thread.currentThread().getContextClassLoader().loadClass( managerClassName );
+			Class<?> managerClass = Thread.currentThread().getContextClassLoader().loadClass(managerClassName);
 			manager = (AbstractJBossManager) managerClass.newInstance();
-			
+
 			String hostName = null;
 			String contextPath = metaData.getContext();
 			String name = "//" + ((hostName == null) ? "localhost" : hostName) + contextPath;
-			manager.init( name, createJBossWebMetaData(metaData) );
+			manager.init(name, createJBossWebMetaData(metaData));
 
-			ObjectName objectName = createObjectName( metaData );
-			
-			mbeanServer.setAttribute(objectName, new Attribute("manager", manager));
+			ObjectName objectName = getObjectName();
+
+			getMBeanServer().setAttribute(objectName, new Attribute("manager", manager));
 
 			log.debug("Enabled clustering support for ctxPath=" + contextPath);
 		} catch (ClusteringNotSupportedException e) {
@@ -139,17 +139,16 @@ public class RailsDeployment implements RailsDeploymentMBean {
 		}
 	}
 
-	
 	private JBossWebMetaData createJBossWebMetaData(RailsMetaData railsMetaData) {
 		JBossWebMetaData jbossWebMetaData = new JBossWebMetaData();
 		ReplicationConfig replicationConfig = new ReplicationConfig();
 		replicationConfig.setReplicationFieldBatchMode(true);
-		replicationConfig.setReplicationGranularity(ReplicationGranularity.SESSION );
+		replicationConfig.setReplicationGranularity(ReplicationGranularity.SESSION);
 		replicationConfig.setReplicationTrigger(ReplicationTrigger.SET);
 		replicationConfig.setSnapshotMode(SnapshotMode.INTERVAL);
-		replicationConfig.setUseJK(false );
-		replicationConfig.setCacheName( "standard-session-cache" );
-				
+		replicationConfig.setUseJK(false);
+		replicationConfig.setCacheName("standard-session-cache");
+
 		jbossWebMetaData.setReplicationConfig(replicationConfig);
 		return jbossWebMetaData;
 	}
@@ -169,52 +168,58 @@ public class RailsDeployment implements RailsDeploymentMBean {
 	}
 
 	private void setUpJMX(StandardContext context) throws Exception {
-		ObjectName objectName = createObjectName(railsMetaData);
-		context.setServer("jboss");
-		registerContext(context, objectName);
+		context.setServer( getMBeanServer().getDefaultDomain() );
+		registerContext(context);
 	}
 
-	protected void registerContext(StandardContext context, ObjectName objectName) throws Exception {
+	protected void registerContext(StandardContext context) throws Exception {
+		
+		ObjectName objectName = getObjectName();
 		log.debug("registerContext(..., " + objectName + ")");
-		ClassLoader cl = Thread.currentThread().getContextClassLoader();
-		if (Registry.getRegistry(cl, null).getMBeanServer().isRegistered(objectName)) {
+		Registry registry = getRegistry();
+		
+		if (registry.getMBeanServer().isRegistered(objectName)) {
 			throw new DeploymentException("Web mapping already exists for deployment URL " + objectName);
 		}
-		Registry.getRegistry(cl, null).registerComponent(context, objectName, DEFAULT_CONTEXT_CLASS_NAME);
+		
+		registry.registerComponent(context, objectName, DEFAULT_CONTEXT_CLASS_NAME);
 	}
 
 	protected void setUpConfig(StandardContext context) {
 		log.debug("setUpConfig(...)");
-		context.setConfigClass("org.jboss.rails.core.deployers.RailsContextConfig");
+		context.setConfigClass(contextConfigClass);
 		RailsContextConfig.railsMetaData.set(railsMetaData);
 	}
 
 	public synchronized void stop() throws Exception {
 		log.debug("stop()");
 
-		// TODO: Need to remove the dependency on MBeanServer
-		MBeanServer server = MBeanServerLocator.locateJBoss();
-		// If the server is gone, all apps were stopped already
-		if (server == null) {
-			return;
+		ObjectName objectName = getObjectName();
+
+		MBeanServer mbeanServer = getMBeanServer();
+		
+		if (mbeanServer.isRegistered(objectName)) {
+			mbeanServer.invoke(objectName, "destroy", new Object[] {}, new String[] {});
 		}
-
-		ObjectName objectName = createObjectName(railsMetaData);
-
-		if (server.isRegistered(objectName)) {
-			// Contexts should be stopped by the host already
-			server.invoke(objectName, "destroy", new Object[] {}, new String[] {});
-		}
-
 	}
 
-	private ObjectName createObjectName(RailsMetaData metaData) throws MalformedObjectNameException, NullPointerException {
-		String contextPath = metaData.getContext();
-		if ( contextPath == null || contextPath.equals( "" ) )  {
+	private ObjectName getObjectName() throws MalformedObjectNameException, NullPointerException {
+		String contextPath = railsMetaData.getContext();
+		if (contextPath == null || contextPath.equals("")) {
 			contextPath = "/";
 		}
 		String objectName = "jboss.web:j2eeType=WebModule,name=//localhost" + contextPath + ",J2EEApplication=none,J2EEServer=none";
 		return new ObjectName(objectName);
+	}
+
+	private Registry getRegistry() {
+		ClassLoader cl = Thread.currentThread().getContextClassLoader();
+		return Registry.getRegistry( cl, null );
+	}
+	
+	private MBeanServer getMBeanServer() {
+		return getRegistry().getMBeanServer();
+
 	}
 
 }

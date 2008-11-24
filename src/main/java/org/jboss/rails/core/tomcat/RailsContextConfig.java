@@ -19,7 +19,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.rails.core.deployers;
+package org.jboss.rails.core.tomcat;
 
 import org.apache.catalina.Wrapper;
 import org.apache.catalina.core.StandardContext;
@@ -65,6 +65,7 @@ public class RailsContextConfig extends ContextConfig {
 	private void setUpApplicationParamValues() {
 		setUpRailsRoot();
 		setUpRailsEnv();
+		setUpRack();
 	}
 
 	private void setUpRailsEnv() {
@@ -76,6 +77,12 @@ public class RailsContextConfig extends ContextConfig {
 	private void setUpRailsRoot() {
 		context.addParameter("rails.root", "/");
 		context.addParameter("public.root", "/public/");
+	}
+	
+	private void setUpRack() {
+		context.addParameter( "jruby.max.runtimes", "3" );
+		context.addParameter( "jruby.min.runtimes", "3" );
+		context.addParameter( "jruby.runtime.timeout.sec", "30" );
 	}
 
 	@Override

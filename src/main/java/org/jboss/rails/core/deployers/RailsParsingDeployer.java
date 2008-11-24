@@ -32,7 +32,6 @@ import org.jboss.deployers.client.spi.main.MainDeployer;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.attachments.MutableAttachments;
 import org.jboss.deployers.spi.deployer.DeploymentStages;
-import org.jboss.deployers.spi.deployer.helpers.AbstractParsingDeployer;
 import org.jboss.deployers.spi.structure.ContextInfo;
 import org.jboss.deployers.spi.structure.StructureMetaData;
 import org.jboss.deployers.spi.structure.StructureMetaDataFactory;
