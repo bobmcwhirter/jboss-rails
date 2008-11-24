@@ -86,17 +86,4 @@ public class RailsAppDeployer extends AbstractDeployer {
 			throw new DeploymentException(e);
 		}
 	}
-
-	private String getContextPath(RailsMetaData railsMetaData) {
-		String context = railsMetaData.getContext();
-		if (context != null) {
-			return context;
-		}
-		String appName = railsMetaData.getApplicationName();
-		context = "/" + appName;
-
-		return context;
-
-	}
-
 }
