@@ -1,10 +1,10 @@
-package org.jboss.rails.enterprise.scheduler.metadata;
+package org.jboss.ruby.enterprise.scheduler.metadata;
 
 import java.util.Map;
 
 import org.quartz.Job;
 
-public class ScheduledTaskMetaData {
+public class ScheduleTaskMetaData {
 
 	private String group;
 	private String name;
@@ -13,7 +13,7 @@ public class ScheduledTaskMetaData {
 	private String cronExpression;
 	private Class<? extends Job> jobClass;
 
-	public ScheduledTaskMetaData() {
+	public ScheduleTaskMetaData() {
 		
 	}
 	

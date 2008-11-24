@@ -21,8 +21,8 @@
  */
 package org.jboss.rails.core.deployers;
 
-import javax.management.ObjectName;
-
+import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.spi.deployer.helpers.AbstractDeployer;
@@ -30,8 +30,6 @@ import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.mx.util.MBeanServerLocator;
 import org.jboss.rails.core.metadata.RailsMetaData;
-import org.jboss.system.metadata.ServiceConstructorMetaData;
-import org.jboss.system.metadata.ServiceMetaData;
 
 /**
  * Deployer that consules RailsMetaData to deploy a rails application, for real.
@@ -47,7 +45,7 @@ public class RailsAppDeployer extends AbstractDeployer {
 		setStage(DeploymentStages.REAL);
 		setTopLevelOnly(true);
 		setInput(RailsMetaData.class);
-		addOutput( ServiceMetaData.class );
+		addOutput(BeanMetaData.class);
 	}
 
 	public void deploy(DeploymentUnit unit) throws DeploymentException {
@@ -55,7 +53,7 @@ public class RailsAppDeployer extends AbstractDeployer {
 			throw new DeploymentException("deployment unit must be a VFSDeploymentUnit");
 		}
 
-		log.info( "Deploy: " + unit );
+		log.info("Deploy: " + unit);
 		VFSDeploymentUnit vfsUnit = (VFSDeploymentUnit) unit;
 		RailsMetaData railsMetaData = vfsUnit.getAttachment(RailsMetaData.class);
 		if (railsMetaData == null) {
@@ -64,12 +62,10 @@ public class RailsAppDeployer extends AbstractDeployer {
 
 		doDeploy(vfsUnit, railsMetaData);
 	}
-	
-	
 
 	@Override
 	public void undeploy(DeploymentUnit unit) {
-		log.info( "Undeploy: " + unit );
+		log.info("Undeploy: " + unit);
 		super.undeploy(unit);
 	}
 
@@ -79,51 +75,28 @@ public class RailsAppDeployer extends AbstractDeployer {
 		}
 		try {
 			RailsDeployment deployment = new RailsDeployment();
-			deployment.setMBeanServer( MBeanServerLocator.locateJBoss() );
-			ServiceMetaData railsModule = new ServiceMetaData();
-			String name = getObjectName(railsMetaData);
-			ObjectName objectName = new ObjectName(name);
-			railsModule.setObjectName(objectName);
-			railsModule.setCode(RailsModule.class.getName());
-			ServiceConstructorMetaData constructor = new ServiceConstructorMetaData();
-			constructor.setSignature(new String[] { VFSDeploymentUnit.class.getName(), RailsAppDeployer.class.getName(), RailsDeployment.class.getName() });
-			constructor.setParameters(new Object[] { unit, this, deployment });
-			railsModule.setConstructor(constructor);
-			unit.addAttachment("RailsServiceMetaData", railsModule, ServiceMetaData.class);
+			deployment.setMBeanServer(MBeanServerLocator.locateJBoss());
+			BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder("jboss.ruby.scheduler", RailsModule.class.getName());
+			builder.addConstructorParameter(VFSDeploymentUnit.class.getName(), unit);
+			builder.addConstructorParameter(RailsAppDeployer.class.getName(), this);
+			builder.addConstructorParameter(RailsDeployment.class.getName(), deployment);
+			BeanMetaData railsModule = builder.getBeanMetaData();
+			unit.addAttachment(BeanMetaData.class.getName() + "$RailsModule", railsModule, BeanMetaData.class);
 		} catch (Throwable e) {
 			throw new DeploymentException(e);
 		}
 	}
 
-	/**
-	 * Construct the management object name.
-	 * 
-	 * @param railsMetaData
-	 *            The rails meta-data.
-	 * @return
-	 */
-	private String getObjectName(RailsMetaData railsMetaData) {
-		String contextPath = getContextPath( railsMetaData );
-		if ( contextPath == null || contextPath.equals( "" ) ) {
-			contextPath = "/ROOT";
-		}
-		String objectName = "jboss.rails.deployment:root=" + contextPath;
-		if (log.isTraceEnabled()) {
-			log.trace("objectName=" + objectName);
-		}
-		return objectName;
-	}
-
 	private String getContextPath(RailsMetaData railsMetaData) {
 		String context = railsMetaData.getContext();
-		if ( context != null ) {
+		if (context != null) {
 			return context;
 		}
 		String appName = railsMetaData.getApplicationName();
 		context = "/" + appName;
-		
+
 		return context;
-		
+
 	}
 
 }

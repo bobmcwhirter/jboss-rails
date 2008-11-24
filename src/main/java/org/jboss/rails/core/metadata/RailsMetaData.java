@@ -23,11 +23,14 @@ package org.jboss.rails.core.metadata;
 
 import java.io.File;
 
+import org.jboss.managed.api.annotation.ManagementDeployment;
+
 /**
  * Meta-data describing a Ruby-on-Rails application.
  * 
  * @author Bob McWhirter
  */
+@ManagementDeployment
 public class RailsMetaData {
 
 	/** Name of the application. Derived from the deployment name. */
