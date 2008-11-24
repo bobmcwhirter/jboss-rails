@@ -30,6 +30,7 @@ import org.apache.catalina.Loader;
 import org.apache.catalina.core.StandardContext;
 import org.apache.naming.resources.FileDirContext;
 import org.apache.tomcat.util.modeler.Registry;
+import org.jboss.aop.microcontainer.aspects.jmx.JMX;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.logging.Logger;
 import org.jboss.metadata.web.jboss.JBossWebMetaData;
@@ -49,7 +50,8 @@ import org.jboss.web.tomcat.service.session.distributedcache.spi.ClusteringNotSu
  * 
  * @author Bob McWhirter
  */
-public class RailsWebDeployment implements RailsDeploymentMBean {
+//@JMX(registerDirectly=true, exposedInterface=void.class)
+public class RailsWebDeployment implements RailsWebDeploymentMBean {
 
 	/** The Catalina context class we work with. */
 	public final static String DEFAULT_CONTEXT_CLASS_NAME = "org.apache.catalina.core.StandardContext";
@@ -73,6 +75,17 @@ public class RailsWebDeployment implements RailsDeploymentMBean {
 	public RailsWebDeployment() {
 
 	}
+	
+	// ----------------------------------------
+	 
+	public String getRailsRoot() {
+		return this.railsMetaData.getRailsRoot();
+	}
+	
+	public String getEnvironment() {
+		return this.railsMetaData.getEnvironment();
+	}
+	// ----------------------------------------
 
 	public void setRailsMetaData(RailsMetaData metaData) {
 		this.railsMetaData = metaData;

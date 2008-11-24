@@ -19,15 +19,13 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+
 package org.jboss.rails.core.deployers;
 
-public interface RailsModuleMBean {
+public interface RailsWebDeploymentMBean {
+	
+	public String getEnvironment();
+	public String getRailsRoot();
+	
 
-	public void create() throws Exception;
-
-	public void start() throws Exception;
-
-	public void stop() throws Exception;
-
-	public void destroy() throws Exception;
 }

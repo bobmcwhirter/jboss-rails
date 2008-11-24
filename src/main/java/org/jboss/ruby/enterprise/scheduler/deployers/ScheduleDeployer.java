@@ -29,6 +29,7 @@ public class ScheduleDeployer extends AbstractSimpleRealDeployer<ScheduleMetaDat
 			BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder("jboss.ruby.scheduler:unit="+unit.getSimpleName() , ScheduleDeployment.class.getName() );
 			builder.addConstructorParameter( ScheduleMetaData.class.getName(), deployment);
 			builder.addPropertyMetaData( "scheduler", scheduler );
+			builder.addAnnotation("@org.jboss.aop.microcontainer.aspects.jmx.JMX(registerDirectly=true, exposedInterface=void.class, name=\"jboss.ruby.scheduler:app=" + unit.getSimpleName() + "\")");
 			BeanMetaData schedulerBean = builder.getBeanMetaData();
 			unit.addAttachment( BeanMetaData.class, schedulerBean );
 		} catch (SchedulerException e) {

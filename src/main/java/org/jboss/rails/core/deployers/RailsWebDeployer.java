@@ -29,6 +29,7 @@ import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.helpers.AbstractSimpleRealDeployer;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.rails.core.metadata.RailsMetaData;
+import org.jboss.ruby.enterprise.scheduler.metadata.ScheduleMetaData;
 
 /**
  * Deployer that consults RailsMetaData to deploy a Rails web application, for real.
@@ -59,9 +60,9 @@ public class RailsWebDeployer extends AbstractSimpleRealDeployer<RailsMetaData> 
 	@Override
 	public void deploy(DeploymentUnit unit, RailsMetaData railsMetaData) throws DeploymentException {
 		BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder("jboss.rails." + unit.getSimpleName(), RailsWebDeployment.class.getName());
-		//builder.addPropertyMetaData("mbeanServer", mbeanServer );
 		builder.addPropertyMetaData("railsMetaData", railsMetaData);
+		builder.addAnnotation("@org.jboss.aop.microcontainer.aspects.jmx.JMX(registerDirectly=true, exposedInterface=void.class, name=\"jboss.rails.web:app=" + unit.getSimpleName() + "\")");
 		BeanMetaData railsDeployment = builder.getBeanMetaData();
-		unit.addAttachment(BeanMetaData.class.getName() + "$RailsDeployment", railsDeployment, BeanMetaData.class);
+		unit.addAttachment(BeanMetaData.class.getName() + "$RailsWebDeployment", railsDeployment, BeanMetaData.class);
 	}
 }
