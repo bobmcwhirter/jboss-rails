@@ -21,6 +21,7 @@
  */
 package org.jboss.rails.core.deployers;
 
+import org.jboss.aop.microcontainer.aspects.jmx.JMX;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.logging.Logger;
 import org.jboss.rails.core.metadata.RailsMetaData;
@@ -35,6 +36,8 @@ import org.jboss.rails.core.metadata.RailsMetaData;
  * 
  * @author Bob McWhirter
  */
+@JMX(exposedInterface = RailsModuleMBean.class)
+//@JMX(exposedInterface = RailsModuleMBean.class, registerDirectly=true)
 public class RailsModule implements RailsModuleMBean {
 
 	private Logger log = Logger.getLogger(RailsModule.class);

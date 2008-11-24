@@ -76,7 +76,7 @@ public class RailsAppDeployer extends AbstractDeployer {
 		try {
 			RailsDeployment deployment = new RailsDeployment();
 			deployment.setMBeanServer(MBeanServerLocator.locateJBoss());
-			BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder("jboss.ruby.scheduler", RailsModule.class.getName());
+			BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder("jboss.rails:name=" + unit.getSimpleName(), RailsModule.class.getName());
 			builder.addConstructorParameter(VFSDeploymentUnit.class.getName(), unit);
 			builder.addConstructorParameter(RailsAppDeployer.class.getName(), this);
 			builder.addConstructorParameter(RailsDeployment.class.getName(), deployment);
