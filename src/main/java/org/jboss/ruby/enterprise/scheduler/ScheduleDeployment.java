@@ -2,9 +2,10 @@ package org.jboss.ruby.enterprise.scheduler;
 
 import java.io.Serializable;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
-import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.logging.Logger;
 import org.jboss.ruby.enterprise.scheduler.metadata.ScheduleMetaData;
 import org.jboss.ruby.enterprise.scheduler.metadata.ScheduleTaskMetaData;
@@ -51,10 +52,19 @@ public class ScheduleDeployment implements ScheduleDeploymentMBean, Serializable
 		return this.scheduler;
 	}
 
-	public synchronized void start() throws ParseException, SchedulerException {
+	public synchronized void start() throws Exception {
 		log.info("ScheduleDeployment start()");
-		for (ScheduleTaskMetaData task : metaData.getScheduledTasks()) {
-			startTask(task);
+		List<ScheduleTaskMetaData> startedTasks = new ArrayList<ScheduleTaskMetaData>();
+		try {
+			for (ScheduleTaskMetaData task : metaData.getScheduledTasks()) {
+				startTask(task);
+				startedTasks.add( task );
+			}
+		} catch (Exception e) {
+			for ( ScheduleTaskMetaData task : startedTasks ) {
+				stopTask(task);
+			}
+			throw e;
 		}
 		this.status = "RUNNING";
 	}
