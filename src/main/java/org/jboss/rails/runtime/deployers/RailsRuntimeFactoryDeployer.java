@@ -23,6 +23,7 @@ public class RailsRuntimeFactoryDeployer extends AbstractSimpleRealDeployer<Rail
 		BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder( "jboss.ruby.runtime.factory." + unit.getSimpleName(), RailsRuntimeFactory.class.getName() );
 		builder.addConstructorParameter( String.class.getName(), deployment.getRailsRoot() );
 		builder.addConstructorParameter( String.class.getName(), deployment.getEnvironment() );
+		builder.addAnnotation("@org.jboss.aop.microcontainer.aspects.jmx.JMX(registerDirectly=true, exposedInterface=void.class, name=\"jboss.ruby.runtime.factory:app=" + unit.getSimpleName() + "\")");
 		BeanMetaData factoryBean = builder.getBeanMetaData();
 		unit.addAttachment( BeanMetaData.class.getName() + "$RailsRuntimeFactory", factoryBean, BeanMetaData.class );
 	}

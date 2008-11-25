@@ -3,7 +3,7 @@ package org.jboss.rails.runtime;
 import org.jboss.ruby.runtime.BasicRubyRuntimeFactory;
 import org.jruby.Ruby;
 
-public class RailsRuntimeFactory extends BasicRubyRuntimeFactory {
+public class RailsRuntimeFactory extends BasicRubyRuntimeFactory implements RailsRuntimeFactoryMBean {
 	
 	String railsRoot;
 	String environment;
@@ -13,7 +13,6 @@ public class RailsRuntimeFactory extends BasicRubyRuntimeFactory {
 		this.environment = environment;
 	}
 	
-	@Override
 	public Ruby createRubyRuntime() {
 		Ruby ruby = super.createRubyRuntime();
 		String initScript = "$LOAD_PATH << 'META-INF/jruby.home/lib/ruby/site_ruby/1.8'\n" +

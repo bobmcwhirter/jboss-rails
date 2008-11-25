@@ -45,11 +45,11 @@ import org.jboss.virtual.VFS;
 import org.jboss.virtual.VirtualFile;
 
 //public class RailsParsingDeployer extends AbstractVFSParsingDeployer<RailsMetaData> {
-public class RailsParsingDeployer extends AbstractVFSParsingDeployer<RailsMetaData> {
+public class RailsRootReferenceParsingDeployer extends AbstractVFSParsingDeployer<RailsMetaData> {
 
-	private Logger log = Logger.getLogger(RailsParsingDeployer.class);
+	private Logger log = Logger.getLogger(RailsRootReferenceParsingDeployer.class);
 
-	public RailsParsingDeployer() {
+	public RailsRootReferenceParsingDeployer() {
 		super( RailsMetaData.class );
 		setSuffix( "-rails.yml" );
 		setStage(DeploymentStages.REAL);

@@ -2,11 +2,7 @@
 
 <deployment xmlns="urn:jboss:bean-deployer:2.0">
 
-  <bean name="RailsParsingDeployer" class="org.jboss.rails.core.deployers.RailsParsingDeployer"/>
-  <bean name="RailsStructure" class="org.jboss.rails.core.deployers.RailsStructure"/>
-
-
-  <bean name="RailsEnvironmentParsingDeployer" class="org.jboss.rails.core.deployers.RailsEnvironmentParsingDeployer"/>
+  <bean name="RailsRootReferenceParsingDeployer" class="org.jboss.rails.core.deployers.RailsRootReferenceParsingDeployer"/>
 
   <bean name="RailsVersionDeployer" class="org.jboss.rails.core.deployers.RailsVersionDeployer"/>
 
@@ -21,5 +17,9 @@
   <bean name="ScheduleDeployer"            class="org.jboss.ruby.enterprise.scheduler.deployers.ScheduleDeployer"/>
   <bean name="YamlScheduleParsingDeployer" class="org.jboss.ruby.enterprise.scheduler.deployers.YamlScheduleParsingDeployer"/>
 
+<!--
+  <bean name="RailsStructure" class="org.jboss.rails.core.deployers.RailsStructure"/>
+  <bean name="RailsEnvironmentParsingDeployer" class="org.jboss.rails.core.deployers.RailsEnvironmentParsingDeployer"/>
+-->
   
 </deployment>
