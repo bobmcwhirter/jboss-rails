@@ -24,37 +24,42 @@ package org.jboss.rails.core.deployers;
 import java.io.IOException;
 
 import org.jboss.deployers.spi.DeploymentException;
+import org.jboss.deployers.spi.deployer.matchers.JarExtensionProvider;
+import org.jboss.deployers.spi.structure.ContextInfo;
 import org.jboss.deployers.vfs.plugins.structure.AbstractVFSStructureDeployer;
 import org.jboss.deployers.vfs.spi.structure.StructureContext;
 import org.jboss.virtual.VirtualFile;
 
-public class RailsStructure extends AbstractVFSStructureDeployer {
+public class RailsStructure extends AbstractVFSStructureDeployer implements JarExtensionProvider {
 
 	public RailsStructure() {
-		setRelativeOrder( -1000 );
+		setRelativeOrder(-10000);
 	}
 
-	public boolean determineStructure(StructureContext context) throws DeploymentException {
+	public boolean determineStructure(StructureContext deploymentContext) throws DeploymentException {
 		boolean recognized = false;
-		VirtualFile root = context.getRoot();
-		
-		log.debug( "Determining structure for " + context.getFile() );
+		VirtualFile root = deploymentContext.getRoot();
 
 		try {
-			if ( root.isLeaf() ) {
-				return false;
-			}
-			VirtualFile config = root.getChild("config");
-			if (config != null) {
-				if (config.getChild("environment.rb") != null) {
-					createContext(context, "config");
-					recognized = true;
+			if ( ! root.isLeaf() ) {
+				VirtualFile config = root.getChild( "config" );
+				if ( config != null ) {
+					VirtualFile environment = config.getChild( "environment.rb" );
+					if ( environment != null ) {
+						ContextInfo context = createContext(deploymentContext, "config" );
+						recognized = true;
+					}
 				}
 			}
 		} catch (IOException e) {
-			throw new DeploymentException(e);
-		}
-
+			throw new DeploymentException( e );
+		} 
+		
 		return recognized;
+	}
+
+	public String getJarExtension() {
+		log.info( "getJarExtension()..." );
+		return ".rails";
 	}
 }

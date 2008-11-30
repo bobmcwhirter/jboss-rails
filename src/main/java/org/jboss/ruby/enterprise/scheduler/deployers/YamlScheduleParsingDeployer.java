@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.ho.yaml.Yaml;
 import org.jboss.deployers.spi.DeploymentException;
+import org.jboss.deployers.spi.deployer.matchers.JarExtensionProvider;
 import org.jboss.deployers.vfs.spi.deployer.AbstractVFSParsingDeployer;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.rails.core.metadata.RailsMetaData;
