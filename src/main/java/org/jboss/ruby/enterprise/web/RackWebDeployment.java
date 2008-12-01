@@ -64,11 +64,9 @@ public class RackWebDeployment implements RackWebDeploymentMBean {
 	private static Logger log = Logger.getLogger(RackWebDeployment.class);
 
 	/** Meta-data. */
-	private RackWebMetaData webMetaData;
+	private RackWebMetaData rackWebMetaData;
 
 	private DeploymentUnit deploymentUnit;
-
-	private RailsApplicationMetaData railsAppMetaData;
 
 	/**
 	 * Construct.
@@ -89,20 +87,12 @@ public class RackWebDeployment implements RackWebDeploymentMBean {
 	// ----------------------------------------
 	 
 	
-	public void setRailsApplicationMetaData(RailsApplicationMetaData railsAppMetaData) {
-		this.railsAppMetaData = railsAppMetaData;
+	public void setRackWebMetaData(RackWebMetaData rackWebMetaData) {
+		this.rackWebMetaData = rackWebMetaData;
 	}
 	
-	public RailsApplicationMetaData getRailsApplicationMetaData() {
-		return this.railsAppMetaData;
-	}
-	
-	public void setWebMetaData(RackWebMetaData webMetaData) {
-		this.webMetaData = webMetaData;
-	}
-	
-	public RackWebMetaData getWebMetaData() {
-		return this.webMetaData;
+	public RackWebMetaData getRackWebMetaData() {
+		return this.rackWebMetaData;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -110,15 +100,15 @@ public class RackWebDeployment implements RackWebDeploymentMBean {
 		if (log.isTraceEnabled()) {
 			log.trace("start()");
 		}
-		log.debug("meta data: " + railsAppMetaData + " ++ " + webMetaData);
 		Class<StandardContext> contextClass = (Class<StandardContext>) Class.forName(DEFAULT_CONTEXT_CLASS_NAME);
 		StandardContext context = contextClass.newInstance();
 
-		context.setPath(webMetaData.getContext());
+		context.setPath(rackWebMetaData.getContext());
 
 		setUpLoader(context);
 		setUpJMX(context);
 		setUpConfig(context);
+		setUpResources(context);
 
 		context.start();
 
@@ -127,6 +117,14 @@ public class RackWebDeployment implements RackWebDeploymentMBean {
 		}
 		setUpClustering(context);
 
+	}
+	
+	private void setUpResources(StandardContext context) {
+		String docBase = rackWebMetaData.getDocBase();
+		context.setDocBase( docBase );
+		FileDirContext resources = new JBossFileDirContext();
+		resources.setDocBase( docBase );
+		context.setResources(resources);
 	}
 
 	private void setUpClustering(StandardContext context) {
@@ -139,7 +137,7 @@ public class RackWebDeployment implements RackWebDeploymentMBean {
 			manager = (AbstractJBossManager) managerClass.newInstance();
 
 			String hostName = null;
-			String contextPath = this.webMetaData.getContext();
+			String contextPath = this.rackWebMetaData.getContext();
 			String name = "//" + ((hostName == null) ? "localhost" : hostName) + contextPath;
 			manager.init(name, createJBossWebMetaData());
 
@@ -203,7 +201,7 @@ public class RackWebDeployment implements RackWebDeploymentMBean {
 	protected void setUpConfig(StandardContext context) {
 		log.debug("setUpConfig(...)");
 		
-		context.setConfigClass( webMetaData.getContextConfigClassName() );
+		context.setConfigClass( rackWebMetaData.getContextConfigClassName() );
 		RackContextConfig.deploymentUnit.set( this.deploymentUnit );
 	}
 
@@ -220,7 +218,7 @@ public class RackWebDeployment implements RackWebDeploymentMBean {
 	}
 
 	private ObjectName getObjectName() throws MalformedObjectNameException, NullPointerException {
-		String contextPath = this.webMetaData.getContext();
+		String contextPath = this.rackWebMetaData.getContext();
 		if (contextPath == null || contextPath.equals("")) {
 			contextPath = "/";
 		}
@@ -239,11 +237,11 @@ public class RackWebDeployment implements RackWebDeploymentMBean {
 	}
 
 	public String getContext() {
-		return webMetaData.getContext();
+		return rackWebMetaData.getContext();
 	}
 
 	public String getHost() {
-		return webMetaData.getHost();
+		return rackWebMetaData.getHost();
 	}
 
 }

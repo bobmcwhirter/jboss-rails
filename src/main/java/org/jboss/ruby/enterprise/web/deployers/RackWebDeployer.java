@@ -60,15 +60,15 @@ public class RackWebDeployer extends AbstractSimpleRealDeployer<RackWebMetaData>
 	}
 
 	@Override
-	public void deploy(DeploymentUnit unit, RackWebMetaData webMetaData) throws DeploymentException {
+	public void deploy(DeploymentUnit unit, RackWebMetaData rackWebMetaData) throws DeploymentException {
 		
 		BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder("jboss.ruby.web." + unit.getSimpleName(), RackWebDeployment.class.getName());
 		
-		//builder.addPropertyMetaData("railsMetaData", railsMetaData);
+		builder.addPropertyMetaData("rackWebMetaData", rackWebMetaData);
 		builder.addPropertyMetaData( "deploymentUnit", unit );
-		builder.addAnnotation("@org.jboss.aop.microcontainer.aspects.jmx.JMX(registerDirectly=true, exposedInterface=void.class, name=\"jboss.rails.web:app="
+		builder.addAnnotation("@org.jboss.aop.microcontainer.aspects.jmx.JMX(registerDirectly=true, exposedInterface=void.class, name=\"jboss.ruby.web:app="
 				+ unit.getSimpleName() + "\")");
-		BeanMetaData railsDeployment = builder.getBeanMetaData();
-		unit.addAttachment(BeanMetaData.class.getName() + "$RailsWebDeployment", railsDeployment, BeanMetaData.class);
+		BeanMetaData rackWebDeployment = builder.getBeanMetaData();
+		unit.addAttachment(BeanMetaData.class.getName() + "$RackWebDeployment", rackWebDeployment, BeanMetaData.class);
 	}
 }

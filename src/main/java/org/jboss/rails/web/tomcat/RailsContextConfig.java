@@ -19,11 +19,16 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.rails.core.tomcat;
+package org.jboss.rails.web.tomcat;
+
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 
 import org.apache.catalina.core.StandardContext;
+import org.apache.naming.resources.FileDirContext;
 import org.jboss.logging.Logger;
 import org.jboss.rails.core.metadata.RailsApplicationMetaData;
+import org.jboss.rails.naming.JBossFileDirContext;
 import org.jboss.ruby.enterprise.web.tomcat.RackContextConfig;
 
 /**
@@ -32,12 +37,6 @@ import org.jboss.ruby.enterprise.web.tomcat.RackContextConfig;
  * @author Bob McWhirter
  */
 public class RailsContextConfig extends RackContextConfig {
-
-	/**
-	 * Thread-local to pass meta-data between MC deployer and Catalina's
-	 * deployment "stuff".
-	 */
-	public static ThreadLocal<RailsApplicationMetaData> railsApplicationMetaData = new ThreadLocal<RailsApplicationMetaData>();
 
 	/** Our log. */
 	private static Logger log = Logger.getLogger(RailsContextConfig.class);
@@ -57,7 +56,7 @@ public class RailsContextConfig extends RackContextConfig {
 		setUpListeners();
 		setUpWelcomeFiles();
 	}
-
+	
 	/**
 	 * Set the application-specific parameter-values from the meta-data.
 	 */
@@ -69,7 +68,7 @@ public class RailsContextConfig extends RackContextConfig {
 	}
 
 	private void setUpRailsEnv() {
-		RailsApplicationMetaData metaData = RailsContextConfig.railsApplicationMetaData.get();
+		RailsApplicationMetaData metaData = getRailsApplicationMetaData();
 		String environment = metaData.getRailsEnv();
 		context.addParameter("rails.env", environment);
 	}
@@ -109,4 +108,8 @@ public class RailsContextConfig extends RackContextConfig {
 		context.addWelcomeFile("index.html");
 	}
 
+	
+	protected RailsApplicationMetaData getRailsApplicationMetaData() {
+		return RackContextConfig.deploymentUnit.get().getAttachment( RailsApplicationMetaData.class );
+	}
 }
