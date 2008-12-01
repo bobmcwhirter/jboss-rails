@@ -4,7 +4,7 @@
  * See the file LICENSE.txt for details.
  */
 
-package org.jboss.rails.core.rack;
+package org.jboss.rails.web.rack;
 
 import org.jruby.Ruby;
 import org.jruby.rack.DefaultRackApplicationFactory;

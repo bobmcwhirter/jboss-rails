@@ -24,6 +24,7 @@ package org.jboss.rails.web.tomcat;
 import org.apache.catalina.core.StandardContext;
 import org.jboss.logging.Logger;
 import org.jboss.rails.core.metadata.RailsApplicationMetaData;
+import org.jboss.rails.web.rack.JBossRailsServletContextListener;
 import org.jboss.ruby.enterprise.web.tomcat.RackContextConfig;
 
 /**
@@ -81,8 +82,7 @@ public class RailsContextConfig extends RackContextConfig {
 		if (log.isTraceEnabled()) {
 			log.trace("setUpListeners()");
 		}
-		//context.addApplicationListener("org.jruby.rack.rails.RailsServletContextListener");
-		context.addApplicationListener("org.jboss.rails.core.rack.JBossRailsServletContextListener");
+		context.addApplicationListener( JBossRailsServletContextListener.class.getName() );
 	}
 
 	private void setUpWelcomeFiles() {
