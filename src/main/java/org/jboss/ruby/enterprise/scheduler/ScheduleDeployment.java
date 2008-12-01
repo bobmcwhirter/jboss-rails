@@ -1,7 +1,6 @@
 package org.jboss.ruby.enterprise.scheduler;
 
 import java.io.Serializable;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 

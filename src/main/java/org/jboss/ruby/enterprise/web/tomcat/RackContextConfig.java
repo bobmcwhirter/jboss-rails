@@ -53,25 +53,18 @@ public class RackContextConfig extends ContextConfig {
 
 	@Override
 	protected void applicationWebConfig() {
-		if ( log.isTraceEnabled() ) {
-			log.trace("applicationWebConfig()");
-		}
-		//setUpApplicationParamValues();
+		log.info("RackContextConfig:: applicationWebConfig()");
 	}
 
 	@Override
 	protected void defaultWebConfig() {
-		if ( log.isTraceEnabled() ) {
-			log.trace("defaultWebConfig()");
-		}
+		log.info("RackContextConfig:: defaultWebConfig()");
 
 		setUpServletVersion();
 		setUpParamValues();
 		setUpDisplayName();
 		setUpDistributable();
-		setUpErrorPages();
 		setUpFilters();
-		setUpListeners();
 		setUpLogin();
 		setUpMimeMappings();
 		setUpSecurity();
@@ -110,13 +103,6 @@ public class RackContextConfig extends ContextConfig {
 		context.setDistributable(true);
 	}
 
-	private void setUpErrorPages() {
-		if (log.isTraceEnabled()) {
-			log.trace("setUpErrorPages()");
-		}
-		// TODO Inject rails error page handling?
-	}
-
 	private void setUpFilters() {
 		if (log.isTraceEnabled()) {
 			log.trace("setUpFilters()");
@@ -138,14 +124,6 @@ public class RackContextConfig extends ContextConfig {
 		filterMap.addURLPattern("/*");
 
 		context.addFilterMap(filterMap);
-	}
-
-	private void setUpListeners() {
-		if (log.isTraceEnabled()) {
-			log.trace("setUpListeners()");
-		}
-		//context.addApplicationListener("org.jruby.rack.rails.RailsServletContextListener");
-		context.addApplicationListener("org.jboss.rails.core.rack.JBossRailsServletContextListener");
 	}
 
 	private void setUpLogin() {
@@ -170,26 +148,20 @@ public class RackContextConfig extends ContextConfig {
 	}
 
 	private void setUpServlets() {
-		if (log.isTraceEnabled()) {
-			log.trace("setUpServlets()");
-		}
+		log.info("setUpServlets()");
 		// TODO Auto-generated method stub
 		setUpDefaultServlet();
 	}
 
 	private void setUpDefaultServlet() {
-		if (log.isTraceEnabled()) {
-			log.trace("setUpDefaultServlet()");
-		}
+		log.info("setUpDefaultServlet()");
 		Wrapper wrapper = context.createWrapper();
-		wrapper.setName("jboss-rails-default");
-		if (log.isTraceEnabled()) {
-			wrapper.addInitParameter("debug", "1");
-		}
+		wrapper.setName("jboss-rack-default");
+		wrapper.addInitParameter("debug", "1");
 		wrapper.setServletClass("org.apache.catalina.servlets.DefaultServlet");
 		context.addChild(wrapper);
 
-		context.addServletMapping("/*", "jboss-rails-default");
+		context.addServletMapping("/*", "jboss-rack-default");
 	}
 
 	private void setUpJspMappings() {

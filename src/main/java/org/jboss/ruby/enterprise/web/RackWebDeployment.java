@@ -38,7 +38,6 @@ import org.jboss.metadata.web.jboss.ReplicationConfig;
 import org.jboss.metadata.web.jboss.ReplicationGranularity;
 import org.jboss.metadata.web.jboss.ReplicationTrigger;
 import org.jboss.metadata.web.jboss.SnapshotMode;
-import org.jboss.rails.core.metadata.RailsApplicationMetaData;
 import org.jboss.rails.naming.JBossFileDirContext;
 import org.jboss.ruby.enterprise.web.metadata.RackWebMetaData;
 import org.jboss.ruby.enterprise.web.tomcat.RackContextConfig;
@@ -103,7 +102,15 @@ public class RackWebDeployment implements RackWebDeploymentMBean {
 		Class<StandardContext> contextClass = (Class<StandardContext>) Class.forName(DEFAULT_CONTEXT_CLASS_NAME);
 		StandardContext context = contextClass.newInstance();
 
-		context.setPath(rackWebMetaData.getContext());
+		//context.setPath(rackWebMetaData.getContext());
+		String contextPath = rackWebMetaData.getContext();
+		
+		if ( contextPath == null || contextPath == "/" ) {
+			contextPath = "";
+		}
+	
+		log.info( "Setting context: " + contextPath );
+		context.setPath( contextPath );
 
 		setUpLoader(context);
 		setUpJMX(context);
@@ -112,10 +119,9 @@ public class RackWebDeployment implements RackWebDeploymentMBean {
 
 		context.start();
 
-		if (log.isTraceEnabled()) {
-			log.debug("start() complete");
-		}
+		log.debug("start() complete");
 		setUpClustering(context);
+		log.debug("clustering setup complete");
 
 	}
 	
@@ -151,7 +157,6 @@ public class RackWebDeployment implements RackWebDeploymentMBean {
 			log.warn("Failed to setup clustering, clustering disabled. ClusteringNotSupportedException: " + e.getMessage());
 		} catch (NoClassDefFoundError ncdf) {
 			// JBAS-3513 Just log a WARN, not an ERROR
-			log.debug("Classes needed for clustered webapp unavailable", ncdf);
 			log.warn("Failed to setup clustering, clustering disabled. NoClassDefFoundError: " + ncdf.getMessage());
 		} catch (Throwable t) {
 			// TODO consider letting this through and fail the deployment

@@ -28,7 +28,6 @@ import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.helpers.AbstractSimpleRealDeployer;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
-import org.jboss.rails.core.metadata.RailsMetaData;
 import org.jboss.ruby.enterprise.web.RackWebDeployment;
 import org.jboss.ruby.enterprise.web.metadata.RackWebMetaData;
 

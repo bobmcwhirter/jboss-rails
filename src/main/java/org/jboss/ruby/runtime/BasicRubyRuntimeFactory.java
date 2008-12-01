@@ -1,8 +1,6 @@
 package org.jboss.ruby.runtime;
 
 import java.io.PrintStream;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

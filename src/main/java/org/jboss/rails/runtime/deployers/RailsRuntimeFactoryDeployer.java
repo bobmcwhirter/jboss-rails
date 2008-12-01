@@ -7,7 +7,6 @@ import org.jboss.deployers.spi.deployer.helpers.AbstractSimpleRealDeployer;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.logging.Logger;
 import org.jboss.rails.core.metadata.RailsApplicationMetaData;
-import org.jboss.rails.core.metadata.RailsMetaData;
 import org.jboss.rails.runtime.RailsRuntimeFactory;
 import org.jboss.virtual.VirtualFile;
 

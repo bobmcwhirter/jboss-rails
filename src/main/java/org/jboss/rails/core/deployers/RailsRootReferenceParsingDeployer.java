@@ -40,44 +40,38 @@ import org.jboss.deployers.vfs.plugins.client.AbstractVFSDeployment;
 import org.jboss.deployers.vfs.spi.deployer.AbstractVFSParsingDeployer;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.logging.Logger;
-import org.jboss.rails.core.metadata.RailsMetaData;
+import org.jboss.rails.core.metadata.RailsApplicationMetaData;
+import org.jboss.ruby.enterprise.web.metadata.RackWebMetaData;
 import org.jboss.virtual.VFS;
 import org.jboss.virtual.VirtualFile;
 
 //public class RailsParsingDeployer extends AbstractVFSParsingDeployer<RailsMetaData> {
-public class RailsRootReferenceParsingDeployer extends AbstractVFSParsingDeployer<RailsMetaData> {
+public class RailsRootReferenceParsingDeployer extends AbstractVFSParsingDeployer<RailsApplicationMetaData> {
 
 	private Logger log = Logger.getLogger(RailsRootReferenceParsingDeployer.class);
 
 	public RailsRootReferenceParsingDeployer() {
-		super( RailsMetaData.class );
-		setSuffix( "-rails.yml" );
+		super(RailsApplicationMetaData.class);
+		addOutput(RackWebMetaData.class);
+		setSuffix("-rails.yml");
 		setStage(DeploymentStages.REAL);
-		setTopLevelOnly( true );
+		setTopLevelOnly(true);
 	}
 
 	@Override
-	protected RailsMetaData parse(VFSDeploymentUnit vfsUnit, VirtualFile file, RailsMetaData root) throws Exception {
+	protected RailsApplicationMetaData parse(VFSDeploymentUnit vfsUnit, VirtualFile file, RailsApplicationMetaData root) throws Exception {
 
-		if ( ! file.equals( vfsUnit.getRoot() ) ) {
-			log.debug("not deploying non-root: " + file );
+		if (!file.equals(vfsUnit.getRoot())) {
+			log.debug("not deploying non-root: " + file);
 			return null;
 		}
-		
-		log.debug("deploying: " + file );
 
-		RailsMetaData metaData = parseDescriptor( file );
+		log.debug("deploying: " + file);
 
-		try {
-			Deployment deployment = createDeployment(metaData);
-			addStructure(deployment);
+		Deployment deployment = parseAndSetUp(file);
 
-			performDeploy(vfsUnit, deployment);
+		performDeploy(vfsUnit, deployment);
 
-		} catch (IOException e) {
-			throw new DeploymentException(e);
-		}
-		
 		// Returning null since the RailsMetaData is actually
 		// attached as a predetermined managed object on the
 		// sub-deployment, and not directly applicable
@@ -85,21 +79,19 @@ public class RailsRootReferenceParsingDeployer extends AbstractVFSParsingDeploye
 		return null;
 
 	}
-	
-	
 
 	@Override
 	public void undeploy(DeploymentUnit unit) {
-		log.trace( "attempting undeploy from: " + unit.getName() );
+		log.trace("attempting undeploy from: " + unit.getName());
 		Deployment deployment = unit.getAttachment("jboss.rails.root.deployment", Deployment.class);
 		if (deployment != null) {
-			log.debug( "Undeploying: " + deployment.getName() );
-			MainDeployer deployer = unit.getAttachment( "jboss.rails.root.deployer", MainDeployer.class );
+			log.debug("Undeploying: " + deployment.getName());
+			MainDeployer deployer = unit.getAttachment("jboss.rails.root.deployer", MainDeployer.class);
 			try {
 				deployer.removeDeployment(deployment);
 				deployer.process();
 			} catch (DeploymentException e) {
-				log.error( e );
+				log.error(e);
 			}
 		}
 	}
@@ -110,7 +102,7 @@ public class RailsRootReferenceParsingDeployer extends AbstractVFSParsingDeploye
 		deployer.process();
 		deployer.checkComplete(deployment);
 		unit.addAttachment("jboss.rails.root.deployment", deployment);
-		unit.addAttachment("jboss.rails.root.deployer", deployer );
+		unit.addAttachment("jboss.rails.root.deployer", deployer);
 	}
 
 	private void addStructure(Deployment deployment) {
@@ -122,46 +114,53 @@ public class RailsRootReferenceParsingDeployer extends AbstractVFSParsingDeploye
 		attachments.addAttachment(StructureMetaData.class, structure);
 	}
 
-	private Deployment createDeployment(RailsMetaData metaData) throws MalformedURLException, IOException {
-		VirtualFile railsRoot = VFS.getRoot(new URL("file://" + metaData.getRailsRoot()));
-		Deployment deployment = new AbstractVFSDeployment(railsRoot);
+	private Deployment createDeployment(RailsApplicationMetaData railsMetaData, RackWebMetaData webMetaData) throws MalformedURLException, IOException {
+		Deployment deployment = new AbstractVFSDeployment(railsMetaData.getRailsRoot());
 
 		MutableAttachments attachments = ((MutableAttachments) deployment.getPredeterminedManagedObjects());
-		attachments.addAttachment(RailsMetaData.class, metaData);
+
+		attachments.addAttachment(RailsApplicationMetaData.class, railsMetaData);
+
+		if (webMetaData != null) {
+			attachments.addAttachment(RackWebMetaData.class, webMetaData);
+		}
 
 		return deployment;
 	}
 
 	@SuppressWarnings("unchecked")
-	private RailsMetaData parseDescriptor(VirtualFile file) throws DeploymentException {
+	private Deployment parseAndSetUp(VirtualFile file) throws DeploymentException {
 		try {
 			Map<String, Object> results = (Map<String, Object>) Yaml.load(file.openStream());
 
 			Map<String, Object> application = (Map<String, Object>) results.get("application");
 			Map<String, Object> web = (Map<String, Object>) results.get("web");
-			Map<String, Object> jruby = (Map<String, Object>) results.get("jruby");
 
-			RailsMetaData metaData = new RailsMetaData();
+			RailsApplicationMetaData railsMetaData = new RailsApplicationMetaData();
 
 			if (application != null) {
 				String railsRoot = (String) application.get("RAILS_ROOT");
 				String railsEnv = (String) application.get("RAILS_ENV");
-				metaData.setRailsRoot(railsRoot);
-				metaData.setEnvironment(railsEnv);
+				URL railsRootUrl = new URL("file://" + railsRoot);
+				VirtualFile railsRootFile = VFS.getRoot(railsRootUrl);
+				railsMetaData.setRailsRoot(railsRootFile);
+				railsMetaData.setRailsEnv(railsEnv);
 			}
 
+			RackWebMetaData webMetaData = null;
 			if (web != null) {
 				String context = (String) web.get("context");
-				metaData.setContext(context);
+				webMetaData = new RackWebMetaData(context);
 			}
 
-			return metaData;
+			Deployment deployment = createDeployment(railsMetaData, webMetaData);
+			addStructure(deployment);
+			return deployment;
+
 		} catch (IOException e) {
 			file.closeStreams();
 			throw new DeploymentException(e);
 		}
 	}
-
-
 
 }

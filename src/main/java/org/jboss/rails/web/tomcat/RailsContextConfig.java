@@ -21,14 +21,9 @@
  */
 package org.jboss.rails.web.tomcat;
 
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-
 import org.apache.catalina.core.StandardContext;
-import org.apache.naming.resources.FileDirContext;
 import org.jboss.logging.Logger;
 import org.jboss.rails.core.metadata.RailsApplicationMetaData;
-import org.jboss.rails.naming.JBossFileDirContext;
 import org.jboss.ruby.enterprise.web.tomcat.RackContextConfig;
 
 /**
@@ -49,9 +44,7 @@ public class RailsContextConfig extends RackContextConfig {
 
 	@Override
 	protected void applicationWebConfig() {
-		if ( log.isTraceEnabled() ) {
-			log.trace("applicationWebConfig()");
-		}
+		log.info("RailsContextConfig:: applicationWebConfig()");
 		setUpApplicationParamValues();
 		setUpListeners();
 		setUpWelcomeFiles();
@@ -82,14 +75,6 @@ public class RailsContextConfig extends RackContextConfig {
 		context.addParameter( "jruby.max.runtimes", "3" );
 		context.addParameter( "jruby.min.runtimes", "3" );
 		context.addParameter( "jruby.runtime.timeout.sec", "30" );
-	}
-
-	@Override
-	protected void defaultWebConfig() {
-		if ( log.isTraceEnabled() ) {
-			log.trace("defaultWebConfig()");
-		}
-
 	}
 
 	private void setUpListeners() {

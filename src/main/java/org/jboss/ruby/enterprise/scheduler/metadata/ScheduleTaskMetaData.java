@@ -1,8 +1,5 @@
 package org.jboss.ruby.enterprise.scheduler.metadata;
 
-import java.util.Map;
-
-import org.quartz.Job;
 
 public class ScheduleTaskMetaData {
 
