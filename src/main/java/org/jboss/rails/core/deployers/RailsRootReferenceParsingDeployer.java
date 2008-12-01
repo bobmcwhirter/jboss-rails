@@ -150,7 +150,8 @@ public class RailsRootReferenceParsingDeployer extends AbstractVFSParsingDeploye
 			RackWebMetaData webMetaData = null;
 			if (web != null) {
 				String context = (String) web.get("context");
-				webMetaData = new RackWebMetaData(context);
+				String host = (String) web.get("host");
+				webMetaData = new RackWebMetaData(context, host);
 			}
 
 			Deployment deployment = createDeployment(railsMetaData, webMetaData);

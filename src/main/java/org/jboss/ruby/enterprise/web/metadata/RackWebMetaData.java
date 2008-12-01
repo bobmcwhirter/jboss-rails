@@ -20,7 +20,11 @@ public class RackWebMetaData {
 	
 	public RackWebMetaData(String context, String host) {
 		this.context = context;
-		this.host    = host;
+		if ( host == null || host.equals( "*" ) ) {
+			this.host = "localhost";
+		} else {
+			this.host = host;
+		}
 	}
 	
 	public Object getFrameworkMetaData() {
