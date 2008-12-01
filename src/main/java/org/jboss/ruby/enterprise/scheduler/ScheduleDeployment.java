@@ -1,24 +1,3 @@
-/*
- * JBoss, Home of Professional Open Source
- * Copyright 2008, Red Hat Middleware LLC, and individual contributors
- * by the @authors tag. See the copyright.txt in the distribution for a
- * full listing of individual contributors.
- *
- * This is free software; you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of
- * the License, or (at your option) any later version.
- *
- * This software is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this software; if not, write to the Free
- * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- */
 package org.jboss.ruby.enterprise.scheduler;
 
 import java.io.Serializable;
@@ -51,6 +30,7 @@ public class ScheduleDeployment implements ScheduleDeploymentMBean, Serializable
 	private RubyRuntimeFactory runtimeFactory;
 
 	private Ruby sharedInstance;
+	private List<Ruby> runtimes = new ArrayList<Ruby>();
 
 	public ScheduleDeployment(ScheduleMetaData metaData, RubyRuntimeFactory runtimeFactory) {
 		this.metaData = metaData;
@@ -141,12 +121,15 @@ public class ScheduleDeployment implements ScheduleDeploymentMBean, Serializable
 				if (this.sharedInstance == null) {
 					this.sharedInstance = initializeRuntime(this.runtimeFactory.createRubyRuntime());
 				}
+				this.runtimes.add( this.sharedInstance );
 				return this.sharedInstance;
 			}
 		}
 
 		log.info("using unique runtime");
-		return initializeRuntime(this.runtimeFactory.createRubyRuntime());
+		Ruby runtime = initializeRuntime(this.runtimeFactory.createRubyRuntime());
+		this.runtimes.add( runtime );
+		return runtime;
 	}
 
 	protected Ruby initializeRuntime(Ruby ruby) {
@@ -174,6 +157,12 @@ public class ScheduleDeployment implements ScheduleDeploymentMBean, Serializable
 				log.error(e);
 			}
 		}
+		
+		for (Ruby runtime : this.runtimes ) {
+			runtime.tearDown();
+		}
+		
+		this.runtimes.clear();
 
 		this.status = "STOPPED";
 	}

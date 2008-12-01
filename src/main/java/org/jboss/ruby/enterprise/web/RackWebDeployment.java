@@ -31,14 +31,12 @@ import org.apache.catalina.core.StandardContext;
 import org.apache.naming.resources.FileDirContext;
 import org.apache.tomcat.util.modeler.Registry;
 import org.jboss.deployers.spi.DeploymentException;
-import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.logging.Logger;
 import org.jboss.metadata.web.jboss.JBossWebMetaData;
 import org.jboss.metadata.web.jboss.ReplicationConfig;
 import org.jboss.metadata.web.jboss.ReplicationGranularity;
 import org.jboss.metadata.web.jboss.ReplicationTrigger;
 import org.jboss.metadata.web.jboss.SnapshotMode;
-import org.jboss.metadata.web.spec.WebMetaData;
 import org.jboss.ruby.enterprise.web.metadata.RackWebMetaData;
 import org.jboss.ruby.enterprise.web.naming.JBossFileDirContext;
 import org.jboss.ruby.enterprise.web.tomcat.RackContextConfig;
@@ -207,7 +205,9 @@ public class RackWebDeployment implements RackWebDeploymentMBean {
 
 		MBeanServer mbeanServer = getMBeanServer();
 		
+		log.info( "isRegistered for " + objectName + ": " + mbeanServer.isRegistered( objectName ) );
 		if (mbeanServer.isRegistered(objectName)) {
+			log.info( "destroying" + objectName );
 			mbeanServer.invoke(objectName, "destroy", new Object[] {}, new String[] {});
 		}
 	}
