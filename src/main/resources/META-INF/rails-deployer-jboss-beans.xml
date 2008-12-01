@@ -2,22 +2,12 @@
 
 <deployment xmlns="urn:jboss:bean-deployer:2.0">
 
-  <bean name="RailsStructure" class="org.jboss.rails.core.deployers.RailsStructure">
-    <install bean="JARStructure" method="addJarExtension">
-      <parameter>
-        <this/>
-      </parameter>
-    </install>
-    <uninstall bean="JARStructure" method="removeJarExtension">
-      <parameter>
-        <this/>
-      </parameter>
-    </uninstall>
-  </bean>
+  <bean name="RailsStructure" class="org.jboss.rails.core.deployers.RailsStructure"/>
+
+  <bean name="RailsEnvironmentParsingDeployer" class="org.jboss.rails.core.deployers.RailsEnvironmentParsingDeployer"/>
+  <bean name="RailsVersionDeployer"            class="org.jboss.rails.core.deployers.RailsVersionDeployer"/>
 
   <bean name="RailsRootReferenceParsingDeployer" class="org.jboss.rails.core.deployers.RailsRootReferenceParsingDeployer"/>
-
-  <bean name="RailsVersionDeployer" class="org.jboss.rails.core.deployers.RailsVersionDeployer"/>
 
   <bean name="RailsWebDeployer" class="org.jboss.rails.core.deployers.RailsWebDeployer">
     <property name="mbeanServer"><inject bean="JMXKernel" property="mbeanServer"/></property>
@@ -31,7 +21,6 @@
   <bean name="YamlScheduleParsingDeployer" class="org.jboss.ruby.enterprise.scheduler.deployers.YamlScheduleParsingDeployer"/>
 
 <!--
-  <bean name="RailsEnvironmentParsingDeployer" class="org.jboss.rails.core.deployers.RailsEnvironmentParsingDeployer"/>
 -->
   
 </deployment>

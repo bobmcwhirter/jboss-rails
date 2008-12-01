@@ -59,9 +59,14 @@ public class RailsRootReferenceParsingDeployer extends AbstractVFSParsingDeploye
 	@Override
 	protected RailsMetaData parse(VFSDeploymentUnit vfsUnit, VirtualFile file, RailsMetaData root) throws Exception {
 
-		log.debug("deploying: " + vfsUnit.getRoot());
+		if ( ! file.equals( vfsUnit.getRoot() ) ) {
+			log.debug("not deploying non-root: " + file );
+			return null;
+		}
+		
+		log.debug("deploying: " + file );
 
-		RailsMetaData metaData = parseDescriptor(vfsUnit.getRoot());
+		RailsMetaData metaData = parseDescriptor( file );
 
 		try {
 			Deployment deployment = createDeployment(metaData);

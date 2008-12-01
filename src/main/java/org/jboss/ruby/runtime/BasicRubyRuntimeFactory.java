@@ -1,6 +1,8 @@
 package org.jboss.ruby.runtime;
 
 import java.io.PrintStream;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,7 +18,7 @@ public class BasicRubyRuntimeFactory implements RubyRuntimeFactory {
 		
 	}
 
-	public Ruby createRubyRuntime() {
+	public Ruby createRubyRuntime() throws Exception {
 		RubyInstanceConfig config = new RubyInstanceConfig();
 
 		List<String> loadPaths = new ArrayList<String>();

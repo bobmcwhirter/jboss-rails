@@ -4,6 +4,6 @@ import org.jruby.Ruby;
 
 public interface RubyRuntimeFactory {
 	
-	Ruby createRubyRuntime();
+	Ruby createRubyRuntime() throws Exception;
 
 }

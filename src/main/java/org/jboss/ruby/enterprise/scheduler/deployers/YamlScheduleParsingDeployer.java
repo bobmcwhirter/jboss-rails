@@ -1,16 +1,14 @@
 package org.jboss.ruby.enterprise.scheduler.deployers;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.net.URISyntaxException;
 import java.util.Map;
 
 import org.ho.yaml.Yaml;
 import org.jboss.deployers.spi.DeploymentException;
-import org.jboss.deployers.spi.deployer.matchers.JarExtensionProvider;
 import org.jboss.deployers.vfs.spi.deployer.AbstractVFSParsingDeployer;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
-import org.jboss.rails.core.metadata.RailsMetaData;
-import org.jboss.ruby.enterprise.scheduler.RubyJob;
+import org.jboss.rails.core.metadata.RailsApplicationMetaData;
 import org.jboss.ruby.enterprise.scheduler.metadata.ScheduleMetaData;
 import org.jboss.ruby.enterprise.scheduler.metadata.ScheduleTaskMetaData;
 import org.jboss.virtual.VirtualFile;
@@ -19,19 +17,19 @@ public class YamlScheduleParsingDeployer extends AbstractVFSParsingDeployer<Sche
 
 	public YamlScheduleParsingDeployer() {
 		super(ScheduleMetaData.class);
-		addInput(RailsMetaData.class);
+		addInput(RailsApplicationMetaData.class);
 		setName("jboss-scheduler.yml");
 		setBuildManagedObject(true);
 	}
 
 	@Override
 	protected ScheduleMetaData parse(VFSDeploymentUnit unit, VirtualFile file, ScheduleMetaData root) throws Exception {
-		RailsMetaData railsMetaData = unit.getAttachment(RailsMetaData.class);
-		return parseSchedulerYaml(railsMetaData.getRailsRoot(), railsMetaData.getEnvironment(), file);
+		RailsApplicationMetaData railsMetaData = unit.getAttachment(RailsApplicationMetaData.class);
+		return parseSchedulerYaml(railsMetaData.getRailsRoot(), railsMetaData.getRailsEnv(), file);
 	}
 
 	@SuppressWarnings("unchecked")
-	private ScheduleMetaData parseSchedulerYaml(String railsRoot, String railsEnv, VirtualFile file) throws DeploymentException {
+	private ScheduleMetaData parseSchedulerYaml(VirtualFile railsRoot, String railsEnv, VirtualFile file) throws DeploymentException {
 		try {
 			Map<String, Map<String, String>> results = (Map<String, Map<String, String>>) Yaml.load(file.openStream());
 
@@ -46,7 +44,7 @@ public class YamlScheduleParsingDeployer extends AbstractVFSParsingDeployer<Sche
 				ScheduleTaskMetaData taskMetaData = new ScheduleTaskMetaData();
 				
 				taskMetaData.setName(jobName);
-				taskMetaData.setGroup(railsRoot);
+				taskMetaData.setGroup(railsRoot.toURL().toString());
 				taskMetaData.setDescription(description);
 				taskMetaData.setRubyClass( task );
 				taskMetaData.setCronExpression( cron.trim() );
@@ -55,8 +53,11 @@ public class YamlScheduleParsingDeployer extends AbstractVFSParsingDeployer<Sche
 
 			return scheduleMetaData;
 		} catch (IOException e) {
-			file.closeStreams();
 			throw new DeploymentException(e);
+		} catch (URISyntaxException e) {
+			throw new DeploymentException( e );
+		} finally {
+			file.closeStreams();
 		}
 	}
 }

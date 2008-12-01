@@ -24,10 +24,12 @@ package org.jboss.rails.core.deployers;
 import java.io.IOException;
 
 import org.jboss.deployers.spi.DeploymentException;
+import org.jboss.deployers.spi.attachments.MutableAttachments;
 import org.jboss.deployers.spi.deployer.matchers.JarExtensionProvider;
 import org.jboss.deployers.spi.structure.ContextInfo;
 import org.jboss.deployers.vfs.plugins.structure.AbstractVFSStructureDeployer;
 import org.jboss.deployers.vfs.spi.structure.StructureContext;
+import org.jboss.rails.core.metadata.RailsApplicationMetaData;
 import org.jboss.virtual.VirtualFile;
 
 public class RailsStructure extends AbstractVFSStructureDeployer implements JarExtensionProvider {
@@ -36,30 +38,34 @@ public class RailsStructure extends AbstractVFSStructureDeployer implements JarE
 		setRelativeOrder(-10000);
 	}
 
-	public boolean determineStructure(StructureContext deploymentContext) throws DeploymentException {
+	public boolean determineStructure(StructureContext structureContext) throws DeploymentException {
 		boolean recognized = false;
-		VirtualFile root = deploymentContext.getRoot();
+		VirtualFile root = structureContext.getRoot();
 
+		ContextInfo context = null;
 		try {
 			if ( ! root.isLeaf() ) {
 				VirtualFile config = root.getChild( "config" );
 				if ( config != null ) {
 					VirtualFile environment = config.getChild( "environment.rb" );
 					if ( environment != null ) {
-						ContextInfo context = createContext(deploymentContext, "config" );
+						context = createContext(structureContext, "config" );
+						MutableAttachments attachments = (MutableAttachments) context.getPredeterminedManagedObjects();
+						RailsApplicationMetaData railsAppMetaData = new RailsApplicationMetaData( root );
+						log.info( "added RailsApplicationMetaData: " + railsAppMetaData );
+						attachments.addAttachment( RailsApplicationMetaData.class, railsAppMetaData );
 						recognized = true;
 					}
 				}
 			}
 		} catch (IOException e) {
-			throw new DeploymentException( e );
+			recognized = false;
 		} 
 		
 		return recognized;
 	}
 
 	public String getJarExtension() {
-		log.info( "getJarExtension()..." );
 		return ".rails";
 	}
 }

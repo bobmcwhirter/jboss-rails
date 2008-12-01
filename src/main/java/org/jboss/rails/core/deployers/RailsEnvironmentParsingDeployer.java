@@ -23,27 +23,21 @@ package org.jboss.rails.core.deployers;
 
 import org.jboss.deployers.vfs.spi.deployer.AbstractVFSParsingDeployer;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
-import org.jboss.rails.core.metadata.RailsMetaData;
+import org.jboss.rails.core.metadata.RailsApplicationMetaData;
 import org.jboss.virtual.VirtualFile;
 
-public class RailsEnvironmentParsingDeployer extends AbstractVFSParsingDeployer<RailsMetaData> {
+public class RailsEnvironmentParsingDeployer extends AbstractVFSParsingDeployer<RailsApplicationMetaData> {
 	public RailsEnvironmentParsingDeployer() {
-		super(RailsMetaData.class);
+		super(RailsApplicationMetaData.class);
 		setName("environment.rb");
 		setTopLevelOnly(false);
 	}
 
 	@Override
-	protected RailsMetaData parse(VFSDeploymentUnit unit, VirtualFile file, RailsMetaData root) throws Exception {
+	protected RailsApplicationMetaData parse(VFSDeploymentUnit unit, VirtualFile file, RailsApplicationMetaData root) throws Exception {
 		log.info("Parsing " + file + " for " + unit.getRoot());
-		String railsRoot = unit.getRoot().toURL().getFile();
-		if ( unit.isAttachmentPresent( RailsMetaData.class ) ) {
-			log.info( "RailsMetaData present, doing nothing." );
-			return root;
-		}
-		RailsMetaData railsMetaData = new RailsMetaData();
-		railsMetaData.setRailsRoot( railsRoot );
-		unit.addAttachment( RailsMetaData.class, railsMetaData );
+		RailsApplicationMetaData railsMetaData = new RailsApplicationMetaData( unit.getRoot() );
+		unit.addAttachment( RailsApplicationMetaData.class, railsMetaData );
 		return railsMetaData;
 	}
 }
