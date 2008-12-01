@@ -36,6 +36,8 @@ public class RailsRackWebPostParseDeployer extends AbstractSimpleRealDeployer<Ra
 		} catch (MalformedURLException e) {
 			throw new DeploymentException( e );
 		}
+		
+		rackMetaData.setFrameworkMetaData( railsAppMetaData );
 	}
 
 

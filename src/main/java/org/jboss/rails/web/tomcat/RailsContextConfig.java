@@ -95,6 +95,6 @@ public class RailsContextConfig extends RackContextConfig {
 
 	
 	protected RailsApplicationMetaData getRailsApplicationMetaData() {
-		return RackContextConfig.deploymentUnit.get().getAttachment( RailsApplicationMetaData.class );
+		return (RailsApplicationMetaData) RackContextConfig.frameworkMetaData.get();
 	}
 }

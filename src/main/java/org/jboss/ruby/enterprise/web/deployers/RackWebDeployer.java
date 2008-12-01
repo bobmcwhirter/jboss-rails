@@ -64,7 +64,6 @@ public class RackWebDeployer extends AbstractSimpleRealDeployer<RackWebMetaData>
 		BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder("jboss.ruby.web." + unit.getSimpleName(), RackWebDeployment.class.getName());
 		
 		builder.addPropertyMetaData("rackWebMetaData", rackWebMetaData);
-		builder.addPropertyMetaData( "deploymentUnit", unit );
 		builder.addAnnotation("@org.jboss.aop.microcontainer.aspects.jmx.JMX(registerDirectly=true, exposedInterface=void.class, name=\"jboss.ruby.web:app="
 				+ unit.getSimpleName() + "\")");
 		BeanMetaData rackWebDeployment = builder.getBeanMetaData();

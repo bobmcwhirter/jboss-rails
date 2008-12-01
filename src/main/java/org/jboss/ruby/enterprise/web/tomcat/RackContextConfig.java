@@ -40,7 +40,7 @@ public class RackContextConfig extends ContextConfig {
 	 * Thread-local to pass meta-data between MC deployer and Catalina's
 	 * deployment "stuff".
 	 */
-	public static ThreadLocal<DeploymentUnit> deploymentUnit = new ThreadLocal<DeploymentUnit>();
+	public static ThreadLocal<Object> frameworkMetaData = new ThreadLocal<Object>();
 
 	/** Our log. */
 	private static Logger log = Logger.getLogger(RackContextConfig.class);

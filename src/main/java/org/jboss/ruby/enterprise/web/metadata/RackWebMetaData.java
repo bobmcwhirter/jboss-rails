@@ -8,6 +8,7 @@ public class RackWebMetaData {
 	
 	private String contextConfigClassName = "org.jboss.ruby.enterprise.web.tomcat.RackContextConfig";
 	private String docBase;
+	private Object frameworkMetaData;
 	
 	public RackWebMetaData() {
 		
@@ -20,6 +21,14 @@ public class RackWebMetaData {
 	public RackWebMetaData(String context, String host) {
 		this.context = context;
 		this.host = host;
+	}
+	
+	public Object getFrameworkMetaData() {
+		return this.frameworkMetaData;
+	}
+	
+	public void setFrameworkMetaData(Object frameworkMetaData) {
+		this.frameworkMetaData = frameworkMetaData;
 	}
 	
 	public String getContext() {
@@ -58,5 +67,6 @@ public class RackWebMetaData {
 	public String toString() {
 		return "[WebMetaData: context=" + this.context + "; host=" + this.host + "]";
 	}
+
 
 }

@@ -65,22 +65,12 @@ public class RackWebDeployment implements RackWebDeploymentMBean {
 	/** Meta-data. */
 	private RackWebMetaData rackWebMetaData;
 
-	private DeploymentUnit deploymentUnit;
-
 	/**
 	 * Construct.
 	 * 
 	 */
 	public RackWebDeployment() {
 
-	}
-	
-	public void setDeploymentUnit(DeploymentUnit deploymentUnit) {
-		this.deploymentUnit = deploymentUnit;
-	}
-	
-	public DeploymentUnit getDeploymentUnit() {
-		return this.deploymentUnit;
 	}
 	
 	// ----------------------------------------
@@ -207,7 +197,7 @@ public class RackWebDeployment implements RackWebDeploymentMBean {
 		log.debug("setUpConfig(...)");
 		
 		context.setConfigClass( rackWebMetaData.getContextConfigClassName() );
-		RackContextConfig.deploymentUnit.set( this.deploymentUnit );
+		RackContextConfig.frameworkMetaData.set( rackWebMetaData.getFrameworkMetaData() );
 	}
 
 	public synchronized void stop() throws Exception {
