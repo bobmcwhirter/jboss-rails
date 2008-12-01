@@ -36,11 +36,11 @@ public class BasicRubyRuntimePool extends AbstractRubyRuntimePool {
 		this.timeout = timeout;
 	}
 
-	public synchronized void start() {
+	public synchronized void start() throws Exception {
 		prepopulateRuntimes();
 	}
 
-	private void prepopulateRuntimes() {
+	private void prepopulateRuntimes() throws Exception {
 		for (int i = 0; i < this.minInstances; ++i) {
 			Ruby ruby = factory.createRubyRuntime();
 			this.instances.add( ruby );
@@ -52,7 +52,7 @@ public class BasicRubyRuntimePool extends AbstractRubyRuntimePool {
 		this.instances.clear();
 	}
 
-	public synchronized Ruby borrowRuntime() throws InterruptedException {
+	public synchronized Ruby borrowRuntime() throws Exception {
 		if (availableInstances.isEmpty()) {
 			if (this.maxInstances < 0 || this.instances.size() < this.maxInstances) {
 				Ruby runtime = factory.createRubyRuntime();

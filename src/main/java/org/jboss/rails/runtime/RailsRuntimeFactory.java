@@ -21,15 +21,11 @@ public class RailsRuntimeFactory extends BasicRubyRuntimeFactory implements Rail
 		Ruby ruby = super.createRubyRuntime();
 		
 		String railsRootPath = this.railsRoot.toURL().getFile();
-		String jarFilePath = "file:" + this.railsRoot.toURL().getFile();
 		
 		String initScript = "$LOAD_PATH << 'META-INF/jruby.home/lib/ruby/site_ruby/1.8'\n" +
-        	"require '" + jarFilePath + "'\n" +
-        	//"RAILS_ROOT='" + jarFilePath + "!/'\n" + 
+        	"RAILS_ROOT='" + railsRootPath + "'\n" + 
         	"RAILS_ENV='" + this.environment + "'\n" + 
-        	//"puts RAILS_ROOT\n" +
-        	"require 'config/boot.rb'\n" + 
-        	"require 'config/environment.rb'\n";
+        	"require \"#{RAILS_ROOT}/config/boot.rb\"\n";
 		log.info( "initScript" + initScript );
 		ruby.evalScriptlet( initScript );
 		return ruby;

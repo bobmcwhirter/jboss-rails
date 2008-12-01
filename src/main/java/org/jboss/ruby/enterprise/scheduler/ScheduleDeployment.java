@@ -10,7 +10,6 @@ import org.jboss.ruby.enterprise.scheduler.metadata.ScheduleMetaData;
 import org.jboss.ruby.enterprise.scheduler.metadata.ScheduleTaskMetaData;
 import org.jboss.ruby.runtime.RubyRuntimeFactory;
 import org.jruby.Ruby;
-import org.jruby.runtime.builtin.IRubyObject;
 import org.quartz.CronTrigger;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -76,7 +75,7 @@ public class ScheduleDeployment implements ScheduleDeploymentMBean, Serializable
 		this.status = "RUNNING";
 	}
 
-	protected void startTask(ScheduleTaskMetaData task) throws ParseException, SchedulerException {
+	protected void startTask(ScheduleTaskMetaData task) throws Exception {
 		JobDetail jobDetail = new JobDetail();
 
 		jobDetail.setGroup(task.getGroup());
@@ -98,7 +97,7 @@ public class ScheduleDeployment implements ScheduleDeploymentMBean, Serializable
 
 	}
 
-	protected Ruby createRubyTaskObject(ScheduleTaskMetaData taskMetaData) {
+	protected Ruby createRubyTaskObject(ScheduleTaskMetaData taskMetaData) throws Exception {
 		Ruby ruby = getRuntime();
 
 		StringBuilder script = new StringBuilder();
@@ -115,7 +114,7 @@ public class ScheduleDeployment implements ScheduleDeploymentMBean, Serializable
 		return ruby;
 	}
 
-	protected Ruby getRuntime() {
+	protected Ruby getRuntime() throws Exception {
 		if (this.metaData.isThreadSafe()) {
 			synchronized (this) {
 				log.info("using shared runtime");

@@ -4,6 +4,6 @@ import org.jruby.Ruby;
 
 public interface RubyRuntimePool {
 
-	Ruby borrowRuntime() throws InterruptedException;
+	Ruby borrowRuntime() throws Exception;
 	void returnRuntime(Ruby runtime);
 }

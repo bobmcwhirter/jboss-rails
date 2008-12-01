@@ -31,6 +31,7 @@ import org.jboss.deployers.vfs.plugins.structure.AbstractVFSStructureDeployer;
 import org.jboss.deployers.vfs.spi.structure.StructureContext;
 import org.jboss.rails.core.metadata.RailsApplicationMetaData;
 import org.jboss.virtual.VirtualFile;
+import org.jboss.virtual.plugins.context.jar.JarUtils;
 
 public class RailsStructure extends AbstractVFSStructureDeployer implements JarExtensionProvider {
 
@@ -41,31 +42,39 @@ public class RailsStructure extends AbstractVFSStructureDeployer implements JarE
 	public boolean determineStructure(StructureContext structureContext) throws DeploymentException {
 		boolean recognized = false;
 		VirtualFile root = structureContext.getRoot();
+		
+		log.info( "attempt deploy against root: " + root );
 
 		ContextInfo context = null;
 		try {
-			if ( ! root.isLeaf() ) {
-				VirtualFile config = root.getChild( "config" );
-				if ( config != null ) {
-					VirtualFile environment = config.getChild( "environment.rb" );
-					if ( environment != null ) {
-						context = createContext(structureContext, "config" );
-						MutableAttachments attachments = (MutableAttachments) context.getPredeterminedManagedObjects();
-						RailsApplicationMetaData railsAppMetaData = new RailsApplicationMetaData( root );
-						log.info( "added RailsApplicationMetaData: " + railsAppMetaData );
-						attachments.addAttachment( RailsApplicationMetaData.class, railsAppMetaData );
-						recognized = true;
+			if (JarUtils.isArchive(root.getName())) {
+				log.info( "is an archive" );
+				if (!root.isLeaf()) {
+					log.info( "is not a leaf" );
+					VirtualFile config = root.getChild("config");
+					if (config != null) {
+						log.info( "has config" );
+						VirtualFile environment = config.getChild("environment.rb");
+						if (environment != null) {
+							context = createContext(structureContext, "config");
+							MutableAttachments attachments = (MutableAttachments) context.getPredeterminedManagedObjects();
+							RailsApplicationMetaData railsAppMetaData = new RailsApplicationMetaData(root);
+							log.info("added RailsApplicationMetaData: " + railsAppMetaData);
+							attachments.addAttachment(RailsApplicationMetaData.class, railsAppMetaData);
+							recognized = true;
+						}
 					}
 				}
 			}
 		} catch (IOException e) {
 			recognized = false;
-		} 
-		
+		}
+
 		return recognized;
 	}
 
 	public String getJarExtension() {
+		log.info( "getJarExtension()" );
 		return ".rails";
 	}
 }

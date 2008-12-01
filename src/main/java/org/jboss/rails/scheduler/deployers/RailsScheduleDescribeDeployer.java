@@ -1,5 +1,8 @@
 package org.jboss.rails.scheduler.deployers;
 
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.spi.deployer.helpers.AbstractSimpleRealDeployer;
@@ -27,7 +30,13 @@ public class RailsScheduleDescribeDeployer extends AbstractSimpleRealDeployer<Sc
 		RailsVersionMetaData railsVersion = unit.getAttachment( RailsVersionMetaData.class );
 		scheduleMetaData.setThreadSafe( railsVersion.isThreadSafe() );
 		RailsApplicationMetaData railsMetaData = unit.getAttachment( RailsApplicationMetaData.class );
-		scheduleMetaData.addLoadPath( railsMetaData.getRailsRoot() + "/app/scheduler" );
+		try {
+			scheduleMetaData.addLoadPath( railsMetaData.getRailsRoot().toURL().getFile() + "/app/scheduler" );
+		} catch (MalformedURLException e) {
+			throw new DeploymentException( e );
+		} catch (URISyntaxException e) {
+			throw new DeploymentException( e );
+		}
 		log.info( "fixed up schedule with " + railsMetaData.getRailsRoot() + " and " + railsVersion );
 	}
 

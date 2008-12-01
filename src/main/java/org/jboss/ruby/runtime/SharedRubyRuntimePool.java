@@ -10,7 +10,7 @@ public class SharedRubyRuntimePool extends AbstractRubyRuntimePool {
 		super( factory );
 	}
 
-	public void start() {
+	public void start() throws Exception {
 		this.instance = factory.createRubyRuntime();
 	}
 	

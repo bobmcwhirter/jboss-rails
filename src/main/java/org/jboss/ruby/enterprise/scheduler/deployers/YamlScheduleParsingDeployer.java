@@ -20,6 +20,7 @@ public class YamlScheduleParsingDeployer extends AbstractVFSParsingDeployer<Sche
 		addInput(RailsApplicationMetaData.class);
 		setName("jboss-scheduler.yml");
 		setBuildManagedObject(true);
+		setJarExtension( ".rails" );
 	}
 
 	@Override
