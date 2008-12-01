@@ -19,7 +19,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.rails.core.deployers;
+package org.jboss.ruby.enterprise.web;
 
 import javax.management.Attribute;
 import javax.management.MBeanServer;
@@ -30,17 +30,18 @@ import org.apache.catalina.Loader;
 import org.apache.catalina.core.StandardContext;
 import org.apache.naming.resources.FileDirContext;
 import org.apache.tomcat.util.modeler.Registry;
-import org.jboss.aop.microcontainer.aspects.jmx.JMX;
 import org.jboss.deployers.spi.DeploymentException;
+import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.logging.Logger;
 import org.jboss.metadata.web.jboss.JBossWebMetaData;
 import org.jboss.metadata.web.jboss.ReplicationConfig;
 import org.jboss.metadata.web.jboss.ReplicationGranularity;
 import org.jboss.metadata.web.jboss.ReplicationTrigger;
 import org.jboss.metadata.web.jboss.SnapshotMode;
-import org.jboss.rails.core.metadata.RailsMetaData;
-import org.jboss.rails.core.tomcat.RailsContextConfig;
+import org.jboss.rails.core.metadata.RailsApplicationMetaData;
 import org.jboss.rails.naming.JBossFileDirContext;
+import org.jboss.ruby.enterprise.web.metadata.RackWebMetaData;
+import org.jboss.ruby.enterprise.web.tomcat.RackContextConfig;
 import org.jboss.web.tomcat.service.WebCtxLoader;
 import org.jboss.web.tomcat.service.session.AbstractJBossManager;
 import org.jboss.web.tomcat.service.session.distributedcache.spi.ClusteringNotSupportedException;
@@ -51,48 +52,57 @@ import org.jboss.web.tomcat.service.session.distributedcache.spi.ClusteringNotSu
  * @author Bob McWhirter
  */
 //@JMX(registerDirectly=true, exposedInterface=void.class)
-public class RailsWebDeployment implements RailsWebDeploymentMBean {
+public class RackWebDeployment implements RackWebDeploymentMBean {
 
 	/** The Catalina context class we work with. */
 	public final static String DEFAULT_CONTEXT_CLASS_NAME = "org.apache.catalina.core.StandardContext";
 
-	/** Catalina context configuration class name. */
-	protected String contextConfigClass = "org.jboss.rails.core.tomcat.RailsContextConfig";
-
 	/** Cache manager class name. */
-	protected String managerClass = "org.jboss.rails.core.tomcat.RailsCacheManager";
+	protected String managerClass = "org.jboss.ruby.enterprise.web.tomcat.RubyCacheManager";
 
 	/** Our logger. */
-	private static Logger log = Logger.getLogger(RailsWebDeployment.class);
+	private static Logger log = Logger.getLogger(RackWebDeployment.class);
 
 	/** Meta-data. */
-	private RailsMetaData railsMetaData;
+	private RackWebMetaData webMetaData;
+
+	private DeploymentUnit deploymentUnit;
+
+	private RailsApplicationMetaData railsAppMetaData;
 
 	/**
 	 * Construct.
 	 * 
 	 */
-	public RailsWebDeployment() {
+	public RackWebDeployment() {
 
+	}
+	
+	public void setDeploymentUnit(DeploymentUnit deploymentUnit) {
+		this.deploymentUnit = deploymentUnit;
+	}
+	
+	public DeploymentUnit getDeploymentUnit() {
+		return this.deploymentUnit;
 	}
 	
 	// ----------------------------------------
 	 
-	public String getRailsRoot() {
-		return this.railsMetaData.getRailsRoot();
+	
+	public void setRailsApplicationMetaData(RailsApplicationMetaData railsAppMetaData) {
+		this.railsAppMetaData = railsAppMetaData;
 	}
 	
-	public String getEnvironment() {
-		return this.railsMetaData.getEnvironment();
+	public RailsApplicationMetaData getRailsApplicationMetaData() {
+		return this.railsAppMetaData;
 	}
-	// ----------------------------------------
-
-	public void setRailsMetaData(RailsMetaData metaData) {
-		this.railsMetaData = metaData;
+	
+	public void setWebMetaData(RackWebMetaData webMetaData) {
+		this.webMetaData = webMetaData;
 	}
-
-	public RailsMetaData getRailsMetaData() {
-		return this.railsMetaData;
+	
+	public RackWebMetaData getWebMetaData() {
+		return this.webMetaData;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -100,13 +110,12 @@ public class RailsWebDeployment implements RailsWebDeploymentMBean {
 		if (log.isTraceEnabled()) {
 			log.trace("start()");
 		}
-		log.debug("meta data: " + railsMetaData);
+		log.debug("meta data: " + railsAppMetaData + " ++ " + webMetaData);
 		Class<StandardContext> contextClass = (Class<StandardContext>) Class.forName(DEFAULT_CONTEXT_CLASS_NAME);
 		StandardContext context = contextClass.newInstance();
 
-		context.setPath(railsMetaData.getContext());
+		context.setPath(webMetaData.getContext());
 
-		setUpResources(context);
 		setUpLoader(context);
 		setUpJMX(context);
 		setUpConfig(context);
@@ -116,11 +125,11 @@ public class RailsWebDeployment implements RailsWebDeploymentMBean {
 		if (log.isTraceEnabled()) {
 			log.debug("start() complete");
 		}
-		setUpClustering(context, railsMetaData);
+		setUpClustering(context);
 
 	}
 
-	private void setUpClustering(StandardContext context, RailsMetaData metaData) {
+	private void setUpClustering(StandardContext context) {
 		// Try to initiate clustering, fall back to standard if no clustering is
 		// available
 		try {
@@ -130,9 +139,9 @@ public class RailsWebDeployment implements RailsWebDeploymentMBean {
 			manager = (AbstractJBossManager) managerClass.newInstance();
 
 			String hostName = null;
-			String contextPath = metaData.getContext();
+			String contextPath = this.webMetaData.getContext();
 			String name = "//" + ((hostName == null) ? "localhost" : hostName) + contextPath;
-			manager.init(name, createJBossWebMetaData(metaData));
+			manager.init(name, createJBossWebMetaData());
 
 			ObjectName objectName = getObjectName();
 
@@ -152,25 +161,18 @@ public class RailsWebDeployment implements RailsWebDeploymentMBean {
 		}
 	}
 
-	private JBossWebMetaData createJBossWebMetaData(RailsMetaData railsMetaData) {
+	private JBossWebMetaData createJBossWebMetaData(){
 		JBossWebMetaData jbossWebMetaData = new JBossWebMetaData();
 		ReplicationConfig replicationConfig = new ReplicationConfig();
 		replicationConfig.setReplicationFieldBatchMode(true);
 		replicationConfig.setReplicationGranularity(ReplicationGranularity.SESSION);
 		replicationConfig.setReplicationTrigger(ReplicationTrigger.SET);
-		replicationConfig.setSnapshotMode(SnapshotMode.INTERVAL);
+		replicationConfig.setSnapshotMode(SnapshotMode.INSTANT);
 		replicationConfig.setUseJK(false);
 		replicationConfig.setCacheName("standard-session-cache");
 
 		jbossWebMetaData.setReplicationConfig(replicationConfig);
 		return jbossWebMetaData;
-	}
-
-	private void setUpResources(StandardContext context) throws Exception {
-		context.setDocBase(railsMetaData.getRailsRoot());
-		FileDirContext resources = new JBossFileDirContext();
-		resources.setDocBase(railsMetaData.getRailsRoot() + "/public");
-		context.setResources(resources);
 	}
 
 	private void setUpLoader(StandardContext context) {
@@ -200,8 +202,9 @@ public class RailsWebDeployment implements RailsWebDeploymentMBean {
 
 	protected void setUpConfig(StandardContext context) {
 		log.debug("setUpConfig(...)");
-		context.setConfigClass(contextConfigClass);
-		RailsContextConfig.railsMetaData.set(railsMetaData);
+		
+		context.setConfigClass( webMetaData.getContextConfigClassName() );
+		RackContextConfig.deploymentUnit.set( this.deploymentUnit );
 	}
 
 	public synchronized void stop() throws Exception {
@@ -217,7 +220,7 @@ public class RailsWebDeployment implements RailsWebDeploymentMBean {
 	}
 
 	private ObjectName getObjectName() throws MalformedObjectNameException, NullPointerException {
-		String contextPath = railsMetaData.getContext();
+		String contextPath = this.webMetaData.getContext();
 		if (contextPath == null || contextPath.equals("")) {
 			contextPath = "/";
 		}
@@ -233,6 +236,14 @@ public class RailsWebDeployment implements RailsWebDeploymentMBean {
 	private MBeanServer getMBeanServer() {
 		return getRegistry().getMBeanServer();
 
+	}
+
+	public String getContext() {
+		return webMetaData.getContext();
+	}
+
+	public String getHost() {
+		return webMetaData.getHost();
 	}
 
 }

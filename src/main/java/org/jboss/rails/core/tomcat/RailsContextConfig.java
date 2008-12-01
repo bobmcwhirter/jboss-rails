@@ -21,26 +21,23 @@
  */
 package org.jboss.rails.core.tomcat;
 
-import org.apache.catalina.Wrapper;
 import org.apache.catalina.core.StandardContext;
-import org.apache.catalina.deploy.FilterDef;
-import org.apache.catalina.deploy.FilterMap;
-import org.apache.catalina.startup.ContextConfig;
 import org.jboss.logging.Logger;
-import org.jboss.rails.core.metadata.RailsMetaData;
+import org.jboss.rails.core.metadata.RailsApplicationMetaData;
+import org.jboss.ruby.enterprise.web.tomcat.RackContextConfig;
 
 /**
  * Configures the Catalina context for a rails application.
  * 
  * @author Bob McWhirter
  */
-public class RailsContextConfig extends ContextConfig {
+public class RailsContextConfig extends RackContextConfig {
 
 	/**
 	 * Thread-local to pass meta-data between MC deployer and Catalina's
 	 * deployment "stuff".
 	 */
-	public static ThreadLocal<RailsMetaData> railsMetaData = new ThreadLocal<RailsMetaData>();
+	public static ThreadLocal<RailsApplicationMetaData> railsApplicationMetaData = new ThreadLocal<RailsApplicationMetaData>();
 
 	/** Our log. */
 	private static Logger log = Logger.getLogger(RailsContextConfig.class);
@@ -57,20 +54,23 @@ public class RailsContextConfig extends ContextConfig {
 			log.trace("applicationWebConfig()");
 		}
 		setUpApplicationParamValues();
+		setUpListeners();
+		setUpWelcomeFiles();
 	}
 
 	/**
 	 * Set the application-specific parameter-values from the meta-data.
 	 */
 	private void setUpApplicationParamValues() {
+		
 		setUpRailsRoot();
 		setUpRailsEnv();
 		setUpRack();
 	}
 
 	private void setUpRailsEnv() {
-		RailsMetaData metaData = RailsContextConfig.railsMetaData.get();
-		String environment = metaData.getEnvironment();
+		RailsApplicationMetaData metaData = RailsContextConfig.railsApplicationMetaData.get();
+		String environment = metaData.getRailsEnv();
 		context.addParameter("rails.env", environment);
 	}
 
@@ -91,79 +91,6 @@ public class RailsContextConfig extends ContextConfig {
 			log.trace("defaultWebConfig()");
 		}
 
-		setUpServletVersion();
-		setUpParamValues();
-		setUpDisplayName();
-		setUpDistributable();
-		setUpErrorPages();
-		setUpFilters();
-		setUpListeners();
-		setUpLogin();
-		setUpMimeMappings();
-		setUpSecurity();
-		setUpServlets();
-		setUpJspMappings();
-		setUpLocaleEncodings();
-		setUpWelcomeFiles();
-		setUpSessions();
-	}
-
-	private void setUpServletVersion() {
-		if (log.isTraceEnabled()) {
-			log.trace("setUpServletVersion()");
-		}
-		context.setPublicId("/javax/servlet/resources/web-app_2_4.dtd");
-	}
-
-	private void setUpParamValues() {
-		if (log.isTraceEnabled()) {
-			log.trace("setUpParamValues()");
-		}
-		// nothing
-	}
-
-	private void setUpDisplayName() {
-		if (log.isTraceEnabled()) {
-			log.trace("setUpDisplayName()");
-		}
-		// nothing
-	}
-
-	private void setUpDistributable() {
-		if (log.isTraceEnabled()) {
-			log.trace("setUpDistributable()");
-		}
-		context.setDistributable(true);
-	}
-
-	private void setUpErrorPages() {
-		if (log.isTraceEnabled()) {
-			log.trace("setUpErrorPages()");
-		}
-		// TODO Inject rails error page handling?
-	}
-
-	private void setUpFilters() {
-		if (log.isTraceEnabled()) {
-			log.trace("setUpFilters()");
-		}
-		setUpRackFilter();
-	}
-
-	private void setUpRackFilter() {
-		if (log.isTraceEnabled()) {
-			log.trace("setUpRackFilter()");
-		}
-		FilterDef filter = new FilterDef();
-		filter.setFilterName("jruby-rack");
-		filter.setFilterClass("org.jruby.rack.RackFilter");
-		context.addFilterDef(filter);
-
-		FilterMap filterMap = new FilterMap();
-		filterMap.setFilterName("jruby-rack");
-		filterMap.addURLPattern("/*");
-
-		context.addFilterMap(filterMap);
 	}
 
 	private void setUpListeners() {
@@ -174,77 +101,12 @@ public class RailsContextConfig extends ContextConfig {
 		context.addApplicationListener("org.jboss.rails.core.rack.JBossRailsServletContextListener");
 	}
 
-	private void setUpLogin() {
-		if (log.isTraceEnabled()) {
-			log.trace("setUpLogin()");
-		}
-		// TODO Auto-generated method stub
-	}
-
-	private void setUpMimeMappings() {
-		if (log.isTraceEnabled()) {
-			log.trace("setUpMimeMappings()");
-		}
-		// TODO Auto-generated method stub
-	}
-
-	private void setUpSecurity() {
-		if (log.isTraceEnabled()) {
-			log.trace("setUpSecurity()");
-		}
-		// TODO Auto-generated method stub
-	}
-
-	private void setUpServlets() {
-		if (log.isTraceEnabled()) {
-			log.trace("setUpServlets()");
-		}
-		// TODO Auto-generated method stub
-		setUpDefaultServlet();
-	}
-
-	private void setUpDefaultServlet() {
-		if (log.isTraceEnabled()) {
-			log.trace("setUpDefaultServlet()");
-		}
-		Wrapper wrapper = context.createWrapper();
-		wrapper.setName("jboss-rails-default");
-		if (log.isTraceEnabled()) {
-			wrapper.addInitParameter("debug", "1");
-		}
-		wrapper.setServletClass("org.apache.catalina.servlets.DefaultServlet");
-		context.addChild(wrapper);
-
-		context.addServletMapping("/*", "jboss-rails-default");
-	}
-
-	private void setUpJspMappings() {
-		if (log.isTraceEnabled()) {
-			log.trace("setUpJspMappings()");
-		}
-		// TODO Auto-generated method stub
-	}
-
-	private void setUpLocaleEncodings() {
-		if (log.isTraceEnabled()) {
-			log.trace("setUpLocaleEncodings()");
-		}
-		// TODO Auto-generated method stub
-	}
-
 	private void setUpWelcomeFiles() {
 		if (log.isTraceEnabled()) {
 			log.trace("setUpWelcomeFiles()");
 		}
 		((StandardContext) context).setReplaceWelcomeFiles(true);
 		context.addWelcomeFile("index.html");
-	}
-
-	private void setUpSessions() {
-		if (log.isTraceEnabled()) {
-			log.trace("setUpSessions()");
-		}
-		// TODO Auto-generated method stub
 	}
 
 }

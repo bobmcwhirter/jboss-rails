@@ -2,24 +2,28 @@
 
 <deployment xmlns="urn:jboss:bean-deployer:2.0">
 
-  <bean name="RailsStructure" class="org.jboss.rails.core.deployers.RailsStructure"/>
+  <!-- Generic -->
 
-  <bean name="RailsEnvironmentParsingDeployer" class="org.jboss.rails.core.deployers.RailsEnvironmentParsingDeployer"/>
-  <bean name="RailsVersionDeployer"            class="org.jboss.rails.core.deployers.RailsVersionDeployer"/>
-
-  <bean name="RailsRootReferenceParsingDeployer" class="org.jboss.rails.core.deployers.RailsRootReferenceParsingDeployer"/>
-
-  <bean name="RailsWebDeployer" class="org.jboss.rails.core.deployers.RailsWebDeployer">
+  <bean name="YamlWebParsingDeployer" class="org.jboss.ruby.enterprise.web.deployers.YamlWebParsingDeployer"/>
+  <bean name="RackWebDeployer"        class="org.jboss.ruby.enterprise.web.deployers.RackWebDeployer">
     <property name="mbeanServer"><inject bean="JMXKernel" property="mbeanServer"/></property>
     <depends>jboss:service=WebService</depends>
   </bean>
 
-  <bean name="RailsScheduleDescribeDeployer"  class="org.jboss.rails.scheduler.deployers.RailsScheduleDescribeDeployer"/>
-  <bean name="RailsRuntimeFactoryDeployer"    class="org.jboss.rails.runtime.deployers.RailsRuntimeFactoryDeployer"/>
-
-  <bean name="ScheduleDeployer"            class="org.jboss.ruby.enterprise.scheduler.deployers.ScheduleDeployer"/>
   <bean name="YamlScheduleParsingDeployer" class="org.jboss.ruby.enterprise.scheduler.deployers.YamlScheduleParsingDeployer"/>
+  <bean name="ScheduleDeployer"            class="org.jboss.ruby.enterprise.scheduler.deployers.ScheduleDeployer"/>
 
+  <!-- Rails -->
+
+  <bean name="RailsStructure" class="org.jboss.rails.core.deployers.RailsStructure"/>
+
+  <bean name="RailsEnvironmentParsingDeployer" class="org.jboss.rails.core.deployers.RailsEnvironmentParsingDeployer"/>
+  <bean name="RailsVersionDeployer"            class="org.jboss.rails.core.deployers.RailsVersionDeployer"/>
+  <bean name="RailsRuntimeFactoryDeployer"     class="org.jboss.rails.runtime.deployers.RailsRuntimeFactoryDeployer"/>
+  <bean name="RailsRackWebPostParseDeployer"   class="org.jboss.rails.web.deployers.RailsRackWebPostParseDeployer"/>
+  <bean name="RailsScheduleDescribeDeployer"   class="org.jboss.rails.scheduler.deployers.RailsScheduleDescribeDeployer"/>
+
+  <bean name="RailsRootReferenceParsingDeployer" class="org.jboss.rails.core.deployers.RailsRootReferenceParsingDeployer"/>
 <!--
 -->
   

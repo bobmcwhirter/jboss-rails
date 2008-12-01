@@ -19,7 +19,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.rails.core.deployers;
+package org.jboss.ruby.enterprise.web.deployers;
 
 import javax.management.MBeanServer;
 
@@ -29,39 +29,45 @@ import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.helpers.AbstractSimpleRealDeployer;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.rails.core.metadata.RailsMetaData;
-import org.jboss.ruby.enterprise.scheduler.metadata.ScheduleMetaData;
+import org.jboss.ruby.enterprise.web.RackWebDeployment;
+import org.jboss.ruby.enterprise.web.metadata.RackWebMetaData;
 
 /**
- * Deployer that consults RailsMetaData to deploy a Rails web application, for real.
+ * Deployer that consults RailsMetaData to deploy a Rails web application, for
+ * real.
  * 
  * @author Bob McWhirter
  */
-public class RailsWebDeployer extends AbstractSimpleRealDeployer<RailsMetaData>  {
+public class RackWebDeployer extends AbstractSimpleRealDeployer<RackWebMetaData> {
 
 	private MBeanServer mbeanServer;
 
 	/**
 	 * Construct.
 	 */
-	public RailsWebDeployer() {
-		super( RailsMetaData.class );
+	public RackWebDeployer() {
+		super(RackWebMetaData.class);
 		setTopLevelOnly(true);
 		addOutput(BeanMetaData.class);
 	}
-	
+
 	public void setMbeanServer(MBeanServer mbeanServer) {
 		this.mbeanServer = mbeanServer;
 	}
-	
+
 	public MBeanServer getMbeanServer() {
 		return this.mbeanServer;
 	}
 
 	@Override
-	public void deploy(DeploymentUnit unit, RailsMetaData railsMetaData) throws DeploymentException {
-		BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder("jboss.rails." + unit.getSimpleName(), RailsWebDeployment.class.getName());
-		builder.addPropertyMetaData("railsMetaData", railsMetaData);
-		builder.addAnnotation("@org.jboss.aop.microcontainer.aspects.jmx.JMX(registerDirectly=true, exposedInterface=void.class, name=\"jboss.rails.web:app=" + unit.getSimpleName() + "\")");
+	public void deploy(DeploymentUnit unit, RackWebMetaData webMetaData) throws DeploymentException {
+		
+		BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder("jboss.ruby.web." + unit.getSimpleName(), RackWebDeployment.class.getName());
+		
+		//builder.addPropertyMetaData("railsMetaData", railsMetaData);
+		builder.addPropertyMetaData( "deploymentUnit", unit );
+		builder.addAnnotation("@org.jboss.aop.microcontainer.aspects.jmx.JMX(registerDirectly=true, exposedInterface=void.class, name=\"jboss.rails.web:app="
+				+ unit.getSimpleName() + "\")");
 		BeanMetaData railsDeployment = builder.getBeanMetaData();
 		unit.addAttachment(BeanMetaData.class.getName() + "$RailsWebDeployment", railsDeployment, BeanMetaData.class);
 	}
