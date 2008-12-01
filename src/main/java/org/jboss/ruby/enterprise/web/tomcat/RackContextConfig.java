@@ -74,7 +74,7 @@ public class RackContextConfig extends ContextConfig {
 		setUpWelcomeFiles();
 		setUpSessions();
 	}
-
+	
 	private void setUpServletVersion() {
 		if (log.isTraceEnabled()) {
 			log.trace("setUpServletVersion()");

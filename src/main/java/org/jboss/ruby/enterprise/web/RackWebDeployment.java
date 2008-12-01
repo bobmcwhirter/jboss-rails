@@ -38,6 +38,7 @@ import org.jboss.metadata.web.jboss.ReplicationConfig;
 import org.jboss.metadata.web.jboss.ReplicationGranularity;
 import org.jboss.metadata.web.jboss.ReplicationTrigger;
 import org.jboss.metadata.web.jboss.SnapshotMode;
+import org.jboss.metadata.web.spec.WebMetaData;
 import org.jboss.ruby.enterprise.web.metadata.RackWebMetaData;
 import org.jboss.ruby.enterprise.web.naming.JBossFileDirContext;
 import org.jboss.ruby.enterprise.web.tomcat.RackContextConfig;
@@ -132,9 +133,8 @@ public class RackWebDeployment implements RackWebDeploymentMBean {
 			Class<?> managerClass = Thread.currentThread().getContextClassLoader().loadClass(managerClassName);
 			manager = (AbstractJBossManager) managerClass.newInstance();
 
-			String hostName = null;
 			String contextPath = this.rackWebMetaData.getContext();
-			String name = "//" + ((hostName == null) ? "localhost" : hostName) + contextPath;
+			String name = "//" + rackWebMetaData.getHost() + contextPath;
 			manager.init(name, createJBossWebMetaData());
 
 			ObjectName objectName = getObjectName();
@@ -217,7 +217,8 @@ public class RackWebDeployment implements RackWebDeploymentMBean {
 		if (contextPath == null || contextPath.equals("")) {
 			contextPath = "/";
 		}
-		String objectName = "jboss.web:j2eeType=WebModule,name=//localhost" + contextPath + ",J2EEApplication=none,J2EEServer=none";
+		
+		String objectName = "jboss.web:j2eeType=WebModule,name=//" + this.rackWebMetaData.getHost() + contextPath + ",J2EEApplication=none,J2EEServer=none";
 		return new ObjectName(objectName);
 	}
 

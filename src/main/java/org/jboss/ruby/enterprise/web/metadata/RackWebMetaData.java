@@ -4,7 +4,7 @@ package org.jboss.ruby.enterprise.web.metadata;
 public class RackWebMetaData {
 	
 	private String context = "/";
-	private String host = null;
+	private String host = "localhost";
 	
 	private String contextConfigClassName = "org.jboss.ruby.enterprise.web.tomcat.RackContextConfig";
 	private String docBase;
@@ -20,7 +20,7 @@ public class RackWebMetaData {
 	
 	public RackWebMetaData(String context, String host) {
 		this.context = context;
-		this.host = host;
+		this.host    = host;
 	}
 	
 	public Object getFrameworkMetaData() {
