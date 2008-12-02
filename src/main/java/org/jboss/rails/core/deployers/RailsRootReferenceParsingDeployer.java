@@ -105,15 +105,6 @@ public class RailsRootReferenceParsingDeployer extends AbstractVFSParsingDeploye
 		unit.addAttachment("jboss.rails.root.deployer", deployer);
 	}
 
-	private void addStructure(Deployment deployment) {
-		StructureMetaData structure = StructureMetaDataFactory.createStructureMetaData();
-		ContextInfo contextInfo = StructureMetaDataFactory.createContextInfo("", "config", null);
-		structure.addContext(contextInfo);
-
-		MutableAttachments attachments = ((MutableAttachments) deployment.getPredeterminedManagedObjects());
-		attachments.addAttachment(StructureMetaData.class, structure);
-	}
-
 	private Deployment createDeployment(RailsApplicationMetaData railsMetaData, RackWebMetaData webMetaData) throws MalformedURLException, IOException {
 		Deployment deployment = new AbstractVFSDeployment(railsMetaData.getRailsRoot());
 
@@ -148,15 +139,14 @@ public class RailsRootReferenceParsingDeployer extends AbstractVFSParsingDeploye
 			}
 
 			RackWebMetaData webMetaData = null;
+			
 			if (web != null) {
 				String context = (String) web.get("context");
 				String host = (String) web.get("host");
 				webMetaData = new RackWebMetaData(context, host);
 			}
 
-			Deployment deployment = createDeployment(railsMetaData, webMetaData);
-			addStructure(deployment);
-			return deployment;
+			return createDeployment(railsMetaData, webMetaData);
 
 		} catch (IOException e) {
 			file.closeStreams();

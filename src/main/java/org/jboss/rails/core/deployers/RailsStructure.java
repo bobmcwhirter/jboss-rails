@@ -55,19 +55,18 @@ public class RailsStructure extends AbstractVFSStructureDeployer implements JarE
 
 		ContextInfo context = null;
 		try {
-			if (JarUtils.isArchive(root.getName())) {
-				if (!root.isLeaf()) {
-					VirtualFile config = root.getChild("config");
-					if (config != null) {
-						VirtualFile environment = config.getChild("environment.rb");
-						if (environment != null) {
-							context = createContext(structureContext, "config");
-							addLibJava(structureContext, context);
-							MutableAttachments attachments = (MutableAttachments) context.getPredeterminedManagedObjects();
-							RailsApplicationMetaData railsAppMetaData = new RailsApplicationMetaData(root);
-							attachments.addAttachment(RailsApplicationMetaData.class, railsAppMetaData);
-							recognized = true;
-						}
+			if (JarUtils.isArchive( root.getName() ) || !root.isLeaf()) {
+				VirtualFile config = root.getChild("config");
+				if (config != null) {
+					VirtualFile environment = config.getChild("environment.rb");
+					if (environment != null) {
+						log.info("Matched " + root);
+						context = createContext(structureContext, "config");
+						addLibJavaClasspath(structureContext, context);
+						MutableAttachments attachments = (MutableAttachments) context.getPredeterminedManagedObjects();
+						RailsApplicationMetaData railsAppMetaData = new RailsApplicationMetaData(root);
+						attachments.addAttachment(RailsApplicationMetaData.class, railsAppMetaData);
+						recognized = true;
 					}
 				}
 			}
@@ -78,20 +77,21 @@ public class RailsStructure extends AbstractVFSStructureDeployer implements JarE
 		return recognized;
 	}
 
-	protected void addLibJava(StructureContext structureContext, ContextInfo context) throws IOException {
+	protected void addLibJavaClasspath(StructureContext structureContext, ContextInfo context) throws IOException {
 		VirtualFile root = structureContext.getRoot();
-		VirtualFile libJava = root.getChild( "lib/java" );
-		
-		if ( libJava != null ) {
-			if ( libJava.getChild( "classes" ) != null ) { 
+		VirtualFile libJava = root.getChild("lib/java");
+
+		if (libJava != null) {
+			if (libJava.getChild("classes") != null) {
+				log.debug("Adding lib/java/classes/ to classpath");
 				ClassPathEntry classpath = StructureMetaDataFactory.createClassPathEntry("lib/java/classes");
 				context.addClassPathEntry(classpath);
 			}
-			List<VirtualFile> jars = libJava.getChildrenRecursively( JAR_FILTER );
-			
-			for ( VirtualFile jar : jars ) {
-				log.info( "Adding to classpath: " + jar );
-		        addClassPath(structureContext, jar, true, true, context);
+			List<VirtualFile> jars = libJava.getChildrenRecursively(JAR_FILTER);
+
+			for (VirtualFile jar : jars) {
+				log.debug("Adding jar to classpath: " + jar);
+				addClassPath(structureContext, jar, true, true, context);
 			}
 		}
 	}
