@@ -21,6 +21,9 @@
  */
 package org.jboss.rails.core.deployers;
 
+import java.util.Map;
+
+import org.ho.yaml.Yaml;
 import org.jboss.deployers.vfs.spi.deployer.AbstractVFSParsingDeployer;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.rails.core.metadata.RailsApplicationMetaData;
@@ -29,15 +32,31 @@ import org.jboss.virtual.VirtualFile;
 public class RailsEnvironmentParsingDeployer extends AbstractVFSParsingDeployer<RailsApplicationMetaData> {
 	public RailsEnvironmentParsingDeployer() {
 		super(RailsApplicationMetaData.class);
-		setName("environment.rb");
+		// setName("environment.rb");
+		setName("jboss-rails-env.yml");
 		setTopLevelOnly(false);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected RailsApplicationMetaData parse(VFSDeploymentUnit unit, VirtualFile file, RailsApplicationMetaData root) throws Exception {
 		log.info("Parsing " + file + " for " + unit.getRoot());
-		RailsApplicationMetaData railsMetaData = new RailsApplicationMetaData( unit.getRoot() );
-		unit.addAttachment( RailsApplicationMetaData.class, railsMetaData );
-		return railsMetaData;
+		try {
+			Map<String, String> parsed = (Map<String, String>) Yaml.load(file.openStream());
+
+			String railsEnv = parsed.get("RAILS_ENV");
+			
+			log.info( "RAILS_ENV is " + railsEnv );
+
+			if (railsEnv == null || railsEnv.trim().equals("")) {
+				railsEnv = "development";
+			}
+
+			RailsApplicationMetaData railsMetaData = new RailsApplicationMetaData(unit.getRoot(), railsEnv);
+			unit.addAttachment(RailsApplicationMetaData.class, railsMetaData);
+			return railsMetaData;
+		} finally {
+			file.closeStreams();
+		}
 	}
 }
