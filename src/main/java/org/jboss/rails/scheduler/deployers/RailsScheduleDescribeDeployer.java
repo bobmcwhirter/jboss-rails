@@ -34,31 +34,24 @@ import org.jboss.rails.core.metadata.RailsVersionMetaData;
 import org.jboss.ruby.enterprise.scheduler.metadata.ScheduleMetaData;
 
 public class RailsScheduleDescribeDeployer extends AbstractSimpleRealDeployer<ScheduleMetaData> {
-	
-	private static Logger log = Logger.getLogger( RailsScheduleDescribeDeployer.class );
-	
+
+	private static Logger log = Logger.getLogger(RailsScheduleDescribeDeployer.class);
+
 	public RailsScheduleDescribeDeployer() {
-		super( ScheduleMetaData.class );
-		addInput( RailsApplicationMetaData.class );
-		addInput( RailsVersionMetaData.class );
-		addOutput( ScheduleMetaData.class );
-		setStage( DeploymentStages.DESCRIBE );
+		super(ScheduleMetaData.class);
+		addInput(RailsApplicationMetaData.class);
+		addInput(RailsVersionMetaData.class);
+		addOutput(ScheduleMetaData.class);
+		setStage(DeploymentStages.DESCRIBE);
 	}
 
 	@Override
 	public void deploy(DeploymentUnit unit, ScheduleMetaData scheduleMetaData) throws DeploymentException {
-		RailsVersionMetaData railsVersion = unit.getAttachment( RailsVersionMetaData.class );
-		scheduleMetaData.setThreadSafe( railsVersion.isThreadSafe() );
-		RailsApplicationMetaData railsMetaData = unit.getAttachment( RailsApplicationMetaData.class );
-		try {
-			scheduleMetaData.addLoadPath( railsMetaData.getRailsRoot().toURL().getFile() + "/app/scheduler" );
-		} catch (MalformedURLException e) {
-			throw new DeploymentException( e );
-		} catch (URISyntaxException e) {
-			throw new DeploymentException( e );
-		}
-		log.info( "fixed up schedule with " + railsMetaData.getRailsRoot() + " and " + railsVersion );
+		RailsVersionMetaData railsVersion = unit.getAttachment(RailsVersionMetaData.class);
+		scheduleMetaData.setThreadSafe(railsVersion.isThreadSafe());
+		RailsApplicationMetaData railsMetaData = unit.getAttachment(RailsApplicationMetaData.class);
+		scheduleMetaData.addLoadPath(railsMetaData.getRailsRootPath() + "/app/scheduler");
+		log.info("fixed up schedule with " + railsMetaData.getRailsRootPath() + " and " + railsVersion);
 	}
-
 
 }

@@ -47,11 +47,11 @@ public class YamlScheduleParsingDeployer extends AbstractVFSParsingDeployer<Sche
 	@Override
 	protected ScheduleMetaData parse(VFSDeploymentUnit unit, VirtualFile file, ScheduleMetaData root) throws Exception {
 		RailsApplicationMetaData railsMetaData = unit.getAttachment(RailsApplicationMetaData.class);
-		return parseSchedulerYaml(railsMetaData.getRailsRoot(), railsMetaData.getRailsEnv(), file);
+		return parseSchedulerYaml(railsMetaData.getRailsRootPath(), railsMetaData.getRailsEnv(), file);
 	}
 
 	@SuppressWarnings("unchecked")
-	private ScheduleMetaData parseSchedulerYaml(VirtualFile railsRoot, String railsEnv, VirtualFile file) throws DeploymentException {
+	private ScheduleMetaData parseSchedulerYaml(String railsRoot, String railsEnv, VirtualFile file) throws DeploymentException {
 		try {
 			Map<String, Map<String, String>> results = (Map<String, Map<String, String>>) Yaml.load(file.openStream());
 
@@ -66,7 +66,7 @@ public class YamlScheduleParsingDeployer extends AbstractVFSParsingDeployer<Sche
 				ScheduleTaskMetaData taskMetaData = new ScheduleTaskMetaData();
 				
 				taskMetaData.setName(jobName);
-				taskMetaData.setGroup(railsRoot.toURL().toString());
+				taskMetaData.setGroup(railsRoot);
 				taskMetaData.setDescription(description);
 				taskMetaData.setRubyClass( task );
 				taskMetaData.setCronExpression( cron.trim() );
@@ -76,8 +76,6 @@ public class YamlScheduleParsingDeployer extends AbstractVFSParsingDeployer<Sche
 			return scheduleMetaData;
 		} catch (IOException e) {
 			throw new DeploymentException(e);
-		} catch (URISyntaxException e) {
-			throw new DeploymentException( e );
 		} finally {
 			file.closeStreams();
 		}

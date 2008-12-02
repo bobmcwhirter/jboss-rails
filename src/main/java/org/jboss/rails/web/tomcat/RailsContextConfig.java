@@ -68,8 +68,11 @@ public class RailsContextConfig extends RackContextConfig {
 	}
 
 	private void setUpRailsRoot() {
-		context.addParameter("rails.root", "/");
-		context.addParameter("public.root", "/public/");
+		RailsApplicationMetaData metaData = getRailsApplicationMetaData();
+		context.addParameter("root.path", metaData.getRailsRootPath() );
+		context.addParameter("rails.root", metaData.getRailsRootPath() );
+		context.addParameter("public.root", metaData.getRailsRootPath() + "/public" );
+		log.info( "set rails.root to " + metaData.getRailsRootPath() );
 	}
 	
 	private void setUpRack() {

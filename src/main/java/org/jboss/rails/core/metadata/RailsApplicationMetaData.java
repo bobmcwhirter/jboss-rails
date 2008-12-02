@@ -21,36 +21,45 @@
  */
 package org.jboss.rails.core.metadata;
 
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+
 import org.jboss.virtual.VirtualFile;
 
 public class RailsApplicationMetaData {
 
 	private VirtualFile railsRoot;
+	private String railsRootPath;
 	private String railsEnv = "development";
 
 	public RailsApplicationMetaData() {
 		
 	}
 	
-	public RailsApplicationMetaData(VirtualFile railsRoot) {
+	public RailsApplicationMetaData(VirtualFile railsRoot) throws MalformedURLException, URISyntaxException {
 		this( railsRoot, "development" );
 	}
 	
-	public RailsApplicationMetaData(VirtualFile railsRoot, String railsEnv) {
-		this.railsRoot = railsRoot;
-		this.railsEnv = railsEnv;
+	public RailsApplicationMetaData(VirtualFile railsRoot, String railsEnv) throws MalformedURLException, URISyntaxException {
+		setRailsRoot( railsRoot );
+		setRailsEnv( railsEnv );
 	}
 	
-	public void setRailsRoot(VirtualFile railsRoot) {
+	public void setRailsRoot(VirtualFile railsRoot) throws MalformedURLException, URISyntaxException {
 		this.railsRoot = railsRoot;
+		this.railsRootPath = railsRoot.toURL().getFile();
 	}
 	
 	public VirtualFile getRailsRoot() {
 		return this.railsRoot;
 	}
 	
-	public void setRailsEnv(String environment) {
-		this.railsEnv = environment;
+	public String getRailsRootPath() {
+		return this.railsRootPath;
+	}
+	
+	public void setRailsEnv(String railsEnv) {
+		this.railsEnv = railsEnv;
 	}
 	
 	public String getRailsEnv() {

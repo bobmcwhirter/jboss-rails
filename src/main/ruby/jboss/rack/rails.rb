@@ -34,11 +34,20 @@ module JBoss
     class JBossRailsServletHelper < JRuby::Rack::RailsServletHelper
       
       def initialize(servlet_context = nil)
+        puts "servlet_context 1 #{servlet_context}"
+        servlet_context ||= $servlet_context
+        puts "servlet_context 2 #{servlet_context}"
+        @root_path = servlet_context.getInitParameter( "root.path" )
         super(servlet_context)
       end
       
       def logdev
         @logdev ||= JBossServletLog.new @servlet_context
+      end
+      
+      def real_path(path)
+        puts "real_path (#{path})"
+        return path
       end
       
     end
@@ -62,6 +71,7 @@ module JBoss
     
     class RailsFactory
       def self.new
+        puts $:.inspect
         helper = JRuby::Rack::ServletHelper.instance
         helper.load_environment
         ::Rack::Builder.new {

@@ -23,6 +23,7 @@ package org.jboss.rails.core.deployers;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Map;
 
@@ -32,9 +33,6 @@ import org.jboss.deployers.client.spi.main.MainDeployer;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.attachments.MutableAttachments;
 import org.jboss.deployers.spi.deployer.DeploymentStages;
-import org.jboss.deployers.spi.structure.ContextInfo;
-import org.jboss.deployers.spi.structure.StructureMetaData;
-import org.jboss.deployers.spi.structure.StructureMetaDataFactory;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.deployers.vfs.plugins.client.AbstractVFSDeployment;
 import org.jboss.deployers.vfs.spi.deployer.AbstractVFSParsingDeployer;
@@ -120,7 +118,7 @@ public class RailsRootReferenceParsingDeployer extends AbstractVFSParsingDeploye
 	}
 
 	@SuppressWarnings("unchecked")
-	private Deployment parseAndSetUp(VirtualFile file) throws DeploymentException {
+	private Deployment parseAndSetUp(VirtualFile file) throws URISyntaxException, IOException {
 		try {
 			Map<String, Object> results = (Map<String, Object>) Yaml.load(file.openStream());
 
@@ -148,9 +146,8 @@ public class RailsRootReferenceParsingDeployer extends AbstractVFSParsingDeploye
 
 			return createDeployment(railsMetaData, webMetaData);
 
-		} catch (IOException e) {
+		} finally {
 			file.closeStreams();
-			throw new DeploymentException(e);
 		}
 	}
 

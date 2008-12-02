@@ -21,11 +21,14 @@
  */
 package org.jboss.ruby.enterprise.web;
 
+import java.io.File;
+
 import javax.management.Attribute;
 import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 
+import org.apache.catalina.Container;
 import org.apache.catalina.Loader;
 import org.apache.catalina.core.StandardContext;
 import org.apache.naming.resources.FileDirContext;
@@ -116,10 +119,28 @@ public class RackWebDeployment implements RackWebDeploymentMBean {
 	
 	private void setUpResources(StandardContext context) {
 		String docBase = rackWebMetaData.getDocBase();
-		context.setDocBase( docBase );
-		FileDirContext resources = new JBossFileDirContext();
-		resources.setDocBase( docBase );
-		context.setResources(resources);
+		File docBaseFile = new File( docBase );
+		log.info( "Setting docbase to [" + docBaseFile.getAbsolutePath() + "]" );
+		
+		FileDirContext resources = new JBossFileDirContext( docBaseFile );
+		context.setResources( resources );
+		context.setDocBase( docBaseFile.getAbsolutePath() );
+		//resources.setDocBase( docBaseFile.getAbsolutePath() );
+		log.info( "context thinks docbase is [" + context.getDocBase() + "]" );
+		log.info( "is absolute? " + new File( context.getDocBase() ).isAbsolute() );
+		log.info( "path? " + new File( context.getDocBase() ).getPath() );
+		
+		Container container = context;
+		
+		while ( container != null ) {
+			log.info( "container: " + container);
+			container = container.getParent();
+		}
+		//context.setDocBase( docBaseFile.getAbsolutePath() );
+				
+		//FileDirContext resources = new JBossFileDirContext();
+		//resources.setDocBase( docBase );
+		//context.setResources(resources);
 	}
 
 	private void setUpClustering(StandardContext context) {

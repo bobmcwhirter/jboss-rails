@@ -27,6 +27,7 @@ import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 
 import org.apache.naming.resources.FileDirContext;
+import org.jboss.logging.Logger;
 
 
 /** A resource context that adjusted for a public/ subdirectory and implicit index.html.
@@ -35,19 +36,30 @@ import org.apache.naming.resources.FileDirContext;
  */
 public class JBossFileDirContext extends FileDirContext {
 
+	private static Logger log = Logger.getLogger( JBossFileDirContext.class );
+	
+	public JBossFileDirContext(File base) {
+		log.info( "Constructed with " + base );
+		this.base = base;
+	}
+	
 	@Override
     public void setDocBase(String docBase) {
-		super.setDocBase(docBase);
-		base = new File( base, "public" );
+		log.info( "Ignoring setDocBase with " + docBase );
+		log.info( "resetting to " + this.base.getAbsolutePath() );
+		// ignore argument.
+		super.setDocBase( this.base.getAbsolutePath() );
     }
 	
 	@Override
 	public String getDocBase() {
-		return super.getDocBase() + "/public";
+		log.info( "getDocBase returning " + this.base.getAbsolutePath() + "/public" );
+		return this.base.getAbsolutePath() + "/public";
 	}
-
+	
 	@Override
 	public Object lookup(String name) throws NamingException {
+		log.info( "lookup(" + name + ")" );
 		name = rewriteName( name );
 		Object result = super.lookup(name);
 		return result;
@@ -55,6 +67,7 @@ public class JBossFileDirContext extends FileDirContext {
 	
 	@Override
     public Attributes getAttributes(String name, String[] attrIds) throws NamingException {
+		log.info( "getAttributes(" + name + ", ...)" );
     	name = rewriteName( name );
     	Attributes results = super.getAttributes( name, attrIds );
     	return results;
