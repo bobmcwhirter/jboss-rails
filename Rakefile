@@ -126,8 +126,8 @@ task :release_dist do
 
   FileUtils.chdir( "#{dist_stage}" ) do 
     puts "uploading #{simple_bundle_name}-#{version}"
-    puts `scp -q #{simple_bundle_name}-#{version}.zip oddthesis.org:/opt/oddthesis/repo/`
+    puts "scp -q #{simple_bundle_name}-#{version}.zip oddthesis.org:/opt/oddthesis/repo/"
     puts "uploading jboss-rails-deployer-#{version}"
-    puts `scp -q jboss-rails-deployer-#{version}.zip oddthesis.org:/opt/oddthesis/repo/`
+    puts "scp -q jboss-rails-deployer-#{version}.zip oddthesis.org:/opt/oddthesis/repo/"
   end
 end

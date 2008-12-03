@@ -34,8 +34,8 @@ task :install_gems do
   gem_dir = gems_dir + "/activerecord-jdbc-adapter"
 
   Dir.chdir( gem_dir ) do 
-    gems = Dir[ "pkg/*.gem" ] + Dir[ "adapters/*/pkg/*.gem" ] + Dir[ "drivers/*/pkg/*.gem" ]
-    puts `GEM_PATH=#{target_gems_dir} gem install -i #{target_gems_dir} --local --no-ri --no-rdoc #{gems.join(' ' )}`
+    gems = Dir[ "pkg/*.gem" ] + Dir[ "drivers/*/pkg/*.gem" ] + Dir[ "adapters/*/pkg/*.gem" ] 
+    puts `GEM_PATH=#{target_gems_dir} gem install -f -i #{target_gems_dir} --local --no-ri --no-rdoc #{gems.join(' ' )}`
   end
 end
 
