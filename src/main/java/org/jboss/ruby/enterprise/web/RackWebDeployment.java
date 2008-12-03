@@ -120,27 +120,7 @@ public class RackWebDeployment implements RackWebDeploymentMBean {
 	private void setUpResources(StandardContext context) {
 		String docBase = rackWebMetaData.getDocBase();
 		File docBaseFile = new File( docBase );
-		log.info( "Setting docbase to [" + docBaseFile.getAbsolutePath() + "]" );
-		
-		FileDirContext resources = new JBossFileDirContext( docBaseFile );
-		context.setResources( resources );
 		context.setDocBase( docBaseFile.getAbsolutePath() );
-		//resources.setDocBase( docBaseFile.getAbsolutePath() );
-		log.info( "context thinks docbase is [" + context.getDocBase() + "]" );
-		log.info( "is absolute? " + new File( context.getDocBase() ).isAbsolute() );
-		log.info( "path? " + new File( context.getDocBase() ).getPath() );
-		
-		Container container = context;
-		
-		while ( container != null ) {
-			log.info( "container: " + container);
-			container = container.getParent();
-		}
-		//context.setDocBase( docBaseFile.getAbsolutePath() );
-				
-		//FileDirContext resources = new JBossFileDirContext();
-		//resources.setDocBase( docBase );
-		//context.setResources(resources);
 	}
 
 	private void setUpClustering(StandardContext context) {

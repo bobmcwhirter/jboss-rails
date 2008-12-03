@@ -44,7 +44,6 @@ public class RailsRuntimeFactory extends BasicRubyRuntimeFactory implements Rail
         	"RAILS_ROOT='" + this.railsRoot + "'\n" + 
         	"RAILS_ENV='" + this.environment + "'\n" + 
         	"require \"#{RAILS_ROOT}/config/boot.rb\"\n";
-		log.info( "initScript" + initScript );
 		ruby.evalScriptlet( initScript );
 		return ruby;
 	}

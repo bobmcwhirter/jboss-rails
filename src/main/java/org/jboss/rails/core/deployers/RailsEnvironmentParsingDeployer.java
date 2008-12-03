@@ -40,13 +40,10 @@ public class RailsEnvironmentParsingDeployer extends AbstractVFSParsingDeployer<
 	@SuppressWarnings("unchecked")
 	@Override
 	protected RailsApplicationMetaData parse(VFSDeploymentUnit unit, VirtualFile file, RailsApplicationMetaData root) throws Exception {
-		log.info("Parsing " + file + " for " + unit.getRoot());
 		try {
 			Map<String, String> parsed = (Map<String, String>) Yaml.load(file.openStream());
 
 			String railsEnv = parsed.get("RAILS_ENV");
-			
-			log.info( "RAILS_ENV is " + railsEnv );
 
 			if (railsEnv == null || railsEnv.trim().equals("")) {
 				railsEnv = "development";

@@ -46,7 +46,7 @@ public class RailsRackWebPostParseDeployer extends AbstractSimpleRealDeployer<Ra
 	public void deploy(DeploymentUnit unit, RackWebMetaData rackMetaData) throws DeploymentException {
 		rackMetaData.setContextConfigClassName(CONTEXT_CONFIG_CLASS_NAME);
 		RailsApplicationMetaData railsAppMetaData = unit.getAttachment(RailsApplicationMetaData.class);
-		String docBase = railsAppMetaData.getRailsRootPath();
+		String docBase = railsAppMetaData.getRailsRootPath() + "/public";
 		log.info( "DOCBASE = [" + docBase + "]" );
 		rackMetaData.setDocBase(docBase);
 
