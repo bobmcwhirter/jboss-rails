@@ -21,39 +21,46 @@ def determine_version
   return version
 end
 
+def version
+  $VERSION ||= determine_version
+end
+
 def project_root
   File.dirname( __FILE__ )
+end
+
+def deployer_build_dir
+  "#{project_root}/target/jboss-rails-#{version}-deployer.dir"
 end
 
 def dist_stage
   "#{project_root}/target/dist-stage"
 end
 
-def simple_dir
-  "#{dist_stage}/jboss-rails.deployer"
+def deployer_dist_dir
+  "#{dist_stage}/deployer"
+end
+
+def simple_deployer_dir
+  "#{deployer_dist_dir}/jboss-rails.deployer"
 end
 
 task :dist do
-  version = determine_version
 
-  deployer_dir = "#{project_root}/target/jboss-rails-#{version}-deployer.dir"
+  puts "Making distribution of #{deployer_build_dir}"
 
-  puts "Making distribution of #{deployer_dir}"
+  FileUtils.rm_rf( deployer_dist_dir )
+  FileUtils.mkdir_p( deployer_dist_dir )
 
-  puts "Version #{version}"
-
-  FileUtils.rm_rf( dist_stage )
-  FileUtils.mkdir( dist_stage )
-
-  FileUtils.cp_r( deployer_dir, simple_dir )
-  FileUtils.cp( "#{project_root}/INSTALL.txt", dist_stage )
-  FileUtils.cp( "#{project_root}/README.markdown", dist_stage )
+  FileUtils.cp_r( deployer_build_dir, simple_deployer_dir )
+  FileUtils.cp( "#{project_root}/INSTALL.txt", deployer_dist_dir )
+  FileUtils.cp( "#{project_root}/README.markdown", deployer_dist_dir )
   Dir[ "#{project_root}/LICENSE*.txt" ].each do |l|
-    FileUtils.cp( l, dist_stage )
+    FileUtils.cp( l, deployer_dist_dir )
   end
 
-  FileUtils.chdir( "#{dist_stage}" ) do 
-    puts `zip -r jboss-rails-deployer-#{version}.zip jboss-rails.deployer *.txt *.markdown`
+  FileUtils.chdir( "#{deployer_dist_dir}" ) do 
+    puts `zip -r ../jboss-rails-deployer-#{version}.zip jboss-rails.deployer *.txt *.markdown`
   end
 end
 

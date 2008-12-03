@@ -2,25 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="target/dependency/jboss-aop-mc-int.jar"/>
-	<classpathentry kind="lib" path="target/dependency/jboss-aop.jar"/>
-	<classpathentry kind="lib" path="target/dependency/jboss-as-server.jar"/>
-	<classpathentry kind="lib" path="target/dependency/jboss-as-tomcat.jar"/>
-	<classpathentry kind="lib" path="target/dependency/jboss-deployers-client-spi.jar"/>
-	<classpathentry kind="lib" path="target/dependency/jboss-deployers-client.jar"/>
-	<classpathentry kind="lib" path="target/dependency/jboss-deployers-core-spi.jar"/>
-	<classpathentry kind="lib" path="target/dependency/jboss-deployers-core.jar"/>
-	<classpathentry kind="lib" path="target/dependency/jboss-deployers-impl.jar"/>
-	<classpathentry kind="lib" path="target/dependency/jboss-deployers-spi.jar" sourcepath="/Users/bob/checkouts/jboss-deployers/deployers-spi/src/main"/>
-	<classpathentry kind="lib" path="target/dependency/jboss-deployers-structure-spi.jar"/>
-	<classpathentry kind="lib" path="target/dependency/jboss-deployers-vfs-spi.jar" sourcepath="/vfs/src/main/java"/>
-	<classpathentry kind="lib" path="target/dependency/jboss-deployers-vfs.jar"/>
-	<classpathentry kind="lib" path="target/dependency/jboss-kernel.jar"/>
-	<classpathentry kind="lib" path="target/dependency/jboss-metadata.jar"/>
-	<classpathentry kind="lib" path="target/dependency/jboss-vfs.jar"/>
-	<classpathentry kind="lib" path="target/dependency/jbossweb.jar"/>
-	<classpathentry kind="lib" path="target/dependency/jruby-rack.jar"/>
-	<classpathentry kind="lib" path="target/dependency/jyaml.jar"/>
 	<classpathentry kind="lib" path="target/dependency/activation.jar"/>
 	<classpathentry kind="lib" path="target/dependency/ant-junit.jar"/>
 	<classpathentry kind="lib" path="target/dependency/ant-launcher.jar"/>
@@ -53,6 +34,8 @@
 	<classpathentry kind="lib" path="target/dependency/jboss-aop-deployer-jdk50.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-aop-jboss4-jdk50.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-aop-jdk50.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-aop-mc-int.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-aop.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-as-aspects.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-as-bootstrap.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-as-connector.jar"/>
@@ -66,8 +49,10 @@
 	<classpathentry kind="lib" path="target/dependency/jboss-as-mbeans.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-as-profileservice.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-as-security.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-as-server.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-as-system-jmx.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-as-system.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-as-tomcat.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-classloader.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-classloading-spi.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-classloading-vfs.jar"/>
@@ -77,12 +62,21 @@
 	<classpathentry kind="lib" path="target/dependency/jboss-corba-ots-spi.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-current-invocation-aspects.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-dependency.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-deployers-client-spi.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-deployers-client.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-deployers-core-spi.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-deployers-core.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-deployers-impl.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-deployers-spi.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-deployers-structure-spi.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-deployers-vfs-spi.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-deployers-vfs.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-deployment-spi.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-ejb-api.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-ejb3-async.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-ejb3-cache.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-ejb3-common.jar"/>
-	<classpathentry kind="lib" path="target/dependency/jboss-ejb3-core.jar" sourcepath="/Users/bob/checkouts/jbossas/ejb3/src/main"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-ejb3-core.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-ejb3-ext-api-impl.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-ejb3-ext-api.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-ejb3-interceptors.jar"/>
@@ -103,10 +97,12 @@
 	<classpathentry kind="lib" path="target/dependency/jboss-jca-api.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-jms-api.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-jpa-deployers.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-kernel.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-logging-log4j.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-logging-spi.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-managed.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-mdr.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-metadata.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-metatype.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-persistence-api.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-profiler-jvmti.jar"/>
@@ -123,9 +119,11 @@
 	<classpathentry kind="lib" path="target/dependency/jboss-transaction-api.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-transaction-aspects.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jboss-transaction-spi.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jboss-vfs.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jbosscache-core.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jbosssx-client.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jbosssx.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jbossweb.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jbossws-native-jaxws.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jbossws-native-saaj.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jbossws-spi.jar"/>
@@ -136,9 +134,12 @@
 	<classpathentry kind="lib" path="target/dependency/jnpserver.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jpl-pattern.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jpl-util.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jruby-complete.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jruby-rack.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jsf-api.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jsf-impl.jar"/>
 	<classpathentry kind="lib" path="target/dependency/jta.jar"/>
+	<classpathentry kind="lib" path="target/dependency/jyaml.jar"/>
 	<classpathentry kind="lib" path="target/dependency/log4j.jar"/>
 	<classpathentry kind="lib" path="target/dependency/mail.jar"/>
 	<classpathentry kind="lib" path="target/dependency/qdox.jar"/>
@@ -148,6 +149,5 @@
 	<classpathentry kind="lib" path="target/dependency/trove.jar"/>
 	<classpathentry kind="lib" path="target/dependency/xercesImpl.jar"/>
 	<classpathentry kind="lib" path="target/dependency/xml-apis.jar"/>
-	<classpathentry kind="lib" path="target/dependency/jruby-complete.jar"/>
 	<classpathentry kind="output" path="target/eclipse-classes"/>
 </classpath>
