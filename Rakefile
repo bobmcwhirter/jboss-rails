@@ -45,7 +45,62 @@ def simple_deployer_dir
   "#{deployer_dist_dir}/jboss-rails.deployer"
 end
 
-task :dist do
+def as_bundle_dir
+  "#{dist_stage}/as-bundle"
+end
+
+def as_zipfile
+  Dir["#{project_root}/cache/jboss-*.zip"].first
+end
+
+def simple_bundle_name
+  "jboss-5.0.x-rails"
+end
+
+def simple_bundle_dir
+  "#{as_bundle_dir}/#{simple_bundle_name}"
+end
+
+task :dist_bundle=>[:dist_deployer] do
+  puts "Making bundle from #{as_zipfile}"
+
+  FileUtils.rm_rf( as_bundle_dir )
+  FileUtils.mkdir_p( as_bundle_dir )
+
+  created_dir = nil
+  FileUtils.chdir( as_bundle_dir ) do
+    puts `unzip #{as_zipfile}`
+    created_dir = Dir['jboss-*'].first
+    puts "unpacked to #{created_dir}"
+    puts "moving to #{created_dir}"
+    FileUtils.mv( created_dir, simple_bundle_name )
+  end
+
+  FileUtils.chdir( simple_bundle_dir ) do
+    Dir['server/*/deploy/ROOT.war'].each do |root_war|
+      puts "removing #{root_war}"
+      FileUtils.rm_rf( root_war )
+    end
+
+    FileUtils.chdir( "server" ) do 
+      (Dir['*']-['minimal']).each do |config|
+        if ( File.exist?( "#{config}/deployers" ) )
+          puts "installing jboss-rails into #{config}"
+          FileUtils.cp_r( simple_deployer_dir, "#{config}/deployers" )
+        end
+      end
+    end
+  end
+
+  FileUtils.chdir( "#{as_bundle_dir}" ) do 
+    puts "packing to #{simple_bundle_name}-#{version}.zip"
+    puts `zip -r ../#{simple_bundle_name}-#{version}.zip #{simple_bundle_name}`
+  end
+
+
+end
+
+task :dist_deployer do
 
   puts "Making distribution of #{deployer_build_dir}"
 
@@ -64,10 +119,15 @@ task :dist do
   end
 end
 
+task :dist=>[ :dist_deployer, :dist_bundle ]
+
 task :release_dist do
   version = determine_version
 
   FileUtils.chdir( "#{dist_stage}" ) do 
+    puts "uploading #{simple_bundle_name}-#{version}"
+    puts `scp -q #{simple_bundle_name}-#{version}.zip oddthesis.org:/opt/oddthesis/repo/`
+    puts "uploading jboss-rails-deployer-#{version}"
     puts `scp -q jboss-rails-deployer-#{version}.zip oddthesis.org:/opt/oddthesis/repo/`
   end
 end
