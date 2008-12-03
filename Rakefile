@@ -83,7 +83,7 @@ task :dist_bundle=>[:dist_deployer] do
     end
 
     FileUtils.chdir( "server" ) do 
-      (Dir['*']-['minimal']).each do |config|
+      (Dir['*']-['minimal', 'web']).each do |config|
         if ( File.exist?( "#{config}/deployers" ) )
           puts "installing jboss-rails into #{config}"
           FileUtils.cp_r( simple_deployer_dir, "#{config}/deployers" )
