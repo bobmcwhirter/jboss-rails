@@ -22,7 +22,6 @@
 package org.jboss.ruby.enterprise.scheduler.deployers;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Map;
 
 import org.ho.yaml.Yaml;
