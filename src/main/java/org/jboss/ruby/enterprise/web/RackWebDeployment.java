@@ -53,7 +53,9 @@ import org.jboss.web.tomcat.service.session.distributedcache.spi.ClusteringNotSu
 public class RackWebDeployment implements RackWebDeploymentMBean {
 
 	/** The Catalina context class we work with. */
-	public final static String DEFAULT_CONTEXT_CLASS_NAME = "org.apache.catalina.core.StandardContext";
+	//public final static String DEFAULT_CONTEXT_CLASS_NAME = "org.apache.catalina.core.StandardContext";
+	public final static String DEFAULT_CONTEXT_CLASS_NAME = "org.jboss.ruby.enterprise.web.tomcat.DebugStandardContext";
+	
 
 	/** Cache manager class name. */
 	protected String managerClass = "org.jboss.ruby.enterprise.web.tomcat.RubyCacheManager";
