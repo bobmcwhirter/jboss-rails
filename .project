@@ -3,14 +3,6 @@
 	<name>rails</name>
 	<comment></comment>
 	<projects>
-		<project>cluster</project>
-		<project>common</project>
-		<project>connector</project>
-		<project>j2ee</project>
-		<project>jmx</project>
-		<project>security</project>
-		<project>server</project>
-		<project>system</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

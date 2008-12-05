@@ -60,7 +60,6 @@ public class RailsStructure extends AbstractVFSStructureDeployer implements JarE
 		setRelativeOrder(-10000);
 	}
 
-	@Override
 	public boolean determineStructure(StructureContext structureContext) throws DeploymentException {
 		boolean recognized = false;
 		VirtualFile file = structureContext.getFile();
