@@ -7,7 +7,6 @@
   <bean name="YamlWebParsingDeployer" class="org.jboss.ruby.enterprise.web.deployers.YamlWebParsingDeployer"/>
   <bean name="RackWebDeployer"        class="org.jboss.ruby.enterprise.web.deployers.RackWebDeployer">
     <property name="mbeanServer"><inject bean="JMXKernel" property="mbeanServer"/></property>
-    <depends>jboss:service=WebService</depends>
   </bean>
 
   <bean name="YamlScheduleParsingDeployer" class="org.jboss.ruby.enterprise.scheduler.deployers.YamlScheduleParsingDeployer"/>
