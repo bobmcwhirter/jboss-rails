@@ -54,13 +54,14 @@ def as_zipfile
 end
 
 def simple_bundle_name
-  "jboss-5.0.x-rails"
+  "jboss-5.0.0-jdk6-rails"
 end
 
 def simple_bundle_dir
   "#{as_bundle_dir}/#{simple_bundle_name}"
 end
 
+desc "Create the deployer + AS5 distribution"
 task :dist_bundle=>[:dist_deployer] do
   puts "Making bundle from #{as_zipfile}"
 
@@ -83,7 +84,7 @@ task :dist_bundle=>[:dist_deployer] do
     end
 
     FileUtils.chdir( "server" ) do 
-      (Dir['*']-['minimal', 'web']).each do |config|
+      (Dir['*']-['minimal']).each do |config|
         if ( File.exist?( "#{config}/deployers" ) )
           puts "installing jboss-rails into #{config}"
           FileUtils.cp_r( simple_deployer_dir, "#{config}/deployers" )
@@ -100,6 +101,7 @@ task :dist_bundle=>[:dist_deployer] do
 
 end
 
+desc "Create the deployer distribution"
 task :dist_deployer do
 
   puts "Making distribution of #{deployer_build_dir}"
@@ -119,6 +121,7 @@ task :dist_deployer do
   end
 end
 
+desc "Create the full distribution"
 task :dist=>[ :dist_deployer, :dist_bundle ]
 
 task :release_dist do
