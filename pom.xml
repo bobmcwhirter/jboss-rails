@@ -82,6 +82,12 @@
       </dependency>
       <dependency>
         <groupId>org.jboss.deployers</groupId>
+        <artifactId>jboss-deployers-spi</artifactId>
+        <version>${release}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.deployers</groupId>
         <artifactId>jboss-deployers-structure-spi</artifactId>
         <version>${release}</version>
         <scope>provided</scope>
@@ -110,6 +116,18 @@
         <version>3.8.1</version>
         <scope>test</scope>
       </dependency>
+      <dependency>
+        <groupId>org.jboss.ws.native</groupId>
+        <artifactId>jbossws-native-core</artifactId>
+        <version>3.0.5.GA</version>
+      </dependency>
+      <dependency>
+        <groupId>javassist</groupId>
+        <artifactId>javassist</artifactId>
+        <version>3.8.0.GA</version>
+      </dependency>
+      
+      
     </dependencies>
 
   <repositories>

@@ -38,6 +38,7 @@ import org.jboss.deployers.vfs.plugins.client.AbstractVFSDeployment;
 import org.jboss.deployers.vfs.spi.deployer.AbstractVFSParsingDeployer;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.logging.Logger;
+import org.jboss.metadata.web.spec.WebMetaData;
 import org.jboss.rails.core.metadata.RailsApplicationMetaData;
 import org.jboss.ruby.enterprise.web.metadata.RackWebMetaData;
 import org.jboss.virtual.VFS;

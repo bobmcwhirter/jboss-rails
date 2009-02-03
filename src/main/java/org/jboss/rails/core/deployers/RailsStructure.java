@@ -89,7 +89,7 @@ public class RailsStructure extends AbstractVFSStructureDeployer implements JarE
 						log.debug("Recognized: " + file);
 
 						// Add the config/ directory to the metadata paths
-						context = createContext(structureContext, "config");
+						context = createContext(structureContext, new String[] { "config", "app/apis" } );
 
 						// Flag this archive for unpacking
 						//context.setModificationType( ModificationType.EXPLODE );
