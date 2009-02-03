@@ -59,7 +59,7 @@ public class ProviderCompiler {
 		
 		Annotation annotation = new Annotation("javax.xml.ws.WebServiceProvider", constPool );
 		annotation.addMemberValue("wsdlLocation", new StringMemberValue("app/apis/" + metaData.getName() + "/" + metaData.getName() + ".wsdl", constPool ));
-		//annotation.addMemberValue("targetNamespace", new StringMemberValue( "http://ec2.amazonaws.com/doc/2008-12-01/", constPool ) );
+		annotation.addMemberValue("targetNamespace", new StringMemberValue( "http://ec2.amazonaws.com/doc/2008-12-01/", constPool ) );
 		annotation.addMemberValue("portName", new StringMemberValue( "AmazonEC2Port", constPool ) );
 		
 		AnnotationsAttribute attr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
