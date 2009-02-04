@@ -13,7 +13,6 @@
   <bean name="ScheduleDeployer"            class="org.jboss.ruby.enterprise.scheduler.deployers.ScheduleDeployer"/>
 
   <bean name="RubyWebServicesDeployer" class="org.jboss.ruby.enterprise.webservices.deployers.RubyWebServicesDeployer"/>
-  <bean name="ServiceFixupDeployer" class="org.jboss.ruby.enterprise.webservices.deployers.ServiceFixupDeployer"/>
 
   <!-- Rails -->
 

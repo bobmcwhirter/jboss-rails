@@ -76,8 +76,9 @@ public class RailsContextConfig extends RackContextConfig {
 	}
 	
 	private void setUpRack() {
-		context.addParameter( "jruby.max.runtimes", "3" );
-		context.addParameter( "jruby.min.runtimes", "3" );
+		log.info( "setting up rack" );
+		context.addParameter( "jruby.max.runtimes", "1" );
+		context.addParameter( "jruby.min.runtimes", "1" );
 		context.addParameter( "jruby.runtime.timeout.sec", "30" );
 	}
 

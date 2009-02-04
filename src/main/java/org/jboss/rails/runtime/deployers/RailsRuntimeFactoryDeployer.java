@@ -42,7 +42,9 @@ public class RailsRuntimeFactoryDeployer extends AbstractSimpleRealDeployer<Rail
 	
 	@Override
 	public void deploy(DeploymentUnit unit, RailsApplicationMetaData deployment) throws DeploymentException {
-		BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder( "jboss.ruby.runtime.factory." + unit.getSimpleName(), RailsRuntimeFactory.class.getName() );
+		String factoryName = "jboss.ruby.runtime.factory." + unit.getSimpleName();
+		log.info( "creating RailsRuntimeFactory: " + factoryName );
+		BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder( factoryName, RailsRuntimeFactory.class.getName() );
 		builder.addConstructorParameter( String.class.getName(), deployment.getRailsRootPath() );
 		builder.addConstructorParameter( String.class.getName(), deployment.getRailsEnv() );
 		builder.addAnnotation("@org.jboss.aop.microcontainer.aspects.jmx.JMX(registerDirectly=true, exposedInterface=void.class, name=\"jboss.ruby.runtime.factory:app=" + unit.getSimpleName() + "\")");

@@ -35,7 +35,7 @@ public class RailsWebServicesDeployer extends AbstractDeployer {
 		RubyWebServicesMetaData servicesMetaData = null;
 		
 		try {
-			VirtualFile apisDir = vfsUnit.getRoot().getChild("app/apis");
+			VirtualFile apisDir = vfsUnit.getRoot().getChild("app/webservices");
 
 			log.info("APIs: " + apisDir);
 
