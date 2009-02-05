@@ -26,26 +26,26 @@ import java.util.List;
 
 public class LoadPathMetaData {
 	
-	private List<String> loadPaths = new ArrayList<String>();
+	private List<String> paths = new ArrayList<String>();
 	
 	public LoadPathMetaData() {
 		
 	}
 	
-	public LoadPathMetaData(String loadPath) {
-		this.loadPaths.add( loadPath );
+	public LoadPathMetaData(String path) {
+		this.paths.add( path );
 	}
 	
-	public LoadPathMetaData(List<String> loadPaths) {
-		this.loadPaths.addAll( loadPaths );
+	public LoadPathMetaData(List<String> paths) {
+		this.paths.addAll( paths );
 	}
 	
-	public void addLoadPath(String loadPath) {
-		this.loadPaths.add( loadPath );
+	public void addPath(String loadPath) {
+		this.paths.add( loadPath );
 	}
 	
-	public List<String> getLoadPaths() {
-		return this.loadPaths;
+	public List<String> getPaths() {
+		return this.paths;
 	}
 
 }

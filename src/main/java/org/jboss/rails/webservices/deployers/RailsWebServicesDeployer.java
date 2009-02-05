@@ -8,22 +8,29 @@ import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.spi.deployer.helpers.AbstractDeployer;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
+import org.jboss.kernel.Kernel;
+import org.jboss.kernel.plugins.util.KernelLocator;
 import org.jboss.logging.Logger;
 import org.jboss.rails.core.metadata.RailsApplicationMetaData;
 import org.jboss.ruby.enterprise.webservices.metadata.RubyWebServiceMetaData;
 import org.jboss.ruby.enterprise.webservices.metadata.RubyWebServicesMetaData;
+import org.jboss.ruby.runtime.RubyRuntimeFactory;
 import org.jboss.virtual.VirtualFile;
 
 public class RailsWebServicesDeployer extends AbstractDeployer {
 
 	private static Logger log = Logger.getLogger(RailsWebServicesDeployer.class);
+	
+	private Kernel kernel;
 
 	public RailsWebServicesDeployer() {
 		setStage(DeploymentStages.PARSE );
 		addInput(RailsApplicationMetaData.class);
+		addOutput(RubyWebServicesMetaData.class);
 	}
-
+	
 	public void deploy(DeploymentUnit unit) throws DeploymentException {
+		
 		VFSDeploymentUnit vfsUnit = (VFSDeploymentUnit) unit;
 		
 		RailsApplicationMetaData railsAppMetaData = unit.getAttachment( RailsApplicationMetaData.class );
