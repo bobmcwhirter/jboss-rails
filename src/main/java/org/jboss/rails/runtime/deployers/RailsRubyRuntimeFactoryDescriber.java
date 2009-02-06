@@ -21,10 +21,7 @@ public class RailsRubyRuntimeFactoryDescriber extends AbstractDeployer {
 		if ( railsMetaData == null ) {
 			return;
 		}
-		String initScript = 
-			"RAILS_ROOT='" + railsMetaData.getRailsRootPath()+ "'\n" + 
-			"RAILS_ENV='" + railsMetaData.getRailsEnv() + "'\n" + 
-			"require \"#{RAILS_ROOT}/config/boot.rb\"\n";
+		String initScript = createInitScript( railsMetaData.getRailsRootPath(), railsMetaData.getRailsEnv() );
 		
 		RubyRuntimeMetaData runtimeMetaData = unit.getAttachment( RubyRuntimeMetaData.class );
 		if ( runtimeMetaData == null ) {
@@ -42,6 +39,17 @@ public class RailsRubyRuntimeFactoryDescriber extends AbstractDeployer {
 		
 		loadPath.addPath( "META-INF/jruby.home/lib/ruby/site_ruby/1.8" );
 		runtimeMetaData.setInitScript( initScript );
+		
+	}
+	
+	public static String createInitScript(String railsRoot, String railsEnv) {
+		String initScript = 
+			"RAILS_ROOT='" + railsRoot + "'\n" + 
+			"RAILS_ENV='" + railsEnv + "'\n" + 
+			"require \"#{RAILS_ROOT}/config/boot.rb\"\n" +
+			"require \"#{RAILS_ROOT}/config/environment.rb\"\n";
+		return initScript;
+		
 		
 	}
 	

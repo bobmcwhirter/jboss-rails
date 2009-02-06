@@ -4,18 +4,21 @@ import org.jboss.virtual.VirtualFile;
 
 public class RubyWebServiceMetaData {
 	
-	private VirtualFile dir;
+	private String dir;
 	private String name;
+	
+	private String portName;
+	private String targetNamespace;
 
 	public RubyWebServiceMetaData() {
 		
 	}
 	
-	public void setDirectory(VirtualFile dir) {
+	public void setDirectory(String dir) {
 		this.dir = dir;
 	}
 	
-	public VirtualFile getDirectory() {
+	public String getDirectory() {
 		return this.dir;
 	}
 	
@@ -25,6 +28,22 @@ public class RubyWebServiceMetaData {
 	
 	public String getName() {
 		return this.name;
+	}
+	
+	public void setTargetNamespace(String targetNamespace) {
+		this.targetNamespace = targetNamespace;
+	}
+	
+	public String getTargetNamespace() {
+		return this.targetNamespace;
+	}
+	
+	public void setPortName(String portName) {
+		this.portName = portName;
+	}
+	
+	public String getPortName() {
+		return this.portName;
 	}
 	
 	public String toString() {

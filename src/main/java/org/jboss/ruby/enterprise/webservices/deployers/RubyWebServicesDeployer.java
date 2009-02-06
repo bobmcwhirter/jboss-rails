@@ -18,9 +18,11 @@ import org.jboss.metadata.web.jboss.JBossServletMetaData;
 import org.jboss.metadata.web.jboss.JBossServletsMetaData;
 import org.jboss.metadata.web.jboss.JBossWebMetaData;
 import org.jboss.metadata.web.spec.ServletMappingMetaData;
-import org.jboss.ruby.enterprise.webservices.RubyWebServiceProvider;
+import org.jboss.rails.runtime.deployers.RailsRubyRuntimeFactoryDescriber;
 import org.jboss.ruby.enterprise.webservices.metadata.RubyWebServiceMetaData;
 import org.jboss.ruby.enterprise.webservices.metadata.RubyWebServicesMetaData;
+import org.jboss.ruby.runtime.DefaultRubyRuntimeFactory;
+import org.jboss.ruby.runtime.RubyRuntimeFactory;
 import org.jboss.wsf.spi.metadata.j2ee.JSEArchiveMetaData;
 
 public class RubyWebServicesDeployer extends AbstractSimpleVFSRealDeployer<RubyWebServicesMetaData> {

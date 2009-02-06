@@ -20,7 +20,6 @@
 
   <bean name="RailsEnvironmentParsingDeployer" class="org.jboss.rails.core.deployers.RailsEnvironmentParsingDeployer"/>
   <bean name="RailsVersionDeployer"            class="org.jboss.rails.core.deployers.RailsVersionDeployer"/>
-  <!--bean name="RailsRuntimeFactoryDeployer"     class="org.jboss.rails.runtime.deployers.RailsRuntimeFactoryDeployer"/-->
   <bean name="RailsRackWebPostParseDeployer"   class="org.jboss.rails.web.deployers.RailsRackWebPostParseDeployer"/>
   <bean name="RailsScheduleDescribeDeployer"   class="org.jboss.rails.scheduler.deployers.RailsScheduleDescribeDeployer"/>
 
@@ -29,6 +28,7 @@
   <bean name="RailsWebServicesDeployer" class="org.jboss.rails.webservices.deployers.RailsWebServicesDeployer"/>
 
   <bean name="RubyRuntimeFactoryDeployer"        class="org.jboss.ruby.runtime.deployers.RubyRuntimeFactoryDeployer"/>
+  <bean name="RubyRuntimePoolDeployer"           class="org.jboss.ruby.runtime.deployers.RubyRuntimePoolDeployer"/>
   <bean name="RailsRubyRuntimeFactoryDescriber"  class="org.jboss.rails.runtime.deployers.RailsRubyRuntimeFactoryDescriber"/>
   <bean name="RailsAutoLoadDeployer"             class="org.jboss.rails.runtime.deployers.RailsAutoLoadDeployer"/>
 

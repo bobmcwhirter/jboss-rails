@@ -3,16 +3,17 @@ puts "loading dispatcher.rb"
 
 module JBoss
   module WebServiceDispatcher
-    def self.dispatcher_for(name) 
-      puts "create dispatcher for [#{name}]"
-      DispatcherBridge.new( name )
+    def self.dispatcher_for(dir, name) 
+      puts "create dispatcher for [#{dir}, #{name}]"
+      DispatcherBridge.new( dir, name )
     end
   end
   
   class DispatcherBridge
-    def initialize(name)
+    def initialize(dir, name)
+      @dir = dir
       @name = name
-      load "#{RAILS_ROOT}/app/webservices/#{name}/#{name}_web_service.rb"
+      load "#{dir}/#{name}_web_service.rb"
       @service_class = eval "#{name}_web_service".camelize
       puts "service class is #{@service_class.inspect}"
     end

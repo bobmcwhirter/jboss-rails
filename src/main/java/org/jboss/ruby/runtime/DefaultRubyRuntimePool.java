@@ -29,7 +29,7 @@ import java.util.Set;
 
 import org.jruby.Ruby;
 
-public class BasicRubyRuntimePool extends AbstractRubyRuntimePool {
+public class DefaultRubyRuntimePool extends AbstractRubyRuntimePool {
 
 	private List<Ruby> instances = new ArrayList<Ruby>();
 	private Set<Ruby> availableInstances = new HashSet<Ruby>();
@@ -37,7 +37,7 @@ public class BasicRubyRuntimePool extends AbstractRubyRuntimePool {
 	private int maxInstances = -1;
 	private int timeout = 30;
 
-	public BasicRubyRuntimePool(RubyRuntimeFactory factory) {
+	public DefaultRubyRuntimePool(RubyRuntimeFactory factory) {
 		super(factory);
 	}
 
