@@ -27,12 +27,14 @@ public class RubyWebServiceProvider implements Provider<DOMSource> {
 	private static Logger log = Logger.getLogger(RubyWebServiceProvider.class);
 	private String directory;
 	private String serviceName;
+	private String runtimePoolName;
 
 	private RubyRuntimePool pool;
 
-	public RubyWebServiceProvider(String directory, String serviceName) {
+	public RubyWebServiceProvider(String directory, String serviceName, String runtimePoolName) {
 		this.directory = directory;
 		this.serviceName = serviceName;
+		this.runtimePoolName = runtimePoolName;
 	}
 
 	@Resource
@@ -80,7 +82,7 @@ public class RubyWebServiceProvider implements Provider<DOMSource> {
 		ServletContext servletContext = (ServletContext) msgContext.get(MessageContext.SERVLET_CONTEXT);
 		Kernel kernel = (Kernel) servletContext.getAttribute(KERNEL_NAME);
 
-		this.pool = (RubyRuntimePool) kernel.getRegistry().getEntry("jboss.ruby.runtime.pool.ovirt-ec2").getTarget();
+		this.pool = (RubyRuntimePool) kernel.getRegistry().getEntry(this.runtimePoolName).getTarget();
 	}
 
 	private void destroyRuby() {

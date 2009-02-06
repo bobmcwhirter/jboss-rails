@@ -17,7 +17,7 @@ public class DefaultRubyRuntimeFactory implements RubyRuntimeFactory {
 
 	private List<String> loadPaths = null;
 	private String initScript = null;
-	
+
 	public DefaultRubyRuntimeFactory() {
 		this( null, null );
 	}
@@ -71,5 +71,4 @@ public class DefaultRubyRuntimeFactory implements RubyRuntimeFactory {
 	public PrintStream getError() {
 		return System.err;
 	}
-
 }

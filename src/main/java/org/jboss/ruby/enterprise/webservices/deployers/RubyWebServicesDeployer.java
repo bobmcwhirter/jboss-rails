@@ -47,7 +47,7 @@ public class RubyWebServicesDeployer extends AbstractSimpleVFSRealDeployer<RubyW
 
 		WebserviceDescriptionsMetaData descriptions = new WebserviceDescriptionsMetaData();
 
-		ProviderCompiler compiler = new ProviderCompiler( unit.getClassLoader() );
+		ProviderCompiler compiler = new ProviderCompiler( unit.getClassLoader(), "jboss.ruby.runtime.pool." + unit.getSimpleName() );
 		for (RubyWebServiceMetaData serviceMetaData : metaData.getWebSerices()) {
 
 			try {

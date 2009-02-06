@@ -21,9 +21,11 @@ public class ProviderCompiler {
 
 	public static final String GENERATED_PACKAGE = "org.jboss.ruby.enterprise.webservices.generated";
 	private ClassLoader classLoader;
+	private String runtimePoolName;
 
-	public ProviderCompiler(ClassLoader classLoader) {
+	public ProviderCompiler(ClassLoader classLoader, String runtimePoolName) {
 		this.classLoader = classLoader;
+		this.runtimePoolName = runtimePoolName;
 	}
 
 	public Class<?> compile(RubyWebServiceMetaData metaData) throws NotFoundException, CannotCompileException {
@@ -51,7 +53,7 @@ public class ProviderCompiler {
 
 	private void attachConstructor(CtClass genClass, RubyWebServiceMetaData metaData) throws CannotCompileException {
 		CtConstructor ctor = CtNewConstructor
-				.make("public " + metaData.getName() + "() { super(\"" + metaData.getDirectory() + "\", \""  + metaData.getName() + "\"); }", genClass);
+				.make("public " + metaData.getName() + "() { super(\"" + metaData.getDirectory() + "\", \""  + metaData.getName() + "\", \"" + this.runtimePoolName + "\"); }", genClass);
 		genClass.addConstructor(ctor);
 	}
 
