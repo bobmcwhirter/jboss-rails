@@ -12,12 +12,23 @@ import javassist.bytecode.AnnotationsAttribute;
 import javassist.bytecode.ClassFile;
 import javassist.bytecode.ConstPool;
 import javassist.bytecode.annotation.Annotation;
+import javassist.bytecode.annotation.AnnotationMemberValue;
+import javassist.bytecode.annotation.ArrayMemberValue;
+import javassist.bytecode.annotation.EnumMemberValue;
+import javassist.bytecode.annotation.MemberValue;
 import javassist.bytecode.annotation.StringMemberValue;
 
+import org.jboss.logging.Logger;
 import org.jboss.ruby.enterprise.webservices.RubyWebServiceProvider;
 import org.jboss.ruby.enterprise.webservices.metadata.RubyWebServiceMetaData;
+import org.jboss.ws.annotation.EndpointConfig;
+import org.jboss.ws.extensions.policy.PolicyScopeLevel;
+import org.jboss.ws.extensions.policy.annotation.Policy;
+import org.jboss.ws.extensions.policy.annotation.PolicyAttachment;
 
 public class ProviderCompiler {
+	
+	private static final Logger log = Logger.getLogger( ProviderCompiler.class );
 
 	public static final String GENERATED_PACKAGE = "org.jboss.ruby.enterprise.webservices.generated";
 	private ClassLoader classLoader;
@@ -36,8 +47,21 @@ public class ProviderCompiler {
 
 		CtClass genClass = createClass(classPool, metaData);
 		ClassFile classFile = genClass.getClassFile();
+		ConstPool constPool = classFile.getConstPool();
 
-		attachWebServiceProviderAnnotation(classFile, metaData);
+		AnnotationsAttribute attr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag );
+		classFile.addAttribute( attr );
+		classFile.setVersionToJava5();
+		attachWebServiceProviderAnnotation(classFile, attr, metaData);
+		log.info( "gen : " + genClass );
+		try {
+			for ( Object ann : genClass.getAnnotations() ) {
+				log.info( "ANNTATION: " + ann );
+			}
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return genClass.toClass(classLoader, getClass().getProtectionDomain());
 	}
 
@@ -52,12 +76,13 @@ public class ProviderCompiler {
 	}
 
 	private void attachConstructor(CtClass genClass, RubyWebServiceMetaData metaData) throws CannotCompileException {
-		CtConstructor ctor = CtNewConstructor
-				.make("public " + metaData.getName() + "() { super(\"" + metaData.getDirectory() + "\", \""  + metaData.getName() + "\", \"" + this.runtimePoolName + "\"); }", genClass);
+		CtConstructor ctor = CtNewConstructor.make("public " + metaData.getName() + "() { super(\"" + metaData.getDirectory() + "\", \""
+				+ metaData.getName() + "\", \"" + this.runtimePoolName + "\"); }", genClass);
 		genClass.addConstructor(ctor);
 	}
 
-	private void attachWebServiceProviderAnnotation(ClassFile classFile, RubyWebServiceMetaData metaData) {
+	private void attachWebServiceProviderAnnotation(ClassFile classFile, AnnotationsAttribute attr, RubyWebServiceMetaData metaData) {
+		log.info( "adding @WebServiceProvider" );
 		ConstPool constPool = classFile.getConstPool();
 
 		Annotation annotation = new Annotation("javax.xml.ws.WebServiceProvider", constPool);
@@ -66,12 +91,13 @@ public class ProviderCompiler {
 		annotation.addMemberValue("targetNamespace", new StringMemberValue(metaData.getTargetNamespace(), constPool));
 		annotation.addMemberValue("portName", new StringMemberValue(metaData.getPortName(), constPool));
 
-		AnnotationsAttribute attr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
-		attr.setAnnotation(annotation);
-		classFile.addAttribute(attr);
-		classFile.setVersionToJava5();
+		//attr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
+		//attr.setAnnotation(annotation);
+		attr.addAnnotation( annotation );
+		
+		log.info( "added : " + annotation );
 
-		classFile.addAttribute(attr);
+		//classFile.addAttribute(attr);
 	}
-
+	
 }

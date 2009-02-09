@@ -1,6 +1,5 @@
 package org.jboss.ruby.enterprise.webservices.metadata;
 
-import org.jboss.virtual.VirtualFile;
 
 public class RubyWebServiceMetaData {
 	
