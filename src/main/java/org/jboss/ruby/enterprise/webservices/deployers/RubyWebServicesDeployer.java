@@ -1,36 +1,32 @@
 package org.jboss.ruby.enterprise.webservices.deployers;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import javassist.CannotCompileException;
-import javassist.NotFoundException;
-
+import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.ValueMetaData;
+import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.deployers.spi.DeploymentException;
-import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.vfs.spi.deployer.AbstractSimpleVFSRealDeployer;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.logging.Logger;
-import org.jboss.metadata.common.jboss.WebserviceDescriptionMetaData;
 import org.jboss.metadata.common.jboss.WebserviceDescriptionsMetaData;
-import org.jboss.metadata.web.jboss.JBossServletMetaData;
 import org.jboss.metadata.web.jboss.JBossServletsMetaData;
 import org.jboss.metadata.web.jboss.JBossWebMetaData;
 import org.jboss.metadata.web.spec.ServletMappingMetaData;
+import org.jboss.ruby.enterprise.webservices.RubyWebService;
 import org.jboss.ruby.enterprise.webservices.metadata.RubyWebServiceMetaData;
 import org.jboss.ruby.enterprise.webservices.metadata.RubyWebServicesMetaData;
-import org.jboss.wsf.spi.metadata.j2ee.JSEArchiveMetaData;
 
 public class RubyWebServicesDeployer extends AbstractSimpleVFSRealDeployer<RubyWebServicesMetaData> {
+
+	private static final String BEAN_PREFIX = "jboss.ruby.enterprise.webservices";
 
 	private static final Logger log = Logger.getLogger(RubyWebServicesDeployer.class);
 
 	public RubyWebServicesDeployer() {
 		super(RubyWebServicesMetaData.class);
-		//setStage(DeploymentStages.POST_PARSE);
-		setStage(DeploymentStages.POST_CLASSLOADER);
-		setOutput(JSEArchiveMetaData.class);
+		setOutput(BeanMetaData.class);
 	}
 
 	@Override
@@ -44,46 +40,27 @@ public class RubyWebServicesDeployer extends AbstractSimpleVFSRealDeployer<RubyW
 
 		WebserviceDescriptionsMetaData descriptions = new WebserviceDescriptionsMetaData();
 
-		ProviderCompiler compiler = new ProviderCompiler( unit.getClassLoader(), "jboss.ruby.runtime.pool." + unit.getSimpleName() );
+
 		for (RubyWebServiceMetaData serviceMetaData : metaData.getWebSerices()) {
+			String beanName = BEAN_PREFIX + "." + unit.getSimpleName() + "." + serviceMetaData.getName();
+			log.info("BeanMetaData for " + beanName);
 
-			try {
-				Class serviceClass = compiler.compile(serviceMetaData);
-				log.info( "serviceClass: " + serviceClass  );
-				JBossServletMetaData servlet = new JBossServletMetaData();
-				servlet.setServletName(serviceMetaData.getName());
-				servlet.setServletClass(serviceClass.getName() );
-				servlet.setLoadOnStartup(1);
-				servlets.add(servlet);
+			BeanMetaDataBuilder beanBuilder = BeanMetaDataBuilder.createBuilder(beanName, RubyWebService.class.getName());
 
-				ServletMappingMetaData servletMapping = new ServletMappingMetaData();
-				servletMapping.setServletName(serviceMetaData.getName());
-				servletMapping.setUrlPatterns(Collections.singletonList("/" + serviceMetaData.getName() + "/*"));
-				servletMappings.add(servletMapping);
-
-				WebserviceDescriptionMetaData description = new WebserviceDescriptionMetaData();
-				description.setName(serviceMetaData.getName());
-				//description.setWsdlPublishLocation("/foo");
-				// description.setConfigFile( "/" + serviceMetaData.getName() +
-				// "-webservice.xml" );
-				description.setConfigName("Standard WSSecurity Endpoint");
-				description.setWebserviceDescriptionName(serviceMetaData.getName());
-				descriptions.add(description);
-			} catch (NotFoundException e) {
-				log.error( e );
-			} catch (CannotCompileException e) {
-				log.error( e );
-			}
+			ValueMetaData poolInjection = beanBuilder.createInject("jboss.ruby.runtime.pool.ovirt-ec2");
+			beanBuilder.addPropertyMetaData( "rubyRuntimePool", poolInjection );
+			beanBuilder.addPropertyMetaData( "rubyClassName", serviceMetaData.getName() );
+			beanBuilder.addPropertyMetaData( "wsdlLocation", serviceMetaData.getDirectory() + "/" + serviceMetaData.getName() + ".wsdl" );
+			beanBuilder.addPropertyMetaData( "targetNamespace", serviceMetaData.getTargetNamespace() );
+			beanBuilder.addPropertyMetaData( "portName", serviceMetaData.getPortName() );
+			
+			BeanMetaData busBean =  unit.getAttachment( BeanMetaData.class + "$cxf.bus", BeanMetaData.class );
+			ValueMetaData busInjection = beanBuilder.createInject( busBean.getName() );
+			beanBuilder.addPropertyMetaData( "bus", busInjection );
+			
+			BeanMetaData beanMetaData = beanBuilder.getBeanMetaData();
+			unit.addAttachment(BeanMetaData.class + "$webservice." + serviceMetaData.getName(), beanMetaData, BeanMetaData.class);
 		}
-
-		jbossWebMetaData.setContextRoot("/soap");
-		jbossWebMetaData.setServlets(servlets);
-		jbossWebMetaData.setServletMappings(servletMappings);
-		jbossWebMetaData.setWebserviceDescriptions(descriptions);
-		jbossWebMetaData.setContextLoader( unit.getClassLoader() );
-		jbossWebMetaData.setENCLoader( unit.getClassLoader() );
-
-		unit.addAttachment(JBossWebMetaData.class, jbossWebMetaData);
 	}
 
 }
