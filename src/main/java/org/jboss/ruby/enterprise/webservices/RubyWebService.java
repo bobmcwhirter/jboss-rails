@@ -11,9 +11,9 @@ import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.frontend.ServerFactoryBean;
 import org.apache.cxf.service.factory.AbstractServiceConfiguration;
 import org.apache.cxf.service.factory.ReflectionServiceFactoryBean;
-import org.apache.cxf.service.invoker.BeanInvoker;
 import org.apache.cxf.service.invoker.Invoker;
 import org.jboss.logging.Logger;
+import org.jboss.ruby.enterprise.webservices.cxf.RubyInvoker;
 import org.jboss.ruby.enterprise.webservices.cxf.RubyReflectionServiceFactoryBean;
 import org.jboss.ruby.runtime.RubyRuntimePool;
 
@@ -132,8 +132,8 @@ public class RubyWebService {
 		return new RubyWebServiceHandler( this.runtimePool, this.rubyClassName );
 	}
 	
-	private Invoker createInvoker(Object serviceBean) {
-		return new BeanInvoker( serviceBean );
+	private Invoker createInvoker(RubyWebServiceHandler handler) {
+		return new RubyInvoker( handler );
 	}
 
 	public void stop() {

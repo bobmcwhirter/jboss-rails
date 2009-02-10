@@ -2,6 +2,7 @@ package org.jboss.ruby.enterprise.webservices;
 
 import javax.xml.transform.dom.DOMSource;
 
+import org.apache.cxf.message.Exchange;
 import org.jboss.logging.Logger;
 import org.jboss.ruby.runtime.RubyRuntimePool;
 
@@ -21,8 +22,8 @@ public class RubyWebServiceHandler {
 		this.rubyClassName = rubyClassName;
 	}
 	
-	public DOMSource invoke(DOMSource request) {
-		log.info( "invoke(" + request + ")" );
+	public DOMSource invoke(String operationName, DOMSource request) {
+		log.info( "invoke(" + operationName + ", " + request + ")" );
 		return request;
 	}
 

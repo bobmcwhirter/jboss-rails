@@ -4,7 +4,6 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stax.StAXSource;
 
 import org.apache.cxf.service.factory.ReflectionServiceFactoryBean;
 import org.apache.cxf.service.model.InterfaceInfo;
@@ -22,7 +21,7 @@ public class RubyReflectionServiceFactoryBean extends ReflectionServiceFactoryBe
 
 		try {
 			log.info("service class: " + serviceClass);
-			Method method = serviceClass.getMethod("invoke", DOMSource.class);
+			Method method = serviceClass.getMethod("invoke", String.class, DOMSource.class);
 			log.info("inovke method: " + method);
 			for (OperationInfo o : intf.getOperations()) {
 				log.info("calling initializeWSDLOperation(" + intf + ", " + o + ", " + method + ")");
@@ -51,7 +50,7 @@ public class RubyReflectionServiceFactoryBean extends ReflectionServiceFactoryBe
 		log.info( "SUPER: " + result );
 		
 		for ( MessagePartInfo p : o.getInput().getMessageParts() ) {
-			p.setTypeClass( StAXSource.class );
+			p.setTypeClass( DOMSource.class );
 			log.info( "part: " + p );
 			//log.info( "part.type: " + p.getTypeClass() );
 		}

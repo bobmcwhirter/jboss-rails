@@ -31,6 +31,7 @@ public class CXFServletDeployer extends AbstractDeployer {
 		
 		if ( webMetaData == null ) {
 			webMetaData = new JBossWebMetaData();
+			webMetaData.setContextRoot( "/soap" );
 			unit.addAttachment( JBossWebMetaData.class, webMetaData );
 		}
 		
@@ -63,8 +64,9 @@ public class CXFServletDeployer extends AbstractDeployer {
 		
 		ServletMappingMetaData servletMapping = new ServletMappingMetaData();
 		servletMapping.setServletName( "cxf-servlet" );
-		servletMapping.setUrlPatterns( Collections.singletonList( "/soap/*" ) );
+		servletMapping.setUrlPatterns( Collections.singletonList( "/*" ) );
 		servletMappings.add( servletMapping );
+		
 	}
 
 }
