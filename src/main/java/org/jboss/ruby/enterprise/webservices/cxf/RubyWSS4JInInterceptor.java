@@ -23,6 +23,7 @@ public class RubyWSS4JInInterceptor extends WSS4JInInterceptor {
 		log.info( "completed handleMessage(" + message + ")" );
 	}
 
+	/*
 	@Override
 	protected boolean checkReceiverResults(Vector wsResult, Vector actions) {
 		log.info( "checkReceiverResults(");
@@ -31,8 +32,6 @@ public class RubyWSS4JInInterceptor extends WSS4JInInterceptor {
 		log.info( ")" );
 		return super.checkReceiverResults(wsResult, actions);
 	}
-	
-	
-	
+	*/
 
 }

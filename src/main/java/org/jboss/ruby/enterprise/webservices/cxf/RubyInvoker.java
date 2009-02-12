@@ -27,11 +27,6 @@ public class RubyInvoker implements Invoker {
 	}
 
 	public Object invoke(Exchange exchange, Object in) {
-		log.info( "INTERCEPTORS: " + exchange.getInMessage().getInterceptorChain() );
-		log.info( "IN:   " + exchange.getInMessage() );
-		log.info( "SESSION:   " + exchange.getSession() );
-		Map<Object, Object> m = new HashMap<Object, Object>( exchange );
-		log.info( "EXCHANGE: " + m );
 		log.info( "PRINCIPAL: " + exchange.getInMessage().get("wss4j.principal.result" ) );
 		if ( in instanceof MessageContentsList ) {
 			String operationName = getOperationName( exchange );
@@ -44,6 +39,7 @@ public class RubyInvoker implements Invoker {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	private String getOperationName(Exchange exchange) {
 		Map<String,List<String>> headers = (Map<String, List<String>>) exchange.getInMessage().get( Message.PROTOCOL_HEADERS );
 		List<String> operationNameHeader = headers.get( "SOAPAction" );

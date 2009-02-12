@@ -9,7 +9,6 @@ import javax.xml.namespace.QName;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.binding.soap.SoapBindingFactory;
-import org.apache.cxf.binding.soap.saaj.SAAJInInterceptor;
 import org.apache.cxf.databinding.source.SourceDataBinding;
 import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.frontend.ServerFactoryBean;
@@ -19,7 +18,6 @@ import org.apache.cxf.service.invoker.Invoker;
 import org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor;
 import org.apache.ws.security.handler.WSHandlerConstants;
 import org.jboss.logging.Logger;
-import org.jboss.ruby.enterprise.webservices.cxf.DebugSAAJInInterceptor;
 import org.jboss.ruby.enterprise.webservices.cxf.RubyInvoker;
 import org.jboss.ruby.enterprise.webservices.cxf.RubyReflectionServiceFactoryBean;
 import org.jboss.ruby.enterprise.webservices.cxf.RubyServiceConfiguration;

@@ -26,10 +26,22 @@
   </fileSets>
   <dependencySets>
     <dependencySet>
-      <outputDirectory>/lib</outputDirectory>
+      <outputDirectory>/lib/core</outputDirectory>
+      <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+      <unpack>false</unpack>
+      <scope>runtime</scope>
+      <includes>
+        <include>org.jboss.rails:jboss-rails</include>
+      </includes>
+    </dependencySet>
+    <dependencySet>
+      <outputDirectory>/lib/dependencies</outputDirectory>
       <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping> 
       <unpack>false</unpack>
       <scope>runtime</scope>
+      <excludes>
+        <exclude>org.jboss.rails:jboss-rails</exclude>
+      </excludes>
     </dependencySet>
   </dependencySets>
 <!--

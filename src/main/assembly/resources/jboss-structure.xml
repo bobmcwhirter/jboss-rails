@@ -6,8 +6,8 @@
             <path name="META-INF"/>
         </metaDataPath>
         <classpath>
-            <path name="lib/jboss-rails.jar"/>
-            <path name="lib/" suffixes=".jar" />
+            <path name="lib/core/"         suffixes=".jar"/>
+            <path name="lib/dependencies/" suffixes=".jar"/>
         </classpath>
     </context>
 </structure>
