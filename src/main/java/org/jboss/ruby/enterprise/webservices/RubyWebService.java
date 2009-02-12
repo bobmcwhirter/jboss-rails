@@ -144,7 +144,8 @@ public class RubyWebService {
 	private Map<String, Object> createSecurityProps() {
 		Map<String, Object> props = new HashMap<String,Object>();
 		props.put(WSHandlerConstants.ACTION, "Signature");
-		//props.put(WSHandlerConstants.SIG_PROP_REF_ID, createCryptoProps() );
+		props.put(WSHandlerConstants.SIG_PROP_REF_ID, "crypto.config" );
+		props.put("crypto.config", createCryptoProps() );
 		return props;
 	}
 	
