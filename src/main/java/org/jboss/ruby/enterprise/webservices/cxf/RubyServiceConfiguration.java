@@ -1,4 +1,4 @@
-package org.jboss.ruby.enterprise.webservices;
+package org.jboss.ruby.enterprise.webservices.cxf;
 
 import java.lang.reflect.Method;
 

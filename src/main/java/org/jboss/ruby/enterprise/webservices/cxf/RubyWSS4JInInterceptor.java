@@ -8,11 +8,11 @@ import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor;
 import org.jboss.logging.Logger;
 
-public class DebugWSS4JInInterceptor extends WSS4JInInterceptor {
+public class RubyWSS4JInInterceptor extends WSS4JInInterceptor {
 	
-	private static final Logger log = Logger.getLogger( DebugWSS4JInInterceptor.class );
+	private static final Logger log = Logger.getLogger( RubyWSS4JInInterceptor.class );
 	
-	public DebugWSS4JInInterceptor(Map<String, Object> props) {
+	public RubyWSS4JInInterceptor(Map<String, Object> props) {
 		super( props );
 	}
 

@@ -8,9 +8,19 @@ public class RubyWebServiceMetaData {
 	
 	private String portName;
 	private String targetNamespace;
+	
+	private InboundSecurityMetaData inboundSecurity;
 
 	public RubyWebServiceMetaData() {
-		
+		this.inboundSecurity = new InboundSecurityMetaData();
+	}
+	
+	public void setInboundSecurity(InboundSecurityMetaData inboundSecurity) {
+		this.inboundSecurity = inboundSecurity;
+	}
+	
+	public InboundSecurityMetaData getInboundSecurity() {
+		return this.inboundSecurity;
 	}
 	
 	public void setDirectory(String dir) {
@@ -46,7 +56,7 @@ public class RubyWebServiceMetaData {
 	}
 	
 	public String toString() {
-		return "[RubyWebServiceMetaData: dir=" + this.dir + "; name=" + this.name + "]";
+		return "[RubyWebServiceMetaData: dir=" + this.dir + "; name=" + this.name + "; security=[inbound=" + inboundSecurity + "; outbound=" + "]";
 	}
 
 }

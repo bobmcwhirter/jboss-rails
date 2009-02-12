@@ -9,10 +9,10 @@ import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.spi.deployer.helpers.AbstractDeployer;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
-import org.jboss.kernel.Kernel;
 import org.jboss.logging.Logger;
 import org.jboss.rails.core.metadata.RailsApplicationMetaData;
 import org.jboss.rails.runtime.deployers.RailsRubyRuntimeFactoryDescriber;
+import org.jboss.ruby.enterprise.webservices.metadata.InboundSecurityMetaData;
 import org.jboss.ruby.enterprise.webservices.metadata.RubyWebServiceMetaData;
 import org.jboss.ruby.enterprise.webservices.metadata.RubyWebServicesMetaData;
 import org.jboss.ruby.runtime.DefaultRubyRuntimeFactory;
@@ -100,14 +100,18 @@ public class RailsWebServicesDeployer extends AbstractDeployer {
 		
 		log.info( "serviceClass == " + serviceClass );
 		
-		String targetNamespace = (String) JavaEmbedUtils.invokeMethod( runtime, serviceClass, "targetNamespace", new Object[] { }, String.class );
+		//String targetNamespace = (String) JavaEmbedUtils.invokeMethod( runtime, serviceClass, "targetNamespace", new Object[] { }, String.class );
 		
-		log.info( "targetNamespace = " + targetNamespace );
-		String portName = (String) JavaEmbedUtils.invokeMethod( runtime, serviceClass, "portName", new Object[] { }, String.class );
-		log.info( "portName = " + portName );
+		//log.info( "targetNamespace = " + targetNamespace );
+		//String portName = (String) JavaEmbedUtils.invokeMethod( runtime, serviceClass, "portName", new Object[] { }, String.class );
+		//log.info( "portName = " + portName );
 		
-		webService.setTargetNamespace( targetNamespace );
-		webService.setPortName(portName);
+		//InboundSecurityMetaData inboundSecurity = new InboundSecurityMetaData();
+		//webService.setInboundSecurity(inboundSecurity);
+		JavaEmbedUtils.invokeMethod( runtime, serviceClass, "setup_jboss_metadata", new Object[] { webService }, void.class );
+		
+		//webService.setTargetNamespace( targetNamespace );
+		//webService.setPortName(portName);
 	}
 
 }

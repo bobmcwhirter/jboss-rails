@@ -20,9 +20,10 @@ import org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor;
 import org.apache.ws.security.handler.WSHandlerConstants;
 import org.jboss.logging.Logger;
 import org.jboss.ruby.enterprise.webservices.cxf.DebugSAAJInInterceptor;
-import org.jboss.ruby.enterprise.webservices.cxf.DebugWSS4JInInterceptor;
 import org.jboss.ruby.enterprise.webservices.cxf.RubyInvoker;
 import org.jboss.ruby.enterprise.webservices.cxf.RubyReflectionServiceFactoryBean;
+import org.jboss.ruby.enterprise.webservices.cxf.RubyServiceConfiguration;
+import org.jboss.ruby.enterprise.webservices.cxf.RubyWSS4JInInterceptor;
 import org.jboss.ruby.runtime.RubyRuntimePool;
 
 /** The bean within MC representing a deployed Ruby WebService.
@@ -39,8 +40,16 @@ public class RubyWebService {
 
 	private String rubyClassName;
 	private String wsdlLocation;
+	
+	
+	private String address;
+	
 	private String targetNamespace;
 	private String portName;
+
+	private boolean verifySignature;
+
+	private boolean verifyTimestamp;
 
 	public RubyWebService() {
 		
@@ -60,6 +69,30 @@ public class RubyWebService {
 	
 	public RubyRuntimePool getRubyRuntimePool() {
 		return this.runtimePool;
+	}
+	
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	
+	public String getAddress() {
+		return this.address;
+	}
+	
+	public void setVerifySignature(boolean verifySignature) {
+		this.verifySignature = verifySignature;
+	}
+	
+	public boolean isVerifySignature() {
+		return this.verifySignature;
+	}
+	
+	public void setVerifyTimestamp(boolean verifyTimestamp) {
+		this.verifyTimestamp = verifyTimestamp;
+	}
+	
+	public boolean isVerifyTimestamp() {
+		return this.verifyTimestamp;
 	}
 	
 	public void setRubyClassName(String rubyClassName) {
@@ -96,56 +129,56 @@ public class RubyWebService {
 	
 	public void start() {
 		log.info( "start()" );
+		AbstractServiceConfiguration serviceConfig = new RubyServiceConfiguration( getPortName() );
+		ReflectionServiceFactoryBean serviceFactory = new RubyReflectionServiceFactoryBean();
+		serviceFactory.setServiceConfigurations( Collections.singletonList( serviceConfig ) );
+		
 		ServerFactoryBean serverFactory = new ServerFactoryBean();
 		serverFactory.setStart( false );
         serverFactory.setBus( bus );
-        
+		serverFactory.setServiceFactory( serviceFactory );
 		
 		RubyWebServiceHandler serviceBean = createServiceBean();
 		serverFactory.setServiceName( new QName( getTargetNamespace(), getPortName() ) );
 		serverFactory.setEndpointName( new QName( getTargetNamespace(), getPortName() ) );
 		serverFactory.setServiceClass( RubyWebServiceHandler.class );
 		serverFactory.setInvoker( createInvoker( serviceBean ) );
-		//serverFactory.setoA
 		
-		AbstractServiceConfiguration serviceConfig = new RubyServiceConfiguration( getPortName() );
+		serverFactory.setAddress( getAddress() );
+		serverFactory.setWsdlURL( getWsdlLocation() );
 		
-		ReflectionServiceFactoryBean serviceFactory = new RubyReflectionServiceFactoryBean();
-		serviceFactory.setServiceConfigurations( Collections.singletonList( serviceConfig ) );
 		SourceDataBinding dataBinding = new SourceDataBinding();
 		serviceFactory.setDataBinding( dataBinding );
-		serverFactory.setServiceFactory( serviceFactory );
-		//serverFactory.setPublishedEndpointUrl( "/ec2" );
-		serverFactory.setAddress( "/ec2" );
-		serverFactory.setWsdlURL( "http://s3.amazonaws.com/ec2-downloads/2008-12-01.ec2.wsdl" );
-		
-		//DataBinding dataBinding = new SourceDataBinding();
-		//serverFactory.setDataBinding(dataBinding);
-		
 		
 		SoapBindingFactory bindingFactory = new SoapBindingFactory();
 		serverFactory.setBindingFactory( bindingFactory );
 		
-		log.info( "bindingFactory: " + serverFactory.getBindingFactory() );
-		
 		this.server = serverFactory.create();
-		log.info( "server is: " + server );
 		
-		SAAJInInterceptor saajInterceptor = new DebugSAAJInInterceptor();
-		this.server.getEndpoint().getInInterceptors().add( saajInterceptor );
+		if ( isVerifySignature() || isVerifyTimestamp() ) {
+			setupSecurity();
+		}
 		
-		WSS4JInInterceptor securityInterceptor = new DebugWSS4JInInterceptor( createSecurityProps() );
-		this.server.getEndpoint().getInInterceptors().add( securityInterceptor );
-		
-		log.info( "interceptors: " + this.server.getEndpoint().getInInterceptors());
 		this.server.start();
 	}
 	
+	private void setupSecurity() {
+		WSS4JInInterceptor securityInterceptor = new RubyWSS4JInInterceptor( createSecurityProps() );
+		this.server.getEndpoint().getInInterceptors().add( securityInterceptor );
+	}
+
 	private Map<String, Object> createSecurityProps() {
 		Map<String, Object> props = new HashMap<String,Object>();
-		props.put(WSHandlerConstants.ACTION, "Signature Timestamp");
-		props.put(WSHandlerConstants.SIG_PROP_REF_ID, "crypto.config" );
-		props.put("crypto.config", createCryptoProps() );
+		String actions = "";
+		if ( isVerifySignature() ) {
+			actions += "Signature ";
+		}
+		if ( isVerifyTimestamp() ) {
+			actions += "Timestamp ";
+		}
+		props.put(WSHandlerConstants.ACTION, actions.trim() );
+		props.put(WSHandlerConstants.SIG_PROP_REF_ID, "jboss.ruby.webservices.crypto.config" );
+		props.put("jboss.ruby.webservices.crypto.config", createCryptoProps() );
 		return props;
 	}
 	

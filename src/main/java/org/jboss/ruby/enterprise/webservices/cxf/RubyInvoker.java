@@ -1,5 +1,6 @@
 package org.jboss.ruby.enterprise.webservices.cxf;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +30,9 @@ public class RubyInvoker implements Invoker {
 		log.info( "INTERCEPTORS: " + exchange.getInMessage().getInterceptorChain() );
 		log.info( "IN:   " + exchange.getInMessage() );
 		log.info( "SESSION:   " + exchange.getSession() );
+		Map<Object, Object> m = new HashMap<Object, Object>( exchange );
+		log.info( "EXCHANGE: " + m );
+		log.info( "PRINCIPAL: " + exchange.getInMessage().get("wss4j.principal.result" ) );
 		if ( in instanceof MessageContentsList ) {
 			String operationName = getOperationName( exchange );
 			MessageContentsList mcl = (MessageContentsList) in;

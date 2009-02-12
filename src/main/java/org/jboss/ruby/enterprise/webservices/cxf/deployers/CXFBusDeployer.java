@@ -1,4 +1,4 @@
-package org.jboss.ruby.enterprise.webservices.cxf;
+package org.jboss.ruby.enterprise.webservices.cxf.deployers;
 
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
@@ -6,6 +6,7 @@ import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.spi.deployer.helpers.AbstractDeployer;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
+import org.jboss.ruby.enterprise.webservices.cxf.RubyCXFBus;
 import org.jboss.ruby.enterprise.webservices.metadata.RubyWebServicesMetaData;
 
 public class CXFBusDeployer extends AbstractDeployer {

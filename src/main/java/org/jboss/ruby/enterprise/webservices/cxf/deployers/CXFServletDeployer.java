@@ -1,4 +1,4 @@
-package org.jboss.ruby.enterprise.webservices.cxf;
+package org.jboss.ruby.enterprise.webservices.cxf.deployers;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,6 +13,7 @@ import org.jboss.metadata.web.jboss.JBossServletMetaData;
 import org.jboss.metadata.web.jboss.JBossServletsMetaData;
 import org.jboss.metadata.web.jboss.JBossWebMetaData;
 import org.jboss.metadata.web.spec.ServletMappingMetaData;
+import org.jboss.ruby.enterprise.webservices.cxf.RubyCXFServlet;
 import org.jboss.ruby.enterprise.webservices.metadata.RubyWebServicesMetaData;
 
 public class CXFServletDeployer extends AbstractDeployer {
