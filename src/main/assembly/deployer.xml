@@ -7,7 +7,7 @@
   <fileSets>
     <fileSet>
       <directory>lib/activerecord-jdbc-adapter</directory>
-      <outputDirectory>/</outputDirectory>
+      <outputDirectory>/lib</outputDirectory>
       <includes>
         <include>**/*.jar</include>
       </includes>
@@ -19,13 +19,18 @@
         <exclude>doc/**</exclude>
       </excludes>
     </fileSet>
+    <fileSet>
+      <directory>src/main/assembly/resources</directory>
+      <outputDirectory>/META-INF</outputDirectory>
+    </fileSet>
   </fileSets>
   <dependencySets>
     <dependencySet>
-      <outputDirectory>/</outputDirectory>
+      <outputDirectory>/lib</outputDirectory>
+      <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping> 
       <unpack>false</unpack>
       <scope>runtime</scope>
-     </dependencySet>
+    </dependencySet>
   </dependencySets>
 <!--
   <componentDescriptors>

@@ -1,18 +1,26 @@
 package org.jboss.ruby.enterprise.webservices;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 import javax.xml.namespace.QName;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.binding.soap.SoapBindingFactory;
+import org.apache.cxf.binding.soap.saaj.SAAJInInterceptor;
 import org.apache.cxf.databinding.source.SourceDataBinding;
 import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.frontend.ServerFactoryBean;
 import org.apache.cxf.service.factory.AbstractServiceConfiguration;
 import org.apache.cxf.service.factory.ReflectionServiceFactoryBean;
 import org.apache.cxf.service.invoker.Invoker;
+import org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor;
+import org.apache.ws.security.handler.WSHandlerConstants;
 import org.jboss.logging.Logger;
+import org.jboss.ruby.enterprise.webservices.cxf.DebugSAAJInInterceptor;
+import org.jboss.ruby.enterprise.webservices.cxf.DebugWSS4JInInterceptor;
 import org.jboss.ruby.enterprise.webservices.cxf.RubyInvoker;
 import org.jboss.ruby.enterprise.webservices.cxf.RubyReflectionServiceFactoryBean;
 import org.jboss.ruby.runtime.RubyRuntimePool;
@@ -27,14 +35,11 @@ public class RubyWebService {
 
 	private RubyRuntimePool runtimePool;
 	private Bus bus;
+	private Server server;
 
 	private String rubyClassName;
 	private String wsdlLocation;
-	
-	private Server server;
-
 	private String targetNamespace;
-
 	private String portName;
 
 	public RubyWebService() {
@@ -125,9 +130,33 @@ public class RubyWebService {
 		
 		this.server = serverFactory.create();
 		log.info( "server is: " + server );
+		
+		SAAJInInterceptor saajInterceptor = new DebugSAAJInInterceptor();
+		this.server.getEndpoint().getInInterceptors().add( saajInterceptor );
+		
+		WSS4JInInterceptor securityInterceptor = new DebugWSS4JInInterceptor( createSecurityProps() );
+		this.server.getEndpoint().getInInterceptors().add( securityInterceptor );
+		
+		log.info( "interceptors: " + this.server.getEndpoint().getInInterceptors());
 		this.server.start();
 	}
 	
+	private Map<String, Object> createSecurityProps() {
+		Map<String, Object> props = new HashMap<String,Object>();
+		props.put(WSHandlerConstants.ACTION, "Signature");
+		//props.put(WSHandlerConstants.SIG_PROP_REF_ID, createCryptoProps() );
+		return props;
+	}
+	
+	private Properties createCryptoProps() {
+		Properties props = new Properties();
+		props.setProperty( "org.apache.ws.security.crypto.provider",                 "org.apache.ws.security.components.crypto.Merlin" );
+		props.setProperty( "org.apache.ws.security.crypto.merlin.keystore.type",     "jks" );
+		props.setProperty( "org.apache.ws.security.crypto.merlin.keystore.password", "amex123" );
+		props.setProperty( "org.apache.ws.security.crypto.merlin.file",              "server_keystore.jks" );
+		return props;
+	}
+
 	private RubyWebServiceHandler createServiceBean() {
 		return new RubyWebServiceHandler( this.runtimePool, this.rubyClassName );
 	}
