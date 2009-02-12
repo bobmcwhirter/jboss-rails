@@ -631,7 +631,6 @@ public final class StaxUtils {
      */
     private static Element startElement(Node parent, XMLStreamReader reader, boolean repairing)
         throws XMLStreamException {
-    	System.err.println( "USING HACKED StaxUtils" );
         Document doc = getDocument(parent);
 
         Element e = doc.createElementNS(reader.getNamespaceURI(), reader.getLocalName());

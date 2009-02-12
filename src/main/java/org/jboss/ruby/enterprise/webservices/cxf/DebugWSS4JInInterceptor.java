@@ -1,6 +1,7 @@
 package org.jboss.ruby.enterprise.webservices.cxf;
 
 import java.util.Map;
+import java.util.Vector;
 
 import org.apache.cxf.binding.soap.SoapMessage;
 import org.apache.cxf.interceptor.Fault;
@@ -21,6 +22,16 @@ public class DebugWSS4JInInterceptor extends WSS4JInInterceptor {
 		super.handleMessage(message);
 		log.info( "completed handleMessage(" + message + ")" );
 	}
+
+	@Override
+	protected boolean checkReceiverResults(Vector wsResult, Vector actions) {
+		log.info( "checkReceiverResults(");
+		log.info( "   " + wsResult );
+		log.info( "   " + actions );
+		log.info( ")" );
+		return super.checkReceiverResults(wsResult, actions);
+	}
+	
 	
 	
 

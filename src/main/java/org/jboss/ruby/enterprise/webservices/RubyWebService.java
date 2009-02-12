@@ -143,7 +143,7 @@ public class RubyWebService {
 	
 	private Map<String, Object> createSecurityProps() {
 		Map<String, Object> props = new HashMap<String,Object>();
-		props.put(WSHandlerConstants.ACTION, "Signature");
+		props.put(WSHandlerConstants.ACTION, "Signature Timestamp");
 		props.put(WSHandlerConstants.SIG_PROP_REF_ID, "crypto.config" );
 		props.put("crypto.config", createCryptoProps() );
 		return props;
@@ -153,8 +153,9 @@ public class RubyWebService {
 		Properties props = new Properties();
 		props.setProperty( "org.apache.ws.security.crypto.provider",                 "org.apache.ws.security.components.crypto.Merlin" );
 		props.setProperty( "org.apache.ws.security.crypto.merlin.keystore.type",     "jks" );
-		props.setProperty( "org.apache.ws.security.crypto.merlin.keystore.password", "amex123" );
-		props.setProperty( "org.apache.ws.security.crypto.merlin.file",              "server_keystore.jks" );
+		//props.setProperty( "org.apache.ws.security.crypto.merlin.keystore.type",     "pkcs12" );
+		props.setProperty( "org.apache.ws.security.crypto.merlin.keystore.password", "foobar" );
+		props.setProperty( "org.apache.ws.security.crypto.merlin.file",              "/Users/bob/oddthesis/ovirt-ec2/auth/truststore.jks" );
 		return props;
 	}
 
