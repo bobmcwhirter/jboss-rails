@@ -4,7 +4,9 @@ import java.security.Principal;
 
 import org.jboss.logging.Logger;
 import org.jboss.ruby.enterprise.webservices.databinding.RubyDataObject;
+import org.jboss.ruby.enterprise.webservices.databinding.RubyComplexType;
 import org.jboss.ruby.runtime.RubyRuntimePool;
+import org.jruby.runtime.builtin.IRubyObject;
 
 /** Handler bean for dispatching to Ruby classes.
  * 
@@ -24,7 +26,10 @@ public class RubyWebServiceHandler {
 	
 	public RubyDataObject invoke(Principal principal, String operationName, RubyDataObject request) {
 		log.info( "invoke(" + operationName + ", " + request + ")" );
-		return request;
+		IRubyObject response = null;
+		RubyComplexType type = null;
+		return new RubyDataObject( type, response );
+		//return request;
 	}
 
 }

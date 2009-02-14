@@ -15,6 +15,7 @@ import org.apache.cxf.databinding.DataWriter;
 import org.apache.cxf.service.Service;
 import org.apache.cxf.service.model.ServiceInfo;
 import org.apache.ws.commons.schema.XmlSchema;
+import org.apache.ws.commons.schema.XmlSchemaComplexType;
 import org.apache.ws.commons.schema.XmlSchemaObject;
 import org.apache.ws.commons.schema.XmlSchemaObjectTable;
 import org.jboss.logging.Logger;
@@ -28,6 +29,26 @@ public class RubyDataBinding extends AbstractDataBinding {
 	private static final String XML_SCHEMA_NS = "http://www.w3.org/2001/XMLSchema";
 	
 	private Map<QName,RubyType> types = new HashMap<QName,RubyType>();
+	
+	public RubyDataBinding() {
+		initializePrimitiveTypes();
+	}
+	
+	private void initializePrimitiveTypes() {
+		RubyPrimitiveType unimplementedPrimitive = new RubyPrimitiveType( "Unimplemented", "nil" );
+		
+		types.put( new QName( XML_SCHEMA_NS, "string" ),  new RubyPrimitiveType( "String", "''" ) );
+		types.put( new QName( XML_SCHEMA_NS, "boolean" ), new RubyPrimitiveType( "Boolean", "false" ) );
+		types.put( new QName( XML_SCHEMA_NS, "int" ),  new RubyPrimitiveType( "Integer", "0" ) );
+		types.put( new QName( XML_SCHEMA_NS, "integer" ), new RubyPrimitiveType( "Integer", "0" ) );
+		types.put( new QName( XML_SCHEMA_NS, "decimal" ), unimplementedPrimitive );
+		types.put( new QName( XML_SCHEMA_NS, "float" ), unimplementedPrimitive );
+		types.put( new QName( XML_SCHEMA_NS, "double" ), unimplementedPrimitive ); 
+		types.put( new QName( XML_SCHEMA_NS, "duration" ), unimplementedPrimitive );
+		types.put( new QName( XML_SCHEMA_NS, "dateTime" ), unimplementedPrimitive );
+		types.put( new QName( XML_SCHEMA_NS, "time" ), unimplementedPrimitive );
+		types.put( new QName( XML_SCHEMA_NS, "date" ), unimplementedPrimitive );
+	}
 
 	public <T> DataReader<T> createReader(Class<T> type) {
 		log.info( "createReader(" + type + ")" );
@@ -88,15 +109,26 @@ public class RubyDataBinding extends AbstractDataBinding {
 			loadType( name, types.getItem( name ) );
 		}
 		
+		for ( RubyType type : this.types.values() ) {
+			log.info( "initializing ---> " + type.getName() );
+			type.initialize( this );
+			log.info( "initialized: " + type );
+			if ( type instanceof RubyComplexType ) {
+				log.info( "\n" + ((RubyComplexType) type).toRubyClass() );
+			}
+		}
+		
 	}
 
-	private void loadType(QName name, XmlSchemaObject item) {
-		log.info( "loadType(" + name + ", " + item );
-		RubyType type = new RubyType( name.getLocalPart() );
+	private void loadType(QName name, XmlSchemaObject xsdType) {
+		log.info( "loadType(" + name + ", " + xsdType );
+		RubyComplexType type = new RubyComplexType( this, (XmlSchemaComplexType) xsdType );
+		log.info( "REGISTER [" + name + "]" );
 		this.types.put( name, type );
 	}
 	
 	RubyType getType(QName name) {
+		log.info( "LOOKUP [" + name + "]" );
 		return this.types.get( name );
 	}
 

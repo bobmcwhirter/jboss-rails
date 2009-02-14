@@ -1,6 +1,7 @@
 package org.jboss.ruby.enterprise.webservices.databinding;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -16,53 +17,38 @@ public class RubyXMLStreamDataReader {
 	}
 
 	public Object read(XMLStreamReader input, RubyType type) throws XMLStreamException {
-		log.info("read(" + input + ", " + type + ")");
-		QName name = input.getName();
-
-		log.info("name: " + name);
-		log.info(" hasNext: " + input.hasNext());
-		log.info(" hasText: " + input.hasText());
-		if (input.hasText()) {
-			log.info(" text: " + input.getText());
-		}
+		log.info("read(" + input + ", " + type + ")  -- " + input.getEventType() );
 		
-		log.info( "START_ELEMENT: " + XMLStreamReader.START_ELEMENT );
-		log.info( "END_ELEMENT: " + XMLStreamReader.END_ELEMENT );
-
-		while (input.hasNext()) {
-			int eventType = input.next();
-
-			switch (eventType) {
-			case XMLStreamReader.START_DOCUMENT:
-				log.info("START_DOCUMENT");
-				break;
-			case XMLStreamReader.END_DOCUMENT:
-				log.info("END_DOCUMENT");
-				break;
-			case XMLStreamReader.START_ELEMENT:
-				log.info("START_ELEMENT: " + input.getName());
-				break;
-			case XMLStreamReader.END_ELEMENT:
-				log.info("END_ELEMENT: " + input.getName());
-				break;
-			case XMLStreamReader.ATTRIBUTE:
-				log.info("ATRIBUTE: " + input.getAttributeCount() );
-				break;
-			case XMLStreamReader.NAMESPACE:
-				log.info("NAMESPACE: " + input.getNamespaceURI() + " // " + input.getPrefix() );
-				break;
-			case XMLStreamReader.CHARACTERS:
-			case XMLStreamReader.CDATA:
-			case XMLStreamReader.COMMENT:
-			case XMLStreamReader.SPACE:
-				log.info("TEXTY: " + input.getText());
-				break;
-			default:
-				log.info( "unknown: " + eventType );
-			}
+		QName name = input.getName();
+		
+		log.info( "   QName: " + name );
+		
+		int eventType = input.next();
+		
+		eventType = readXMLAttributesAndNamespaces(input);
+		
+		while ( input.getEventType() == XMLStreamConstants.START_ELEMENT ) {
+			readAttribute( input );
+			input.nextTag();
 		}
 
-		return new RubyDataObject( type );
+		return new RubyDataObject( type, null );
 	}
+
+	private int readAttribute(XMLStreamReader input) throws XMLStreamException {
+		log.info( "readAttribute(" + input.getNamespaceURI() + ":" + input.getLocalName() + ")" );
+		readXMLAttributesAndNamespaces(input);
+		return 0;
+	}
+
+	private int readXMLAttributesAndNamespaces(XMLStreamReader input) throws XMLStreamException {
+		int eventType = input.getEventType();
+		if ( eventType == XMLStreamConstants.ATTRIBUTE || eventType == XMLStreamConstants.NAMESPACE ) {
+			eventType = input.next();
+		}
+		return eventType;
+	}
+	
+	
 
 }
