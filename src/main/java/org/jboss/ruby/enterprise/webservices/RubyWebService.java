@@ -9,7 +9,6 @@ import javax.xml.namespace.QName;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.binding.soap.SoapBindingFactory;
-import org.apache.cxf.databinding.source.SourceDataBinding;
 import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.frontend.ServerFactoryBean;
 import org.apache.cxf.service.factory.AbstractServiceConfiguration;
@@ -22,6 +21,7 @@ import org.jboss.ruby.enterprise.webservices.cxf.RubyInvoker;
 import org.jboss.ruby.enterprise.webservices.cxf.RubyReflectionServiceFactoryBean;
 import org.jboss.ruby.enterprise.webservices.cxf.RubyServiceConfiguration;
 import org.jboss.ruby.enterprise.webservices.cxf.RubyWSS4JInInterceptor;
+import org.jboss.ruby.enterprise.webservices.databinding.RubyDataBinding;
 import org.jboss.ruby.runtime.RubyRuntimePool;
 
 /** The bean within MC representing a deployed Ruby WebService.
@@ -145,7 +145,7 @@ public class RubyWebService {
 		serverFactory.setAddress( getAddress() );
 		serverFactory.setWsdlURL( getWsdlLocation() );
 		
-		SourceDataBinding dataBinding = new SourceDataBinding();
+		RubyDataBinding dataBinding = new RubyDataBinding();
 		serviceFactory.setDataBinding( dataBinding );
 		
 		SoapBindingFactory bindingFactory = new SoapBindingFactory();

@@ -1,9 +1,9 @@
 package org.jboss.ruby.enterprise.webservices;
 
-import javax.xml.transform.dom.DOMSource;
+import java.security.Principal;
 
-import org.apache.cxf.message.Exchange;
 import org.jboss.logging.Logger;
+import org.jboss.ruby.enterprise.webservices.databinding.RubyDataObject;
 import org.jboss.ruby.runtime.RubyRuntimePool;
 
 /** Handler bean for dispatching to Ruby classes.
@@ -22,7 +22,7 @@ public class RubyWebServiceHandler {
 		this.rubyClassName = rubyClassName;
 	}
 	
-	public DOMSource invoke(String operationName, DOMSource request) {
+	public RubyDataObject invoke(Principal principal, String operationName, RubyDataObject request) {
 		log.info( "invoke(" + operationName + ", " + request + ")" );
 		return request;
 	}

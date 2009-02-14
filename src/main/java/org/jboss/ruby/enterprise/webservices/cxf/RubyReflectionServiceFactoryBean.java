@@ -1,6 +1,7 @@
 package org.jboss.ruby.enterprise.webservices.cxf;
 
 import java.lang.reflect.Method;
+import java.security.Principal;
 import java.util.List;
 
 import javax.xml.transform.dom.DOMSource;
@@ -10,23 +11,19 @@ import org.apache.cxf.service.model.InterfaceInfo;
 import org.apache.cxf.service.model.MessagePartInfo;
 import org.apache.cxf.service.model.OperationInfo;
 import org.jboss.logging.Logger;
+import org.jboss.ruby.enterprise.webservices.databinding.RubyDataObject;
 
 public class RubyReflectionServiceFactoryBean extends ReflectionServiceFactoryBean {
 
 	private static final Logger log = Logger.getLogger(RubyReflectionServiceFactoryBean.class);
 
-	protected void initializeWSDLOperations() {
-		log.info("initializeWSDLOperations()");
+	protected void initializeWSDLOperations()  {
 		InterfaceInfo intf = getInterfaceInfo();
 
 		try {
-			log.info("service class: " + serviceClass);
-			Method method = serviceClass.getMethod("invoke", String.class, DOMSource.class);
-			log.info("inovke method: " + method);
+			Method method = serviceClass.getMethod("invoke", Principal.class, String.class, RubyDataObject.class);
 			for (OperationInfo o : intf.getOperations()) {
-				log.info("calling initializeWSDLOperation(" + intf + ", " + o + ", " + method + ")");
 				initializeWSDLOperation(intf, o, method);
-				log.info("success");
 			}
 		} catch (SecurityException e) {
 			e.printStackTrace();
