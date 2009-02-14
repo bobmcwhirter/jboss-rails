@@ -1,7 +1,6 @@
 package org.jboss.ruby.enterprise.webservices.databinding;
 
 import org.apache.ws.commons.schema.XmlSchemaElement;
-import org.apache.ws.commons.schema.XmlSchemaType;
 
 public class RubyAttribute {
 	

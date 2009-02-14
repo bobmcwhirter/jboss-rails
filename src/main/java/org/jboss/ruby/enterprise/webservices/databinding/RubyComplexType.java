@@ -37,13 +37,8 @@ public class RubyComplexType extends RubyType {
 				XmlSchemaParticle sequenceParticle = iter.next();
 				if (sequenceParticle instanceof XmlSchemaElement) {
 					XmlSchemaElement element = (XmlSchemaElement) sequenceParticle;
-					String elementName = element.getName();
 					QName elementTypeName = element.getSchemaTypeName();
-					long minOccurs = element.getMinOccurs();
-					long maxOccurs = element.getMaxOccurs();
-					log.info("-->" + elementName + " is " + elementTypeName + " " + minOccurs + ".." + maxOccurs);
 					RubyType rubyAttrType = dataBinding.getType(elementTypeName);
-					log.info("RUBYTYPE: " + rubyAttrType);
 					RubyAttribute rubyAttr = new RubyAttribute(rubyAttrType, element);
 					this.attributes.add(rubyAttr);
 				}
@@ -73,11 +68,27 @@ public class RubyComplexType extends RubyType {
 		}
 
 		builder.append("class " + getName() + superClass + "\n");
+		builder.append( "\n" );
 
-		if (!isArraySubclass()) {
+		if (isArraySubclass()) {
+			builder.append( " def build()\n" );
+			builder.append( "    " + attributes.get(0).getType().getNewInstanceFragment() + "\n" );
+			builder.append( " end\n" );
+			builder.append( " \n" );
+			builder.append( " def create()\n" );
+			builder.append( "    o = build()\n" );
+			builder.append( "    this << o\n" );
+			builder.append( "    o\n" );
+			builder.append( " end\n" );
+		} else {
 			for (RubyAttribute a : attributes) {
-				builder.append("  attr_accessor :" + a.getRubyName() + "\n");
+				if ( a.isPossiblyMultiple() || a.getType().isArraySubclass() ) {
+					builder.append("  attr_reader :" + a.getRubyName() + "\n");
+				} else {
+					builder.append("  attr_accessor :" + a.getRubyName() + "\n");
+				}
 			}
+			
 
 			builder.append("\n");
 

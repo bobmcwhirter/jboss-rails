@@ -17,5 +17,6 @@ public abstract class RubyType {
 	public abstract String getNewInstanceFragment();
 	
 	public abstract boolean isSimple();
+	public abstract boolean isArraySubclass();
 
 }

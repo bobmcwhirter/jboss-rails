@@ -110,9 +110,7 @@ public class RubyDataBinding extends AbstractDataBinding {
 		}
 		
 		for ( RubyType type : this.types.values() ) {
-			log.info( "initializing ---> " + type.getName() );
 			type.initialize( this );
-			log.info( "initialized: " + type );
 			if ( type instanceof RubyComplexType ) {
 				log.info( "\n" + ((RubyComplexType) type).toRubyClass() );
 			}
@@ -121,14 +119,11 @@ public class RubyDataBinding extends AbstractDataBinding {
 	}
 
 	private void loadType(QName name, XmlSchemaObject xsdType) {
-		log.info( "loadType(" + name + ", " + xsdType );
 		RubyComplexType type = new RubyComplexType( this, (XmlSchemaComplexType) xsdType );
-		log.info( "REGISTER [" + name + "]" );
 		this.types.put( name, type );
 	}
 	
 	RubyType getType(QName name) {
-		log.info( "LOOKUP [" + name + "]" );
 		return this.types.get( name );
 	}
 

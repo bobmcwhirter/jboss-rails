@@ -22,5 +22,9 @@ public class RubyPrimitiveType extends RubyType {
 	public boolean isSimple() {
 		return true;
 	}
+	
+	public boolean isArraySubclass() {
+		return false;
+	}
 
 }
