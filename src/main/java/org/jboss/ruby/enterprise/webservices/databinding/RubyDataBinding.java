@@ -32,7 +32,8 @@ public class RubyDataBinding extends AbstractDataBinding {
 	
 	private RubyRuntimePool rubyRuntimePool;
 	
-	private Map<QName,RubyType> types = new HashMap<QName,RubyType>();
+	private Map<QName,RubyType> typesByQName = new HashMap<QName,RubyType>();
+	private Map<String,RubyType> typesByClassName = new HashMap<String,RubyType>();
 	
 	public RubyDataBinding(RubyRuntimePool rubyRuntimePool) {
 		this.rubyRuntimePool = rubyRuntimePool;
@@ -42,17 +43,17 @@ public class RubyDataBinding extends AbstractDataBinding {
 	private void initializePrimitiveTypes() {
 		RubyPrimitiveType unimplementedPrimitive = new RubyPrimitiveType( "Unimplemented", "nil" );
 		
-		types.put( new QName( XML_SCHEMA_NS, "string" ),  new RubyPrimitiveType( "String", "''" ) );
-		types.put( new QName( XML_SCHEMA_NS, "boolean" ), new RubyPrimitiveType( "Boolean", "false" ) );
-		types.put( new QName( XML_SCHEMA_NS, "int" ),  new RubyPrimitiveType( "Integer", "0" ) );
-		types.put( new QName( XML_SCHEMA_NS, "integer" ), new RubyPrimitiveType( "Integer", "0" ) );
-		types.put( new QName( XML_SCHEMA_NS, "decimal" ), unimplementedPrimitive );
-		types.put( new QName( XML_SCHEMA_NS, "float" ), unimplementedPrimitive );
-		types.put( new QName( XML_SCHEMA_NS, "double" ), unimplementedPrimitive ); 
-		types.put( new QName( XML_SCHEMA_NS, "duration" ), unimplementedPrimitive );
-		types.put( new QName( XML_SCHEMA_NS, "dateTime" ), unimplementedPrimitive );
-		types.put( new QName( XML_SCHEMA_NS, "time" ), unimplementedPrimitive );
-		types.put( new QName( XML_SCHEMA_NS, "date" ), unimplementedPrimitive );
+		typesByQName.put( new QName( XML_SCHEMA_NS, "string" ),  new RubyPrimitiveType( "String", "''" ) );
+		typesByQName.put( new QName( XML_SCHEMA_NS, "boolean" ), new RubyPrimitiveType( "Boolean", "false" ) );
+		typesByQName.put( new QName( XML_SCHEMA_NS, "int" ),  new RubyPrimitiveType( "Integer", "0" ) );
+		typesByQName.put( new QName( XML_SCHEMA_NS, "integer" ), new RubyPrimitiveType( "Integer", "0" ) );
+		typesByQName.put( new QName( XML_SCHEMA_NS, "decimal" ), unimplementedPrimitive );
+		typesByQName.put( new QName( XML_SCHEMA_NS, "float" ), unimplementedPrimitive );
+		typesByQName.put( new QName( XML_SCHEMA_NS, "double" ), unimplementedPrimitive ); 
+		typesByQName.put( new QName( XML_SCHEMA_NS, "duration" ), unimplementedPrimitive );
+		typesByQName.put( new QName( XML_SCHEMA_NS, "dateTime" ), unimplementedPrimitive );
+		typesByQName.put( new QName( XML_SCHEMA_NS, "time" ), unimplementedPrimitive );
+		typesByQName.put( new QName( XML_SCHEMA_NS, "date" ), unimplementedPrimitive );
 	}
 
 	public <T> DataReader<T> createReader(Class<T> type) {
@@ -69,10 +70,10 @@ public class RubyDataBinding extends AbstractDataBinding {
 	public <T> DataWriter<T> createWriter(Class<T> type) {
 		log.info( "createWriter(" + type + ")" );
 		if ( type == XMLStreamWriter.class ) {
-			return (DataWriter<T>) new RubyDataWriter<T>();
+			return (DataWriter<T>) new RubyDataWriter<T>( this );
 		} 
 		if ( type == Node.class ) {
-			return (DataWriter<T>) new RubyDataWriter<T>();
+			return (DataWriter<T>) new RubyDataWriter<T>( this );
 		}
 		return null;
 	}
@@ -114,7 +115,7 @@ public class RubyDataBinding extends AbstractDataBinding {
 			loadType( name, types.getItem( name ) );
 		}
 		
-		for ( RubyType type : this.types.values() ) {
+		for ( RubyType type : this.typesByQName.values() ) {
 			type.initialize( this );
 		}
 		
@@ -122,16 +123,21 @@ public class RubyDataBinding extends AbstractDataBinding {
 
 	private void loadType(QName name, XmlSchemaObject xsdType) {
 		RubyComplexType type = new RubyComplexType( this, (XmlSchemaComplexType) xsdType );
-		this.types.put( name, type );
+		this.typesByQName.put( name, type );
+		this.typesByClassName.put( type.getName(), type );
 	}
 	
-	RubyType getType(QName name) {
-		return this.types.get( name );
+	RubyType getTypeByQName(QName name) {
+		return this.typesByQName.get( name );
+	}
+	
+	RubyType getTypeByClassName(String name) {
+		return this.typesByClassName.get( name );
 	}
 	
 	public String getRubyClassDefinitions() {
 		StringBuilder defs = new StringBuilder();
-		for ( RubyType type : this.types.values() ) {
+		for ( RubyType type : this.typesByQName.values() ) {
 			if ( type instanceof RubyComplexType ) {
 				defs.append( ((RubyComplexType)type).toRubyClass() );
 				defs.append( "\n" );

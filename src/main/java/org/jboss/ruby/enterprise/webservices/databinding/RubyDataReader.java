@@ -56,7 +56,7 @@ public class RubyDataReader<T> implements DataReader<T> {
 			runtime = dataBinding.getRubyRuntimePool().borrowRuntime();
 			System.err.println( "-\n-\n-\n-\n" + dataBinding.getRubyClassDefinitions() + "\n-\n-\n-\n" );
 			runtime.evalScriptlet( dataBinding.getRubyClassDefinitions() );
-			RubyType type = dataBinding.getType(partInfo.getTypeQName());
+			RubyType type = dataBinding.getTypeByQName(partInfo.getTypeQName());
 			IRubyObject o = (IRubyObject) reader.read(runtime, input, type);
 			String insp = (String) JavaEmbedUtils.invokeMethod( o.getRuntime(), o, "inspect", new Object[]{}, String.class );
 			log.info( "READ TO:\n" + insp );

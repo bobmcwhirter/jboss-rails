@@ -31,7 +31,7 @@ public class RubyInvoker implements Invoker {
 			String operationName = getOperationName(exchange);
 			MessageContentsList mcl = (MessageContentsList) in;
 			Object request = mcl.get(0);
-			Object response = handler.invoke(principal, operationName, (RubyDataObject) request);
+			Object response = handler.invoke(principal, operationName, request);
 			return new MessageContentsList(response);
 		}
 

@@ -1,6 +1,7 @@
 package org.jboss.ruby.enterprise.webservices.databinding;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -44,7 +45,7 @@ public class RubyComplexType extends RubyType {
 				if (sequenceParticle instanceof XmlSchemaElement) {
 					XmlSchemaElement element = (XmlSchemaElement) sequenceParticle;
 					QName elementTypeName = element.getSchemaTypeName();
-					RubyType rubyAttrType = dataBinding.getType(elementTypeName);
+					RubyType rubyAttrType = dataBinding.getTypeByQName(elementTypeName);
 					RubyAttribute rubyAttr = new RubyAttribute(rubyAttrType, element);
 					log.info("add attr " + rubyAttr.getName() + " on " + getName());
 					this.attributes.add(rubyAttr);
@@ -133,6 +134,10 @@ public class RubyComplexType extends RubyType {
 
 	public RubyAttribute getAttribute(String name) {
 		return this.attributesByName.get(name);
+	}
+
+	public List<RubyAttribute> getAttributes() {
+		return Collections.unmodifiableList( this.attributes );
 	}
 
 }

@@ -11,7 +11,6 @@ import org.apache.cxf.service.model.InterfaceInfo;
 import org.apache.cxf.service.model.MessagePartInfo;
 import org.apache.cxf.service.model.OperationInfo;
 import org.jboss.logging.Logger;
-import org.jboss.ruby.enterprise.webservices.databinding.RubyDataObject;
 
 public class RubyReflectionServiceFactoryBean extends ReflectionServiceFactoryBean {
 
@@ -21,7 +20,7 @@ public class RubyReflectionServiceFactoryBean extends ReflectionServiceFactoryBe
 		InterfaceInfo intf = getInterfaceInfo();
 
 		try {
-			Method method = serviceClass.getMethod("invoke", Principal.class, String.class, RubyDataObject.class);
+			Method method = serviceClass.getMethod("invoke", Principal.class, String.class, Object.class);
 			for (OperationInfo o : intf.getOperations()) {
 				initializeWSDLOperation(intf, o, method);
 			}

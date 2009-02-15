@@ -4,9 +4,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import javax.xml.validation.Schema;
 
 import org.apache.cxf.databinding.DataWriter;
+import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.message.Attachment;
 import org.apache.cxf.service.model.MessagePartInfo;
 import org.jboss.logging.Logger;
@@ -18,7 +21,15 @@ public class RubyDataWriter<T> implements DataWriter<T> {
 	private Collection<Attachment> attachments;
 	private Map<String,Object> properties = new HashMap<String,Object>();
 	private Schema schema;
-
+	
+	private RubyDataBinding dataBinding;
+	private RubyXMLStreamDataWriter streamWriter;
+	
+	public RubyDataWriter(RubyDataBinding dataBinding) {
+		this.dataBinding = dataBinding;
+		this.streamWriter = new RubyXMLStreamDataWriter( dataBinding );
+	}
+	
 	public void setAttachments(Collection<Attachment> attachments) {
 		this.attachments = attachments;
 	}
@@ -38,6 +49,19 @@ public class RubyDataWriter<T> implements DataWriter<T> {
 
 	public void write(Object object, MessagePartInfo partInfo, T output) {
 		log.info( "write(" + object + ", " + partInfo + ", " + output + ")" );
+		
+		if ( output instanceof XMLStreamWriter ) {
+			write( object, partInfo, (XMLStreamWriter) output );
+		}
+	}
+
+	private void write(Object object, MessagePartInfo partInfo, XMLStreamWriter output) {
+		try {
+			streamWriter.write(output, object, partInfo.getConcreteName() );
+		} catch (XMLStreamException e) {
+			e.printStackTrace();
+			throw new Fault( e );
+		}
 	}
 
 }

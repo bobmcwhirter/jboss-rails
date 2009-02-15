@@ -1,5 +1,7 @@
 package org.jboss.ruby.enterprise.webservices.databinding;
 
+import javax.xml.namespace.QName;
+
 import org.apache.ws.commons.schema.XmlSchemaElement;
 
 public class RubyAttribute {
@@ -19,6 +21,10 @@ public class RubyAttribute {
 	
 	public String getName() {
 		return this.xsdElement.getName();
+	}
+	
+	public QName getQName() {
+		return this.xsdElement.getQName();
 	}
 	
 	public String getRubyName() {
