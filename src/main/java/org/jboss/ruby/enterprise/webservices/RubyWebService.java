@@ -145,7 +145,7 @@ public class RubyWebService {
 		serverFactory.setAddress( getAddress() );
 		serverFactory.setWsdlURL( getWsdlLocation() );
 		
-		RubyDataBinding dataBinding = new RubyDataBinding();
+		RubyDataBinding dataBinding = new RubyDataBinding( this.runtimePool );
 		serviceFactory.setDataBinding( dataBinding );
 		
 		SoapBindingFactory bindingFactory = new SoapBindingFactory();
@@ -156,6 +156,8 @@ public class RubyWebService {
 		if ( isVerifySignature() || isVerifyTimestamp() ) {
 			setupSecurity();
 		}
+		
+		log.info( "RUBY CLASS DEFS: " + dataBinding.getRubyClassDefinitions() );
 		
 		this.server.start();
 	}

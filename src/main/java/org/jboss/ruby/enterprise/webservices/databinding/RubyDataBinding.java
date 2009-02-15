@@ -19,6 +19,8 @@ import org.apache.ws.commons.schema.XmlSchemaComplexType;
 import org.apache.ws.commons.schema.XmlSchemaObject;
 import org.apache.ws.commons.schema.XmlSchemaObjectTable;
 import org.jboss.logging.Logger;
+import org.jboss.ruby.runtime.RubyRuntimePool;
+import org.jruby.Ruby;
 import org.w3c.dom.Node;
 
 public class RubyDataBinding extends AbstractDataBinding {
@@ -28,9 +30,12 @@ public class RubyDataBinding extends AbstractDataBinding {
 	private static final Class<?>[] SUPPORTED_WRITER_FORMATS = new Class[] { Node.class };
 	private static final String XML_SCHEMA_NS = "http://www.w3.org/2001/XMLSchema";
 	
+	private RubyRuntimePool rubyRuntimePool;
+	
 	private Map<QName,RubyType> types = new HashMap<QName,RubyType>();
 	
-	public RubyDataBinding() {
+	public RubyDataBinding(RubyRuntimePool rubyRuntimePool) {
+		this.rubyRuntimePool = rubyRuntimePool;
 		initializePrimitiveTypes();
 	}
 	
@@ -111,9 +116,6 @@ public class RubyDataBinding extends AbstractDataBinding {
 		
 		for ( RubyType type : this.types.values() ) {
 			type.initialize( this );
-			if ( type instanceof RubyComplexType ) {
-				log.info( "\n" + ((RubyComplexType) type).toRubyClass() );
-			}
 		}
 		
 	}
@@ -125,6 +127,22 @@ public class RubyDataBinding extends AbstractDataBinding {
 	
 	RubyType getType(QName name) {
 		return this.types.get( name );
+	}
+	
+	public String getRubyClassDefinitions() {
+		StringBuilder defs = new StringBuilder();
+		for ( RubyType type : this.types.values() ) {
+			if ( type instanceof RubyComplexType ) {
+				defs.append( ((RubyComplexType)type).toRubyClass() );
+				defs.append( "\n" );
+			}
+		}
+		
+		return defs.toString();
+	}
+
+	public RubyRuntimePool getRubyRuntimePool() {
+		return this.rubyRuntimePool;
 	}
 
 }

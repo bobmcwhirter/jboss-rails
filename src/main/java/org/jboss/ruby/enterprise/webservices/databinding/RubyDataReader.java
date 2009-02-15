@@ -14,6 +14,9 @@ import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.message.Attachment;
 import org.apache.cxf.service.model.MessagePartInfo;
 import org.jboss.logging.Logger;
+import org.jruby.Ruby;
+import org.jruby.javasupport.JavaEmbedUtils;
+import org.jruby.runtime.builtin.IRubyObject;
 
 public class RubyDataReader<T> implements DataReader<T> {
 
@@ -28,7 +31,7 @@ public class RubyDataReader<T> implements DataReader<T> {
 
 	public RubyDataReader(RubyDataBinding dataBinding) {
 		this.dataBinding = dataBinding;
-		this.reader = new RubyXMLStreamDataReader(dataBinding);
+		this.reader = new RubyXMLStreamDataReader();
 	}
 
 	public Object read(T input) {
@@ -48,11 +51,25 @@ public class RubyDataReader<T> implements DataReader<T> {
 		log.info("read(" + partInfo + ", (XMLStreamReader) " + input + ")");
 		log.info("  partName: " + partInfo.getName());
 		log.info("  typeName: " + partInfo.getTypeQName());
-		try { 
+		Ruby runtime = null;
+		try {
+			runtime = dataBinding.getRubyRuntimePool().borrowRuntime();
+			System.err.println( "-\n-\n-\n-\n" + dataBinding.getRubyClassDefinitions() + "\n-\n-\n-\n" );
+			runtime.evalScriptlet( dataBinding.getRubyClassDefinitions() );
 			RubyType type = dataBinding.getType(partInfo.getTypeQName());
-			return reader.read(input, type);
+			IRubyObject o = (IRubyObject) reader.read(runtime, input, type);
+			String insp = (String) JavaEmbedUtils.invokeMethod( o.getRuntime(), o, "inspect", new Object[]{}, String.class );
+			log.info( "READ TO:\n" + insp );
+			return o;
 		} catch (XMLStreamException e) {
-			throw new Fault( e );
+			throw new Fault(e);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Fault(e);
+		} finally {
+			if (runtime != null) {
+				dataBinding.getRubyRuntimePool().returnRuntime(runtime);
+			}
 		}
 	}
 

@@ -1,13 +1,16 @@
 package org.jboss.ruby.enterprise.webservices.databinding;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 
 import org.apache.ws.commons.schema.XmlSchemaComplexType;
 import org.apache.ws.commons.schema.XmlSchemaElement;
+import org.apache.ws.commons.schema.XmlSchemaGroupBase;
 import org.apache.ws.commons.schema.XmlSchemaParticle;
 import org.apache.ws.commons.schema.XmlSchemaSequence;
 import org.jboss.logging.Logger;
@@ -18,6 +21,9 @@ public class RubyComplexType extends RubyType {
 
 	private XmlSchemaComplexType xsdType;
 	private List<RubyAttribute> attributes = new ArrayList<RubyAttribute>();
+
+	private Map<QName, RubyAttribute> attributesByElementName = new HashMap<QName, RubyAttribute>();
+	private Map<String, RubyAttribute> attributesByName = new HashMap<String, RubyAttribute>();
 
 	public RubyComplexType(RubyDataBinding dataBinding, XmlSchemaComplexType xsdType) {
 		super(xsdType.getName());
@@ -31,16 +37,19 @@ public class RubyComplexType extends RubyType {
 	@SuppressWarnings("unchecked")
 	protected void initialize(RubyDataBinding dataBinding) {
 		XmlSchemaParticle particle = xsdType.getParticle();
-		if (particle instanceof XmlSchemaSequence) {
-			XmlSchemaSequence sequence = (XmlSchemaSequence) particle;
-			for (Iterator<XmlSchemaParticle> iter = sequence.getItems().getIterator(); iter.hasNext();) {
+		if (particle instanceof XmlSchemaGroupBase) {
+			XmlSchemaGroupBase group = (XmlSchemaGroupBase) particle;
+			for (Iterator<XmlSchemaParticle> iter = group.getItems().getIterator(); iter.hasNext();) {
 				XmlSchemaParticle sequenceParticle = iter.next();
 				if (sequenceParticle instanceof XmlSchemaElement) {
 					XmlSchemaElement element = (XmlSchemaElement) sequenceParticle;
 					QName elementTypeName = element.getSchemaTypeName();
 					RubyType rubyAttrType = dataBinding.getType(elementTypeName);
 					RubyAttribute rubyAttr = new RubyAttribute(rubyAttrType, element);
+					log.info("add attr " + rubyAttr.getName() + " on " + getName());
 					this.attributes.add(rubyAttr);
+					this.attributesByElementName.put(element.getQName(), rubyAttr);
+					this.attributesByName.put(rubyAttr.getRubyName(), rubyAttr);
 				}
 			}
 		}
@@ -63,32 +72,27 @@ public class RubyComplexType extends RubyType {
 		builder.append("# " + xsdType.getQName() + "\n");
 
 		if (isArraySubclass()) {
-			builder.append("# Array of " + getArrayType() + "\n" );
+			builder.append("# Array of " + getArrayType().getName() + "\n");
 			superClass = " < ::Array";
 		}
 
 		builder.append("class " + getName() + superClass + "\n");
-		builder.append( "\n" );
+		builder.append("\n");
 
 		if (isArraySubclass()) {
-			builder.append( " def build()\n" );
-			builder.append( "    " + attributes.get(0).getType().getNewInstanceFragment() + "\n" );
-			builder.append( " end\n" );
-			builder.append( " \n" );
-			builder.append( " def create()\n" );
-			builder.append( "    o = build()\n" );
-			builder.append( "    this << o\n" );
-			builder.append( "    o\n" );
-			builder.append( " end\n" );
+			builder.append(" def build()\n");
+			builder.append("    " + attributes.get(0).getType().getNewInstanceFragment() + "\n");
+			builder.append(" end\n");
+			builder.append(" \n");
+			builder.append(" def create()\n");
+			builder.append("    o = build()\n");
+			builder.append("    this << o\n");
+			builder.append("    o\n");
+			builder.append(" end\n");
 		} else {
 			for (RubyAttribute a : attributes) {
-				if ( a.isPossiblyMultiple() || a.getType().isArraySubclass() ) {
-					builder.append("  attr_reader :" + a.getRubyName() + "\n");
-				} else {
-					builder.append("  attr_accessor :" + a.getRubyName() + "\n");
-				}
+				builder.append("  attr_accessor :" + a.getRubyName() + "\n");
 			}
-			
 
 			builder.append("\n");
 
@@ -115,8 +119,20 @@ public class RubyComplexType extends RubyType {
 
 	}
 
-	public String getArrayType() {
-		return attributes.get(0).getType().getName();
+	public RubyAttribute getArrayAttribute() {
+		return attributes.get(0);
+	}
+
+	public RubyType getArrayType() {
+		return attributes.get(0).getType();
+	}
+
+	public RubyAttribute getAttribute(QName qname) {
+		return this.attributesByElementName.get(qname);
+	}
+
+	public RubyAttribute getAttribute(String name) {
+		return this.attributesByName.get(name);
 	}
 
 }
