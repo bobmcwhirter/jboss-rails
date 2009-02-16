@@ -127,11 +127,11 @@ public class RubyDataBinding extends AbstractDataBinding {
 		this.typesByClassName.put( type.getName(), type );
 	}
 	
-	RubyType getTypeByQName(QName name) {
+	public RubyType getTypeByQName(QName name) {
 		return this.typesByQName.get( name );
 	}
 	
-	RubyType getTypeByClassName(String name) {
+	public RubyType getTypeByClassName(String name) {
 		return this.typesByClassName.get( name );
 	}
 	

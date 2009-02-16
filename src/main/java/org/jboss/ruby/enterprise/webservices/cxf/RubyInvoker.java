@@ -4,13 +4,16 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageContentsList;
 import org.apache.cxf.service.invoker.Invoker;
+import org.apache.cxf.service.model.BindingOperationInfo;
+import org.apache.cxf.service.model.MessagePartInfo;
 import org.jboss.logging.Logger;
 import org.jboss.ruby.enterprise.webservices.RubyWebServiceHandler;
-import org.jboss.ruby.enterprise.webservices.databinding.RubyDataObject;
 
 public class RubyInvoker implements Invoker {
 
@@ -26,12 +29,21 @@ public class RubyInvoker implements Invoker {
 	}
 
 	public Object invoke(Exchange exchange, Object in) {
+		
+		log.info( "INVOKE" );
+		
+        BindingOperationInfo bop = exchange.get(BindingOperationInfo.class);
+        MessagePartInfo partInfo = bop.getOutput().getMessageParts().get( 0 );
+        
+        QName responseType = partInfo.getTypeQName();
+        
 		Principal principal = (Principal) exchange.getInMessage().get("wss4j.principal.result");
+		
 		if (in instanceof MessageContentsList) {
 			String operationName = getOperationName(exchange);
 			MessageContentsList mcl = (MessageContentsList) in;
 			Object request = mcl.get(0);
-			Object response = handler.invoke(principal, operationName, request);
+			Object response = handler.invoke(principal, operationName, request, responseType );
 			return new MessageContentsList(response);
 		}
 

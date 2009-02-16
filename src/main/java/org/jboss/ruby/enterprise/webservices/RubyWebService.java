@@ -145,7 +145,10 @@ public class RubyWebService {
         serverFactory.setBus( bus );
 		serverFactory.setServiceFactory( serviceFactory );
 		
-		RubyWebServiceHandler serviceBean = createServiceBean();
+		RubyDataBinding dataBinding = new RubyDataBinding( this.runtimePool );
+		serviceFactory.setDataBinding( dataBinding );
+		
+		RubyWebServiceHandler serviceBean = createServiceBean( dataBinding );
 		serverFactory.setServiceName( new QName( getTargetNamespace(), getPortName() ) );
 		serverFactory.setEndpointName( new QName( getTargetNamespace(), getPortName() ) );
 		serverFactory.setServiceClass( RubyWebServiceHandler.class );
@@ -154,8 +157,6 @@ public class RubyWebService {
 		serverFactory.setAddress( getAddress() );
 		serverFactory.setWsdlURL( getWsdlLocation() );
 		
-		RubyDataBinding dataBinding = new RubyDataBinding( this.runtimePool );
-		serviceFactory.setDataBinding( dataBinding );
 		
 		SoapBindingFactory bindingFactory = new SoapBindingFactory();
 		serverFactory.setBindingFactory( bindingFactory );
@@ -201,8 +202,8 @@ public class RubyWebService {
 		return props;
 	}
 
-	private RubyWebServiceHandler createServiceBean() {
-		return new RubyWebServiceHandler( this.runtimePool, this.dir, this.rubyClassName );
+	private RubyWebServiceHandler createServiceBean(RubyDataBinding dataBinding) {
+		return new RubyWebServiceHandler( this.runtimePool, dataBinding, this.dir, this.rubyClassName );
 	}
 	
 	private Invoker createInvoker(RubyWebServiceHandler handler) {

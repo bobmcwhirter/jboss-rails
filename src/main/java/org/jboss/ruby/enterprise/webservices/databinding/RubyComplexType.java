@@ -87,7 +87,7 @@ public class RubyComplexType extends RubyType {
 			builder.append(" \n");
 			builder.append(" def create()\n");
 			builder.append("    o = build()\n");
-			builder.append("    this << o\n");
+			builder.append("    self << o\n");
 			builder.append("    o\n");
 			builder.append(" end\n");
 		} else {

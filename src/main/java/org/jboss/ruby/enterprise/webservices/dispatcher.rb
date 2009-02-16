@@ -18,10 +18,10 @@ module JBoss
       puts "service class is #{@service_class.inspect}"
     end
     
-    def dispatch(principal, operation, request)
+    def dispatch(principal, operation, request, response_creator)
       service = @service_class.new
       puts "dispatching [#{operation}] #{request} to #{service}"
-      service.dispatch( principal, operation, request )
+      service.dispatch( principal, operation, request, response_creator )
     end
   end
 end

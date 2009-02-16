@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.security.Principal;
 import java.util.List;
 
+import javax.xml.namespace.QName;
 import javax.xml.transform.dom.DOMSource;
 
 import org.apache.cxf.service.factory.ReflectionServiceFactoryBean;
@@ -20,7 +21,7 @@ public class RubyReflectionServiceFactoryBean extends ReflectionServiceFactoryBe
 		InterfaceInfo intf = getInterfaceInfo();
 
 		try {
-			Method method = serviceClass.getMethod("invoke", Principal.class, String.class, Object.class);
+			Method method = serviceClass.getMethod("invoke", Principal.class, String.class, Object.class, QName.class );
 			for (OperationInfo o : intf.getOperations()) {
 				initializeWSDLOperation(intf, o, method);
 			}
