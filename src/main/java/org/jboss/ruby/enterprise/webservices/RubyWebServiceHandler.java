@@ -4,6 +4,8 @@ import java.security.Principal;
 
 import javax.xml.namespace.QName;
 
+import org.apache.cxf.frontend.FaultInfoException;
+import org.apache.cxf.interceptor.Fault;
 import org.jboss.logging.Logger;
 import org.jboss.ruby.enterprise.webservices.databinding.RubyDataBinding;
 import org.jboss.ruby.enterprise.webservices.databinding.RubyType;
@@ -41,26 +43,25 @@ public class RubyWebServiceHandler {
 		if ( responseType != null ) {
 			responseCreator = responseType.getNewInstanceFragment();
 		}
+		
 		Ruby ruby = null;
+		
+		Object response = null;
+		
 		try {
 			ruby = runtimePool.borrowRuntime();
 			String dispatch = "require %q(org/jboss/ruby/enterprise/webservices/dispatcher)\n" +
 				"JBoss::WebServiceDispatcher.dispatcher_for( %q(" + this.dir + "), %q(" + this.rubyClassName + ") )\n";
 			IRubyObject bridge = ruby.evalScriptlet(dispatch);
-			Object result = JavaEmbedUtils.invokeMethod( ruby, bridge, "dispatch", new Object[] { principal, operationName, request, responseCreator }, Object.class );
-			return result;
+			response = JavaEmbedUtils.invokeMethod( ruby, bridge, "dispatch", new Object[] { principal, operationName, request, responseCreator }, Object.class );
 		} catch (Exception e) {
-			e.printStackTrace();
-			log.error( e );
+			throw new Fault( e );
 		} finally {
 			if ( ruby != null ) {
 				runtimePool.returnRuntime( ruby );
-				
 			}
 		}
-		Object response = request;
 		return response;
-		//return request;
 	}
 
 }
