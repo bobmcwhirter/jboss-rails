@@ -36,6 +36,7 @@ public class RubyWebService {
 	private Bus bus;
 	private Server server;
 
+	private String dir;
 	private String rubyClassName;
 	private String wsdlLocation;
 	
@@ -99,6 +100,14 @@ public class RubyWebService {
 	
 	public String getRubyClassName() {
 		return this.rubyClassName;
+	}
+	
+	public void setDir(String dir ) {
+		this.dir = dir;
+	}
+	
+	public String getDir() {
+		return this.dir;
 	}
 	
 	public void setWsdlLocation(String wsdlLocation) {
@@ -193,7 +202,7 @@ public class RubyWebService {
 	}
 
 	private RubyWebServiceHandler createServiceBean() {
-		return new RubyWebServiceHandler( this.runtimePool, this.rubyClassName );
+		return new RubyWebServiceHandler( this.runtimePool, this.dir, this.rubyClassName );
 	}
 	
 	private Invoker createInvoker(RubyWebServiceHandler handler) {

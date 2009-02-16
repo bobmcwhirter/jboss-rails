@@ -43,6 +43,13 @@ public class RubyInvoker implements Invoker {
 		Map<String, List<String>> headers = (Map<String, List<String>>) exchange.getInMessage().get(Message.PROTOCOL_HEADERS);
 		List<String> operationNameHeader = headers.get("SOAPAction");
 		String operationName = operationNameHeader.get(0);
+		if ( operationName.startsWith( "\"" ) ) {
+			operationName = operationName.substring( 1 );
+		}
+		
+		if ( operationName.endsWith( "\"" ) ) {
+			operationName = operationName.substring(0, operationName.length() - 1 );
+		}
 		log.info("operationname=" + operationName);
 		return operationName;
 	}
