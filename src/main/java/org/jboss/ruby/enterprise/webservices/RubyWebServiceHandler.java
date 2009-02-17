@@ -4,7 +4,6 @@ import java.security.Principal;
 
 import javax.xml.namespace.QName;
 
-import org.apache.cxf.frontend.FaultInfoException;
 import org.apache.cxf.interceptor.Fault;
 import org.jboss.logging.Logger;
 import org.jboss.ruby.enterprise.webservices.databinding.RubyDataBinding;

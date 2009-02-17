@@ -66,6 +66,9 @@ public class RackWebDeployment implements RackWebDeploymentMBean {
 	/** Meta-data. */
 	private RackWebMetaData rackWebMetaData;
 
+
+	private ClassLoader classLoader;
+
 	/**
 	 * Construct.
 	 * 
@@ -75,6 +78,14 @@ public class RackWebDeployment implements RackWebDeploymentMBean {
 	}
 	
 	// ----------------------------------------
+	
+	public void setClassLoader(ClassLoader classLoader) {
+		this.classLoader = classLoader;
+	}
+	
+	public ClassLoader getClassLoader() {
+		return this.classLoader;
+	}
 	 
 	
 	public void setRackWebMetaData(RackWebMetaData rackWebMetaData) {
@@ -167,8 +178,7 @@ public class RackWebDeployment implements RackWebDeploymentMBean {
 	}
 
 	private void setUpLoader(StandardContext context) {
-		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-
+		//ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 		Loader loader = new WebCtxLoader(classLoader);
 		context.setLoader(loader);
 	}

@@ -40,7 +40,7 @@ public class RubyWebServicesDeployer extends AbstractSimpleVFSRealDeployer<RubyW
 
 			BeanMetaDataBuilder beanBuilder = BeanMetaDataBuilder.createBuilder(beanName, RubyWebService.class.getName());
 
-			ValueMetaData poolInjection = beanBuilder.createInject("jboss.ruby.runtime.pool.ovirt-ec2");
+			ValueMetaData poolInjection = beanBuilder.createInject("jboss.ruby.runtime.pool." + unit.getSimpleName() );
 			beanBuilder.addPropertyMetaData("rubyRuntimePool", poolInjection);
 			beanBuilder.addPropertyMetaData("dir", serviceMetaData.getDirectory());
 			beanBuilder.addPropertyMetaData("rubyClassName", serviceMetaData.getName());

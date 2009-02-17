@@ -30,6 +30,7 @@ public class RubyXMLStreamDataReader {
 		} else if (type instanceof RubyPrimitiveType) {
 			log.info("read primitive");
 			result = input.getText();
+			
 			log.info(" --->" + input.getText());
 		}
 		skipToEnd(input, name);
