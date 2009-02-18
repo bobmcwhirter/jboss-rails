@@ -12,8 +12,11 @@ public class RubyStringType extends RubySimpleType<String> {
 		return input;
 	}
 	
-	public String write(String input) {
-		return (String) input;
+	public String write(Object input) {
+		if ( input instanceof String ) {
+			return (String) input;
+		}
+		return null;
 	}
 
 }

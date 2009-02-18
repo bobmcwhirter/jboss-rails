@@ -10,8 +10,8 @@ public abstract class RubySimpleType<T> extends RubyType {
 	}
 	
 	public abstract T read(String input);
-	public abstract String write(T input);
-
+	public abstract String write(Object input);
+	
 	@Override
 	public boolean isArraySubclass() {
 		return false;

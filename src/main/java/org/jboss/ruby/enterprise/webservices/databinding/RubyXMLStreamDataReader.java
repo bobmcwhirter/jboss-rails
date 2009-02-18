@@ -1,17 +1,16 @@
 package org.jboss.ruby.enterprise.webservices.databinding;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.jboss.logging.Logger;
+import org.jboss.ruby.enterprise.webservices.databinding.complex.RubyAttribute;
+import org.jboss.ruby.enterprise.webservices.databinding.complex.RubyComplexType;
+import org.jboss.ruby.enterprise.webservices.databinding.simple.RubySimpleType;
 import org.jruby.Ruby;
 import org.jruby.javasupport.JavaEmbedUtils;
-import org.jruby.runtime.RubyEvent;
 import org.jruby.runtime.builtin.IRubyObject;
 
 public class RubyXMLStreamDataReader {
@@ -27,11 +26,10 @@ public class RubyXMLStreamDataReader {
 		if (type instanceof RubyComplexType) {
 			log.info("read complex");
 			result = read(runtime, input, (RubyComplexType) type);
-		} else if (type instanceof RubyPrimitiveType) {
+		} else if (type instanceof RubySimpleType<?>) {
 			log.info("read primitive");
-			result = input.getText();
-			
-			log.info(" --->" + input.getText());
+			result = ((RubySimpleType<?>) type).read( input.getText() );
+			log.info(" --->" + result );
 		}
 		skipToEnd(input, name);
 		return result;

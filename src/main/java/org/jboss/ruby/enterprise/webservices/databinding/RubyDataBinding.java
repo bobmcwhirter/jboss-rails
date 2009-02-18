@@ -19,6 +19,12 @@ import org.apache.ws.commons.schema.XmlSchemaComplexType;
 import org.apache.ws.commons.schema.XmlSchemaObject;
 import org.apache.ws.commons.schema.XmlSchemaObjectTable;
 import org.jboss.logging.Logger;
+import org.jboss.ruby.enterprise.webservices.databinding.complex.RubyComplexType;
+import org.jboss.ruby.enterprise.webservices.databinding.simple.RubyBooleanType;
+import org.jboss.ruby.enterprise.webservices.databinding.simple.RubyDateTimeType;
+import org.jboss.ruby.enterprise.webservices.databinding.simple.RubyFloatType;
+import org.jboss.ruby.enterprise.webservices.databinding.simple.RubyIntegerType;
+import org.jboss.ruby.enterprise.webservices.databinding.simple.RubyStringType;
 import org.jboss.ruby.runtime.RubyRuntimePool;
 import org.jruby.Ruby;
 import org.w3c.dom.Node;
@@ -41,22 +47,21 @@ public class RubyDataBinding extends AbstractDataBinding {
 	}
 	
 	private void initializePrimitiveTypes() {
-		RubyPrimitiveType unimplementedPrimitive = new RubyPrimitiveType( "Unimplemented", "nil" );
 		
-		typesByQName.put( new QName( XML_SCHEMA_NS, "string" ),  new RubyPrimitiveType( "String", "''" ) );
-		typesByQName.put( new QName( XML_SCHEMA_NS, "boolean" ), new RubyPrimitiveType( "Boolean", "false" ) );
+		typesByQName.put( new QName( XML_SCHEMA_NS, "string" ),  RubyStringType.INSTANCE );
+		typesByQName.put( new QName( XML_SCHEMA_NS, "boolean" ), RubyBooleanType.INSTANCE );
 		
-		typesByQName.put( new QName( XML_SCHEMA_NS, "int" ),  new RubyPrimitiveType( "Integer", "0" ) );
-		typesByQName.put( new QName( XML_SCHEMA_NS, "integer" ), new RubyPrimitiveType( "Integer", "0" ) );
+		typesByQName.put( new QName( XML_SCHEMA_NS, "int" ),  RubyIntegerType.INSTANCE );
+		typesByQName.put( new QName( XML_SCHEMA_NS, "integer" ), RubyIntegerType.INSTANCE );
 		
-		typesByQName.put( new QName( XML_SCHEMA_NS, "decimal" ), new RubyPrimitiveType( "Float", "0.0" ) );
-		typesByQName.put( new QName( XML_SCHEMA_NS, "float" ), new RubyPrimitiveType( "Float", "0.0" ) );
-		typesByQName.put( new QName( XML_SCHEMA_NS, "double" ), new RubyPrimitiveType( "Float", "0.0" ) ); 
+		typesByQName.put( new QName( XML_SCHEMA_NS, "decimal" ), RubyFloatType.INSTANCE );
+		typesByQName.put( new QName( XML_SCHEMA_NS, "float" ), RubyFloatType.INSTANCE );
+		typesByQName.put( new QName( XML_SCHEMA_NS, "double" ), RubyFloatType.INSTANCE );
 		
-		typesByQName.put( new QName( XML_SCHEMA_NS, "duration" ), new RubyPrimitiveType( "Duration", "Duration.new" ) );
-		typesByQName.put( new QName( XML_SCHEMA_NS, "dateTime" ), new RubyPrimitiveType( "Time", "Time.now" ) );
-		typesByQName.put( new QName( XML_SCHEMA_NS, "time" ), new RubyPrimitiveType( "Time", "Time.now") );
-		typesByQName.put( new QName( XML_SCHEMA_NS, "date" ), new RubyPrimitiveType( "Time", "Time.now") );
+		//typesByQName.put( new QName( XML_SCHEMA_NS, "duration" ), new RubyPrimitiveType( "Duration", "Duration.new" ) );
+		typesByQName.put( new QName( XML_SCHEMA_NS, "dateTime" ), RubyDateTimeType.INSTANCE );
+		//typesByQName.put( new QName( XML_SCHEMA_NS, "time" ), new RubyPrimitiveType( "Time", "Time.now") );
+		//typesByQName.put( new QName( XML_SCHEMA_NS, "date" ), new RubyPrimitiveType( "Time", "Time.now") );
 	}
 
 	public <T> DataReader<T> createReader(Class<T> type) {

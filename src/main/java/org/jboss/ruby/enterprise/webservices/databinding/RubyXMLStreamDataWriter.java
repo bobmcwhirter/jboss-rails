@@ -5,6 +5,13 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.jboss.logging.Logger;
+import org.jboss.ruby.enterprise.webservices.databinding.complex.RubyAttribute;
+import org.jboss.ruby.enterprise.webservices.databinding.complex.RubyComplexType;
+import org.jboss.ruby.enterprise.webservices.databinding.simple.RubyBooleanType;
+import org.jboss.ruby.enterprise.webservices.databinding.simple.RubyFloatType;
+import org.jboss.ruby.enterprise.webservices.databinding.simple.RubyIntegerType;
+import org.jboss.ruby.enterprise.webservices.databinding.simple.RubySimpleType;
+import org.jboss.ruby.enterprise.webservices.databinding.simple.RubyStringType;
 import org.jruby.javasupport.JavaEmbedUtils;
 import org.jruby.runtime.builtin.IRubyObject;
 
@@ -19,33 +26,55 @@ public class RubyXMLStreamDataWriter {
 	public RubyXMLStreamDataWriter(RubyDataBinding dataBinding) {
 		this.dataBinding = dataBinding;
 	}
+	
+	public RubyType determineType(Object object) {
+		RubyType type = null;
+		
+		if ( object instanceof IRubyObject ) {
+			String className = ((IRubyObject)object).getMetaClass().getName();
+			type = dataBinding.getTypeByClassName( className );
+		} else if ( object instanceof String ) {
+			return RubyStringType.INSTANCE;
+		} else if ( object instanceof Float || object instanceof Double ) {
+			return RubyFloatType.INSTANCE;
+		} else if ( object instanceof Long || object instanceof Integer || object instanceof Short ) {
+			return RubyIntegerType.INSTANCE;
+		} else if ( object instanceof Boolean ) {
+			return RubyBooleanType.INSTANCE;
+		}
+		
+		return type;
+	}
 
 	public void write(XMLStreamWriter output, Object object, QName concreteName) throws XMLStreamException {
-		if (object instanceof IRubyObject) {
-			write(output, (IRubyObject) object, concreteName);
-		} else if ( object instanceof String ) {
-			write( output, (String) object, concreteName );
+		log.info( "[top] write(" + object + ")" );
+		RubyType type = determineType( object );
+		log.info( "[top] write(..) type is : " + type );
+		
+		if (type instanceof RubyComplexType) {
+			writeComplexWithType(output, (IRubyObject) object, concreteName, (RubyComplexType) type );
+		} else if ( object instanceof RubySimpleType ) {
+			writeSimpleWithType( output, object, concreteName, (RubySimpleType<?>) type );
 		} else {
 			log.info( "unhandled: " + object + " --> " + concreteName );
 		}
 	}
-
-	public void write(XMLStreamWriter output, IRubyObject object, QName concreteName) throws XMLStreamException {
-		String rubyClassName = object.getMetaClass().getName();
-		log.info("rubyClass=" + rubyClassName);
-
-		RubyType type = dataBinding.getTypeByClassName(rubyClassName);
-		log.info("type is: " + type);
-		
+	
+	public void writeWithType(XMLStreamWriter output, Object object, QName concreteName, RubyType type) throws XMLStreamException {
+		log.info( "writeWithType(" + object + "," + type.getName() );
 		if ( type instanceof RubyComplexType ) {
-			write( output, object, concreteName, (RubyComplexType) type );
-		} else if ( type instanceof RubyPrimitiveType ) {
-			write( output, object, concreteName, (RubyPrimitiveType) type );
+			writeComplexWithType( output, (IRubyObject) object, concreteName, (RubyComplexType) type );
+		} else if ( object instanceof RubySimpleType<?> ) {
+			writeSimpleWithType( output, object, concreteName, (RubySimpleType<?>) type );
 		}
-			
+		
 	}
 	
-	public void write(XMLStreamWriter output, String text, QName concreteName) throws XMLStreamException {
+	public void writeSimpleWithType(XMLStreamWriter output, Object object, QName concreteName, RubySimpleType<?> type) throws XMLStreamException {
+		log.info( "writeSimpleWithType(" + object + "," + type.getName() );
+		
+		String textual = type.write( object );
+		
 		boolean addedNamespace = false;
 		if (output.getNamespaceContext().getPrefix(concreteName.getNamespaceURI()) == null) {
 			output.writeNamespace("rubyns" + (++namespaceCounter), concreteName.getNamespaceURI());
@@ -53,7 +82,7 @@ public class RubyXMLStreamDataWriter {
 		}
 		output.writeStartElement(concreteName.getNamespaceURI(), concreteName.getLocalPart());
 		
-		output.writeCharacters( text );
+		output.writeCharacters( textual );
 		
 		output.writeEndElement();
 		if (addedNamespace) {
@@ -61,12 +90,8 @@ public class RubyXMLStreamDataWriter {
 		}
 	}
 	
-	public void write(XMLStreamWriter output, IRubyObject object, QName concreteName, RubyPrimitiveType type) throws XMLStreamException {
-	}
-	
-	
-	public void write(XMLStreamWriter output, IRubyObject object, QName concreteName, RubyComplexType type) throws XMLStreamException {
-
+	public void writeComplexWithType(XMLStreamWriter output, IRubyObject object, QName concreteName, RubyComplexType type) throws XMLStreamException {
+		log.info( "writeComplexWithType(" + object + "," + type.getName() );
 		boolean addedNamespace = false;
 		if (output.getNamespaceContext().getPrefix(concreteName.getNamespaceURI()) == null) {
 			output.writeNamespace("rubyns" + (++namespaceCounter), concreteName.getNamespaceURI());
@@ -76,18 +101,18 @@ public class RubyXMLStreamDataWriter {
 		log.info("<" + concreteName + ">");
 		if (type instanceof RubyComplexType) {
 			if ( type.isArraySubclass() ) {
+				RubyType memberType = type.getArrayType();
 				int len = readRubyArrayLength( object );
 				log.info( "array size: " + len );
 				for ( int i = 0 ; i < len ; ++i ) {
 					Object member = readRubyArrayMember( object, i);
 					log.info( "member " + i + ": " + member );
-					write(output, member, ((RubyComplexType)type).getArrayAttribute().getQName() );
+					writeWithType(output, member, ((RubyComplexType)type).getArrayAttribute().getQName(), memberType );
 				}
-				
 			} else {
 				for (RubyAttribute a : ((RubyComplexType) type).getAttributes()) {
 					Object attrValue = readRubyAttributeValue(object, a.getName());
-					write(output, attrValue, a.getQName());
+					writeWithType(output, attrValue, a.getQName(), a.getType() );
 				}
 			}
 		}

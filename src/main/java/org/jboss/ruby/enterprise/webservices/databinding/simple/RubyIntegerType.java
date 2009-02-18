@@ -12,8 +12,11 @@ public class RubyIntegerType extends RubySimpleType<Long> {
 		return Long.parseLong( input );
 	}
 	
-	public String write(Long input) {
-		return input.toString();
+	public String write(Object input) {
+		if ( input instanceof Long || input instanceof Integer || input instanceof Short ) {
+			return input.toString();
+		}
+		return null;
 	}
 
 }

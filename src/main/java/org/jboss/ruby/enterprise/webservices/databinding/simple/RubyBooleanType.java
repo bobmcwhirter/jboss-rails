@@ -16,8 +16,11 @@ public class RubyBooleanType extends RubySimpleType<Boolean> {
 		return Boolean.FALSE;
 	}
 	
-	public String write(Boolean input) {
-		return input.toString();
+	public String write(Object input) {
+		if ( input instanceof Boolean ) {
+			return input.toString();
+		}
+		return null;
 	}
 
 

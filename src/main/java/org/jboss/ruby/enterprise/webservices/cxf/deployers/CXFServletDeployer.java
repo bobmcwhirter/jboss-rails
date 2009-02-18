@@ -19,7 +19,7 @@ import org.jboss.ruby.enterprise.webservices.metadata.RubyWebServicesMetaData;
 public class CXFServletDeployer extends AbstractDeployer {
 	
 	public CXFServletDeployer() {
-		setStage( DeploymentStages.POST_PARSE );
+		setStage( DeploymentStages.POST_CLASSLOADER );
 		setInput( RubyWebServicesMetaData.class );
 		addInput( JBossWebMetaData.class );
 		addOutput( JBossWebMetaData.class );

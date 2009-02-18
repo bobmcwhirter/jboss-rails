@@ -14,7 +14,7 @@ public class CXFBusDeployer extends AbstractDeployer {
 	public static final String PREFIX = "jboss.jruby.webservices.cxf.bus";
 	
 	public CXFBusDeployer() {
-		setStage( DeploymentStages.DESCRIBE );
+		setStage( DeploymentStages.POST_CLASSLOADER );
 		setInput( RubyWebServicesMetaData.class );
 		addOutput( BeanMetaData.class );
 	}

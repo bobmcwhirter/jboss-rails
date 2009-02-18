@@ -2,6 +2,8 @@ package org.jboss.ruby.enterprise.webservices.metadata;
 
 public class InboundSecurityMetaData {
 	
+	private String trustStore;
+	
 	private boolean verifySignature;
 	private boolean verifyTimestamp;
 
@@ -15,6 +17,14 @@ public class InboundSecurityMetaData {
 	
 	public boolean isVerifySignature() {
 		return this.verifySignature;
+	}
+	
+	public void setTrustStore(String trustStore) {
+		this.trustStore = trustStore;
+	}
+	
+	public String getTrustStore() {
+		return this.trustStore;
 	}
 	
 	public void setVerifyTimestamp(boolean verifyTimestamp) {

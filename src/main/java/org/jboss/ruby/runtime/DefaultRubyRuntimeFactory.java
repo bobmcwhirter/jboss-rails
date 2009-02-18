@@ -18,6 +18,8 @@ public class DefaultRubyRuntimeFactory implements RubyRuntimeFactory {
 	private List<String> loadPaths = null;
 	private String initScript = null;
 
+	private ClassLoader classLoader;
+
 	public DefaultRubyRuntimeFactory() {
 		this( null, null );
 	}
@@ -34,6 +36,14 @@ public class DefaultRubyRuntimeFactory implements RubyRuntimeFactory {
 		this.initScript = initScript;
 		log.info( "constructor" );
 		
+	}
+	
+	public void setClassLoader(ClassLoader classLoader) {
+		this.classLoader = classLoader;
+	}
+	
+	public ClassLoader getClassLoader() {
+		return this.classLoader;
 	}
 	
 	public Ruby createRubyRuntime() throws Exception {

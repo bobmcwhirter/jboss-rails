@@ -49,6 +49,8 @@ public class RubyWebService {
 	private boolean verifySignature;
 
 	private boolean verifyTimestamp;
+	
+	private String trustStore;
 
 	public RubyWebService() {
 		
@@ -84,6 +86,14 @@ public class RubyWebService {
 	
 	public boolean isVerifySignature() {
 		return this.verifySignature;
+	}
+	
+	public void setTrustStore(String trustStore) {
+		this.trustStore = trustStore;
+	}
+	
+	public String getTrustStore() {
+		return this.trustStore;
 	}
 	
 	public void setVerifyTimestamp(boolean verifyTimestamp) {
@@ -196,9 +206,8 @@ public class RubyWebService {
 		Properties props = new Properties();
 		props.setProperty( "org.apache.ws.security.crypto.provider",                 "org.apache.ws.security.components.crypto.Merlin" );
 		props.setProperty( "org.apache.ws.security.crypto.merlin.keystore.type",     "jks" );
-		//props.setProperty( "org.apache.ws.security.crypto.merlin.keystore.type",     "pkcs12" );
 		props.setProperty( "org.apache.ws.security.crypto.merlin.keystore.password", "foobar" );
-		props.setProperty( "org.apache.ws.security.crypto.merlin.file",              "/Users/bob/oddthesis/ovirt-ec2/auth/truststore.jks" );
+		props.setProperty( "org.apache.ws.security.crypto.merlin.file",              getTrustStore() );
 		return props;
 	}
 

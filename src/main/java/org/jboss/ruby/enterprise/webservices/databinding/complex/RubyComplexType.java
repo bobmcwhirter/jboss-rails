@@ -1,4 +1,4 @@
-package org.jboss.ruby.enterprise.webservices.databinding;
+package org.jboss.ruby.enterprise.webservices.databinding.complex;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,6 +15,8 @@ import org.apache.ws.commons.schema.XmlSchemaGroupBase;
 import org.apache.ws.commons.schema.XmlSchemaParticle;
 import org.apache.ws.commons.schema.XmlSchemaSequence;
 import org.jboss.logging.Logger;
+import org.jboss.ruby.enterprise.webservices.databinding.RubyDataBinding;
+import org.jboss.ruby.enterprise.webservices.databinding.RubyType;
 
 public class RubyComplexType extends RubyType {
 

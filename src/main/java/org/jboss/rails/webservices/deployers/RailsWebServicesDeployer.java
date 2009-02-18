@@ -27,7 +27,7 @@ public class RailsWebServicesDeployer extends AbstractDeployer {
 	private static Logger log = Logger.getLogger(RailsWebServicesDeployer.class);
 
 	public RailsWebServicesDeployer() {
-		setStage(DeploymentStages.PARSE);
+		setStage(DeploymentStages.POST_CLASSLOADER);
 		addInput(RailsApplicationMetaData.class);
 		addOutput(RubyWebServicesMetaData.class);
 	}
@@ -52,8 +52,8 @@ public class RailsWebServicesDeployer extends AbstractDeployer {
 			if (apisDir == null) {
 				return;
 			}
-			
-			RubyRuntimeFactory factory = createRubyRuntimeFactory( railsAppMetaData );
+
+			RubyRuntimeFactory factory = createRubyRuntimeFactory(railsAppMetaData, unit.getClassLoader());
 
 			List<VirtualFile> serviceDirs = apisDir.getChildren();
 			for (VirtualFile serviceDir : serviceDirs) {
@@ -85,11 +85,13 @@ public class RailsWebServicesDeployer extends AbstractDeployer {
 
 	}
 
-	private RubyRuntimeFactory createRubyRuntimeFactory(RailsApplicationMetaData railsAppMetaData) {
+	private RubyRuntimeFactory createRubyRuntimeFactory(RailsApplicationMetaData railsAppMetaData, ClassLoader classLoader) {
 		List<String> loadPaths = Collections.singletonList( "META-INF/jruby.home/lib/ruby/site_ruby/1.8" );
-		return new DefaultRubyRuntimeFactory(loadPaths, 
-				RailsRubyRuntimeFactoryDescriber.createInitScript(railsAppMetaData
-				.getRailsRootPath(), railsAppMetaData.getRailsEnv()));
+		String initScript =  RailsRubyRuntimeFactoryDescriber.createInitScript(railsAppMetaData
+				.getRailsRootPath(), railsAppMetaData.getRailsEnv() );
+		DefaultRubyRuntimeFactory factory = new DefaultRubyRuntimeFactory(loadPaths, initScript );
+		factory.setClassLoader(classLoader);
+		return factory;
 
 	}
 
@@ -97,21 +99,25 @@ public class RailsWebServicesDeployer extends AbstractDeployer {
 		log.info("introspect " + dir + " // " + name);
 		IRubyObject serviceClass = runtime.evalScriptlet("require 'org/jboss/rails/webservices/deployers/web_service_introspector.rb'\n"
 				+ "JBoss::WebServiceIntrospector.load_class('" + dir + "', '" + name + "')\n");
-		
-		log.info( "serviceClass == " + serviceClass );
-		
-		//String targetNamespace = (String) JavaEmbedUtils.invokeMethod( runtime, serviceClass, "targetNamespace", new Object[] { }, String.class );
-		
-		//log.info( "targetNamespace = " + targetNamespace );
-		//String portName = (String) JavaEmbedUtils.invokeMethod( runtime, serviceClass, "portName", new Object[] { }, String.class );
-		//log.info( "portName = " + portName );
-		
-		//InboundSecurityMetaData inboundSecurity = new InboundSecurityMetaData();
-		//webService.setInboundSecurity(inboundSecurity);
-		JavaEmbedUtils.invokeMethod( runtime, serviceClass, "setup_jboss_metadata", new Object[] { webService }, void.class );
-		
-		//webService.setTargetNamespace( targetNamespace );
-		//webService.setPortName(portName);
+
+		log.info("serviceClass == " + serviceClass);
+
+		// String targetNamespace = (String) JavaEmbedUtils.invokeMethod(
+		// runtime, serviceClass, "targetNamespace", new Object[] { },
+		// String.class );
+
+		// log.info( "targetNamespace = " + targetNamespace );
+		// String portName = (String) JavaEmbedUtils.invokeMethod( runtime,
+		// serviceClass, "portName", new Object[] { }, String.class );
+		// log.info( "portName = " + portName );
+
+		// InboundSecurityMetaData inboundSecurity = new
+		// InboundSecurityMetaData();
+		// webService.setInboundSecurity(inboundSecurity);
+		JavaEmbedUtils.invokeMethod(runtime, serviceClass, "setup_jboss_metadata", new Object[] { webService }, void.class);
+
+		// webService.setTargetNamespace( targetNamespace );
+		// webService.setPortName(portName);
 	}
 
 }

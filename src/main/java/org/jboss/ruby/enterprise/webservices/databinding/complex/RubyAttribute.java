@@ -1,8 +1,9 @@
-package org.jboss.ruby.enterprise.webservices.databinding;
+package org.jboss.ruby.enterprise.webservices.databinding.complex;
 
 import javax.xml.namespace.QName;
 
 import org.apache.ws.commons.schema.XmlSchemaElement;
+import org.jboss.ruby.enterprise.webservices.databinding.RubyType;
 
 public class RubyAttribute {
 	
@@ -15,7 +16,7 @@ public class RubyAttribute {
 		this.xsdElement = xsdElement;
 		
 		if ( this.type == null ) {
-			throw new RuntimeException( xsdElement.toString() );
+			throw new RuntimeException( "no type: " + xsdElement.getQName() );
 		}
 	}
 	

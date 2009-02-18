@@ -50,6 +50,7 @@ public class RubyWebServicesDeployer extends AbstractSimpleVFSRealDeployer<RubyW
 			beanBuilder.addPropertyMetaData("address", serviceMetaData.getName());
 			beanBuilder.addPropertyMetaData("verifySignature", serviceMetaData.getInboundSecurity().isVerifySignature());
 			beanBuilder.addPropertyMetaData("verifyTimestamp", serviceMetaData.getInboundSecurity().isVerifyTimestamp());
+			beanBuilder.addPropertyMetaData("trustStore", serviceMetaData.getInboundSecurity().getTrustStore() );
 
 			BeanMetaData busBean = unit.getAttachment(BeanMetaData.class + "$cxf.bus", BeanMetaData.class);
 			ValueMetaData busInjection = beanBuilder.createInject(busBean.getName());

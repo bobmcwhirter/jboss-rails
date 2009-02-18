@@ -12,8 +12,11 @@ public class RubyFloatType extends RubySimpleType<Double> {
 		return Double.parseDouble( input );
 	}
 	
-	public String write(Double input) {
-		return input.toString();
+	public String write(Object input) {
+		if ( input instanceof Double || input instanceof Float ) {
+			return input.toString();
+		}
+		return null;
 	}
 
 }
