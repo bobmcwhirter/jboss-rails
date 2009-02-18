@@ -53,7 +53,7 @@ public class RubyXMLStreamDataWriter {
 		
 		if (type instanceof RubyComplexType) {
 			writeComplexWithType(output, (IRubyObject) object, concreteName, (RubyComplexType) type );
-		} else if ( object instanceof RubySimpleType ) {
+		} else if ( type instanceof RubySimpleType ) {
 			writeSimpleWithType( output, object, concreteName, (RubySimpleType<?>) type );
 		} else {
 			log.info( "unhandled: " + object + " --> " + concreteName );
@@ -61,11 +61,13 @@ public class RubyXMLStreamDataWriter {
 	}
 	
 	public void writeWithType(XMLStreamWriter output, Object object, QName concreteName, RubyType type) throws XMLStreamException {
-		log.info( "writeWithType(" + object + "," + type.getName() );
+		log.info( "writeWithType(" + object + "," + concreteName + "," + type.getName() + ")" );
 		if ( type instanceof RubyComplexType ) {
 			writeComplexWithType( output, (IRubyObject) object, concreteName, (RubyComplexType) type );
-		} else if ( object instanceof RubySimpleType<?> ) {
+		} else if ( type instanceof RubySimpleType ) {
 			writeSimpleWithType( output, object, concreteName, (RubySimpleType<?>) type );
+		} else {
+			log.info( "unknown type: " + type );
 		}
 		
 	}
@@ -91,7 +93,7 @@ public class RubyXMLStreamDataWriter {
 	}
 	
 	public void writeComplexWithType(XMLStreamWriter output, IRubyObject object, QName concreteName, RubyComplexType type) throws XMLStreamException {
-		log.info( "writeComplexWithType(" + object + "," + type.getName() );
+		log.info( "writeComplexWithType(" + object + "," + concreteName + "," + type.getName() + ")" );
 		boolean addedNamespace = false;
 		if (output.getNamespaceContext().getPrefix(concreteName.getNamespaceURI()) == null) {
 			output.writeNamespace("rubyns" + (++namespaceCounter), concreteName.getNamespaceURI());
