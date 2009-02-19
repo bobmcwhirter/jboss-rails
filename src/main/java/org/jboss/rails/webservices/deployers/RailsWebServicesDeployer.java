@@ -12,9 +12,7 @@ import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.logging.Logger;
 import org.jboss.rails.core.metadata.RailsApplicationMetaData;
 import org.jboss.rails.runtime.deployers.RailsRubyRuntimeFactoryDescriber;
-import org.jboss.ruby.enterprise.webservices.metadata.InboundSecurityMetaData;
 import org.jboss.ruby.enterprise.webservices.metadata.RubyWebServiceMetaData;
-import org.jboss.ruby.enterprise.webservices.metadata.RubyWebServicesMetaData;
 import org.jboss.ruby.runtime.DefaultRubyRuntimeFactory;
 import org.jboss.ruby.runtime.RubyRuntimeFactory;
 import org.jboss.virtual.VirtualFile;
@@ -29,7 +27,7 @@ public class RailsWebServicesDeployer extends AbstractDeployer {
 	public RailsWebServicesDeployer() {
 		setStage(DeploymentStages.POST_CLASSLOADER);
 		addInput(RailsApplicationMetaData.class);
-		addOutput(RubyWebServicesMetaData.class);
+		addOutput(RubyWebServiceMetaData.class);
 	}
 
 	public void deploy(DeploymentUnit unit) throws DeploymentException {
@@ -41,8 +39,6 @@ public class RailsWebServicesDeployer extends AbstractDeployer {
 		if (railsAppMetaData == null) {
 			return;
 		}
-
-		RubyWebServicesMetaData servicesMetaData = null;
 
 		try {
 			VirtualFile apisDir = vfsUnit.getRoot().getChild("app/webservices");
@@ -57,15 +53,13 @@ public class RailsWebServicesDeployer extends AbstractDeployer {
 
 			List<VirtualFile> serviceDirs = apisDir.getChildren();
 			for (VirtualFile serviceDir : serviceDirs) {
-				if (servicesMetaData == null) {
-					servicesMetaData = new RubyWebServicesMetaData();
-				}
 				RubyWebServiceMetaData webService = new RubyWebServiceMetaData();
 				introspectWsdlAnnotations(factory.createRubyRuntime(), webService, railsAppMetaData.getRailsRootPath() + "/"
 						+ serviceDir.getPathName(), serviceDir.getName());
 				webService.setDirectory(railsAppMetaData.getRailsRootPath() + "/" + serviceDir.getPathName());
 				webService.setName(serviceDir.getName());
-				servicesMetaData.addWebService(webService);
+				unit.addAttachment( RubyWebServiceMetaData.class.getName() + "$" + webService.getName(), 
+						webService, RubyWebServiceMetaData.class );
 				log.info("deploying for: " + serviceDir);
 			}
 		} catch (IOException e) {
@@ -77,12 +71,6 @@ public class RailsWebServicesDeployer extends AbstractDeployer {
 			e.printStackTrace();
 			return;
 		}
-
-		if (servicesMetaData != null) {
-			log.info("attaching RubyWebServicesMetaData: " + servicesMetaData);
-			vfsUnit.addAttachment(RubyWebServicesMetaData.class, servicesMetaData);
-		}
-
 	}
 
 	private RubyRuntimeFactory createRubyRuntimeFactory(RailsApplicationMetaData railsAppMetaData, ClassLoader classLoader) {

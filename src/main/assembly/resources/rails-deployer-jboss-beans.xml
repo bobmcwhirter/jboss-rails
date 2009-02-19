@@ -12,7 +12,7 @@
   <bean name="YamlScheduleParsingDeployer" class="org.jboss.ruby.enterprise.scheduler.deployers.YamlScheduleParsingDeployer"/>
   <bean name="ScheduleDeployer"            class="org.jboss.ruby.enterprise.scheduler.deployers.ScheduleDeployer"/>
 
-  <bean name="RubyWebServicesDeployer" class="org.jboss.ruby.enterprise.webservices.deployers.RubyWebServicesDeployer"/>
+  <bean name="RubyWebServiceDeployer" class="org.jboss.ruby.enterprise.webservices.deployers.RubyWebServiceDeployer"/>
 
   <bean name="CXFBusDeployer"          class="org.jboss.ruby.enterprise.webservices.cxf.deployers.CXFBusDeployer"/>
   <bean name="CXFServletDeployer"      class="org.jboss.ruby.enterprise.webservices.cxf.deployers.CXFServletDeployer"/>

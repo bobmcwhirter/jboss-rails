@@ -7,26 +7,30 @@ import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.spi.deployer.helpers.AbstractDeployer;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.ruby.enterprise.webservices.cxf.RubyCXFBus;
-import org.jboss.ruby.enterprise.webservices.metadata.RubyWebServicesMetaData;
+import org.jboss.ruby.enterprise.webservices.metadata.RubyWebServiceMetaData;
 
+/** REAL deployer to provision a CXF bus if a RubyWebServiceMetaData is present.
+ * 
+ * @author Bob McWhirter
+ */
 public class CXFBusDeployer extends AbstractDeployer {
 	
 	public static final String PREFIX = "jboss.jruby.webservices.cxf.bus";
 	
 	public CXFBusDeployer() {
 		setStage( DeploymentStages.POST_CLASSLOADER );
-		setInput( RubyWebServicesMetaData.class );
+		setAllInputs(true);
 		addOutput( BeanMetaData.class );
 	}
 
 	public void deploy(DeploymentUnit unit) throws DeploymentException {
-		RubyWebServicesMetaData metaData = unit.getAttachment( RubyWebServicesMetaData.class );
-		
-		if ( metaData == null || metaData.getWebSerices().size() == 0 ) {
+		if ( unit.getAllMetaData( RubyWebServiceMetaData.class ).size() == 0 ) {
 			return;
 		}
 		
 		log.info( "deploying CXF bus for: " + unit );
+		
+		unit.getAttachment( Object.class );
 		
 		String beanName = getBusName( unit.getSimpleName() );
 		BeanMetaDataBuilder beanBuilder = BeanMetaDataBuilder.createBuilder( beanName, RubyCXFBus.class.getName() );

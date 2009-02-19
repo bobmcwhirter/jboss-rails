@@ -14,18 +14,22 @@ import org.jboss.metadata.web.jboss.JBossServletsMetaData;
 import org.jboss.metadata.web.jboss.JBossWebMetaData;
 import org.jboss.metadata.web.spec.ServletMappingMetaData;
 import org.jboss.ruby.enterprise.webservices.cxf.RubyCXFServlet;
-import org.jboss.ruby.enterprise.webservices.metadata.RubyWebServicesMetaData;
+import org.jboss.ruby.enterprise.webservices.metadata.RubyWebServiceMetaData;
 
 public class CXFServletDeployer extends AbstractDeployer {
 	
 	public CXFServletDeployer() {
 		setStage( DeploymentStages.POST_CLASSLOADER );
-		setInput( RubyWebServicesMetaData.class );
+		setAllInputs(true);
 		addInput( JBossWebMetaData.class );
 		addOutput( JBossWebMetaData.class );
 	}
 
 	public void deploy(DeploymentUnit unit) throws DeploymentException {
+		
+		if ( unit.getAllMetaData( RubyWebServiceMetaData.class ).size() == 0 ) {
+			return;
+		}
 		
 		log.info( "Deploy CXF servlet for " + unit );
 		JBossWebMetaData webMetaData = unit.getAttachment(JBossWebMetaData.class );
