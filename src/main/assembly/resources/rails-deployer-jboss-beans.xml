@@ -2,43 +2,67 @@
 
 <deployment xmlns="urn:jboss:bean-deployer:2.0">
 
-  <!-- Generic -->
+  <!-- 
+     |
+     | Ruby
+     |
+     -->
+
+  <!-- Rack and Web --> 
 
   <bean name="YamlWebParsingDeployer" class="org.jboss.ruby.enterprise.web.deployers.YamlWebParsingDeployer"/>
   <bean name="RackWebDeployer"        class="org.jboss.ruby.enterprise.web.deployers.RackWebDeployer">
     <property name="mbeanServer"><inject bean="JMXKernel" property="mbeanServer"/></property>
   </bean>
 
+  <!-- Runtime factories -->
+
+  <bean name="RubyRuntimeFactoryDeployer"           class="org.jboss.ruby.runtime.deployers.RubyRuntimeFactoryDeployer"/>
+  <bean name="RubyRuntimeFactoryPublishingDeployer" class="org.jboss.ruby.runtime.deployers.RubyRuntimeFactoryPublishingDeployer"/>
+  <bean name="RubyRuntimePoolDeployer"              class="org.jboss.ruby.runtime.deployers.RubyRuntimePoolDeployer"/>
+
+  <!-- Job Scheduling -->
+
   <bean name="YamlScheduleParsingDeployer" class="org.jboss.ruby.enterprise.scheduler.deployers.YamlScheduleParsingDeployer"/>
   <bean name="ScheduleDeployer"            class="org.jboss.ruby.enterprise.scheduler.deployers.ScheduleDeployer"/>
 
-  <bean name="RubyWebServiceDeployer" class="org.jboss.ruby.enterprise.webservices.deployers.RubyWebServiceDeployer"/>
+  <!-- Endpoint Deployment  -->
 
-  <bean name="CXFBusDeployer"          class="org.jboss.ruby.enterprise.webservices.cxf.deployers.CXFBusDeployer"/>
-  <bean name="CXFServletDeployer"      class="org.jboss.ruby.enterprise.webservices.cxf.deployers.CXFServletDeployer"/>
-  <!--bean name="RubyWSSecurityDeployer" class="org.jboss.ruby.enterprise.webservices.deployers.RubyWSSecurityDeployer"/-->
+  <bean name="CXFBusDeployer"                     class="org.jboss.ruby.enterprise.endpoints.cxf.deployers.CXFBusDeployer"/>
+  <bean name="CXFServletDeployer"                 class="org.jboss.ruby.enterprise.endpoints.cxf.deployers.CXFServletDeployer"/>
+  <bean name="RubyEndpointsIntrospectionDeployer" class="org.jboss.ruby.enterprise.endpoints.deployers.RubyEndpointsIntrospectionDeployer"/>
+  <bean name="RubyEndpointDeployer"               class="org.jboss.ruby.enterprise.endpoints.deployers.RubyEndpointDeployer"/>
 
-  <!-- Rails -->
+  <!-- 
+     |
+     | Rails
+     |
+     -->
 
+  <!-- RAILS_ROOT structure recognition -->
   <bean name="RailsStructure" class="org.jboss.rails.core.deployers.RailsStructure"/>
 
+  <!-- jboss-env.yml -->
   <bean name="RailsEnvironmentParsingDeployer" class="org.jboss.rails.core.deployers.RailsEnvironmentParsingDeployer"/>
+
+  <!-- vendor/rails/.../version.rb -->
   <bean name="RailsVersionDeployer"            class="org.jboss.rails.core.deployers.RailsVersionDeployer"/>
+
+  <!-- jboss-web.yml -->
   <bean name="RailsRackWebPostParseDeployer"   class="org.jboss.rails.web.deployers.RailsRackWebPostParseDeployer"/>
+
+
   <bean name="RailsScheduleDescribeDeployer"   class="org.jboss.rails.scheduler.deployers.RailsScheduleDescribeDeployer"/>
 
   <bean name="RailsRootReferenceParsingDeployer" class="org.jboss.rails.core.deployers.RailsRootReferenceParsingDeployer"/>
 
-  <bean name="RailsWebServicesDeployer" class="org.jboss.rails.webservices.deployers.RailsWebServicesDeployer"/>
-
-  <bean name="RubyRuntimeFactoryDeployer"        class="org.jboss.ruby.runtime.deployers.RubyRuntimeFactoryDeployer"/>
-  <bean name="RubyRuntimePoolDeployer"           class="org.jboss.ruby.runtime.deployers.RubyRuntimePoolDeployer"/>
   <bean name="RailsRubyRuntimeFactoryDescriber"  class="org.jboss.rails.runtime.deployers.RailsRubyRuntimeFactoryDescriber"/>
-  <bean name="RailsAutoLoadDeployer"             class="org.jboss.rails.runtime.deployers.RailsAutoLoadDeployer"/>
 
-  <bean name="RailsWebServicesLoadPathDescriber" class="org.jboss.rails.webservices.deployers.RailsWebServicesLoadPathDescriber"/>
+  <!-- Endpoint Deployment  -->
+  <bean name="RailsEndpointsParsingDeployer"       class="org.jboss.rails.endpoints.deployers.RailsEndpointsParsingDeployer"/>
 
 <!--
+  <bean name="RailsWebServicesLoadPathDescriber" class="org.jboss.rails.webservices.deployers.RailsWebServicesLoadPathDescriber"/>
 -->
   
 </deployment>

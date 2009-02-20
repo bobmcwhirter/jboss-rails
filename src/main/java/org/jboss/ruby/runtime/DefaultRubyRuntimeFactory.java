@@ -61,6 +61,7 @@ public class DefaultRubyRuntimeFactory implements RubyRuntimeFactory {
 		config.setOutput( getOutput() );
 		config.setError( getError() );
 
+		log.info( "LOAD_PATHS: " + loadPaths );
 		Ruby runtime = JavaEmbedUtils.initialize(loadPaths, config);
 		
 		log.info( "INIT_SCRIPT: " + this.initScript );
