@@ -28,12 +28,15 @@ public class RubyEndpointHandler {
 
 	private RubyRuntimePool runtimePool;
 
+	private Logger endpointLogger;
+	
 	private String classLocation;
 	private String endpointClassName;
 
 	private RubyDataBinding dataBinding;
 
 	public RubyEndpointHandler(RubyRuntimePool runtimePool, String classLocation, String endpointClassName, RubyDataBinding dataBinding) {
+		this.endpointLogger = Logger.getLogger( "jboss.ruby.endpoints." + endpointClassName );
 		this.runtimePool = runtimePool;
 		this.classLocation = classLocation;
 		this.endpointClassName = endpointClassName;
@@ -86,6 +89,7 @@ public class RubyEndpointHandler {
 		endpoint.setPrincipal(principal);
 		endpoint.setRequest(request);
 		endpoint.setResponseCreator(responseCreator);
+		endpoint.setLogger( this.endpointLogger );
 	}
 
 	private Object invoke(IRubyObject endpoint, String operationName) {

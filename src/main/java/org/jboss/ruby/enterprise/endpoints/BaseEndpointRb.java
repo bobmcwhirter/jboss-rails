@@ -2,13 +2,25 @@ package org.jboss.ruby.enterprise.endpoints;
 
 import java.security.Principal;
 
+import org.jboss.logging.Logger;
+
 public class BaseEndpointRb {
 	
+	private Logger logger;
 	private Principal principal;
 	private Object request;
 	private String responseCreator;
+	
 
 	public BaseEndpointRb() {
+	}
+	
+	public void setLogger(Logger logger) {
+		this.logger = logger;
+	}
+	
+	public Logger getLogger() {
+		return this.logger;
 	}
 
 	public void setPrincipal(Principal principal) {
