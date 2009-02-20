@@ -5,8 +5,6 @@ import java.net.URL;
 
 public class RubyEndpointMetaData {
 	
-	//private String dir;
-	
 	private String name;
 	
 	private URL wsdlLocation;
@@ -16,7 +14,7 @@ public class RubyEndpointMetaData {
 	private String portName;
 	private String targetNamespace;
 	
-	//private InboundSecurityMetaData inboundSecurity;
+	private SecurityMetaData securityMetaData;
 
 	public RubyEndpointMetaData() {
 	}
@@ -67,6 +65,14 @@ public class RubyEndpointMetaData {
 	
 	public String getPortName() {
 		return this.portName;
+	}
+	
+	public void setSecurityMetaData(SecurityMetaData securityMetaData) {
+		this.securityMetaData = securityMetaData;
+	}
+	
+	public SecurityMetaData getSecurityMetaData() {
+		return this.securityMetaData;
 	}
 	
 	public String toString() {

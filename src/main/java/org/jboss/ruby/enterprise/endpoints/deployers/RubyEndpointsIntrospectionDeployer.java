@@ -7,11 +7,16 @@ import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.spi.deployer.helpers.AbstractDeployer;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.ruby.enterprise.endpoints.metadata.RubyEndpointMetaData;
+import org.jboss.ruby.enterprise.endpoints.metadata.SecurityMetaData;
 import org.jboss.ruby.runtime.RubyRuntimeFactory;
 import org.jruby.Ruby;
 import org.jruby.RubyClass;
+import org.jruby.javasupport.JavaEmbedUtils;
+import org.jruby.runtime.builtin.IRubyObject;
 
 public class RubyEndpointsIntrospectionDeployer extends AbstractDeployer {
+
+	private static final Object[] EMPTY_OBJECT_ARRAY = new Object[]{};
 
 	public RubyEndpointsIntrospectionDeployer() {
 		setStage(DeploymentStages.POST_CLASSLOADER);
@@ -34,6 +39,8 @@ public class RubyEndpointsIntrospectionDeployer extends AbstractDeployer {
 
 		try {
 			Ruby runtime = factory.createRubyRuntime();
+			
+			loadSupport( runtime );
 
 			for (RubyEndpointMetaData each : allMetaData) {
 				if (each.getTargetNamespace() == null || each.getPortName() == null) {
@@ -46,6 +53,13 @@ public class RubyEndpointsIntrospectionDeployer extends AbstractDeployer {
 		}
 	}
 
+	protected void loadSupport(Ruby runtime) {
+		String supportScript = "require %q(jboss/endpoints/base_endpoint)\n";
+		log.info( "eval: " + supportScript );
+		runtime.evalScriptlet( supportScript );
+		
+	}
+
 	protected void introspect(Ruby runtime, RubyEndpointMetaData metaData) {
 		log.info("introspecting: " + metaData);
 		String classLocation = metaData.getClassLocation();
@@ -53,9 +67,31 @@ public class RubyEndpointsIntrospectionDeployer extends AbstractDeployer {
 		if (classLocation != null) {
 			requireOrLoad(runtime, classLocation);
 		}
+		
 		RubyClass rubyClass = runtime.getClass(metaData.getEndpointClassName());
 		log.info("ruby class is " + rubyClass);
-		log.info("ruby class is 22: " + runtime.evalScriptlet(metaData.getEndpointClassName()));
+		
+		String targetNamespace = (String) reflect( rubyClass, "target_namespace" );
+		String portName        = (String) reflect( rubyClass, "port_name" );
+		
+		SecurityMetaData securityMetaData = (SecurityMetaData) reflect( rubyClass, "security" );
+		
+		if ( metaData.getTargetNamespace() == null ) {
+			metaData.setTargetNamespace( targetNamespace );
+		}
+		
+		if ( metaData.getPortName() == null ) {
+			metaData.setPortName( portName );
+		}
+		
+		if ( metaData.getSecurityMetaData() == null ) {
+			metaData.setSecurityMetaData( securityMetaData );
+		
+		}
+	}
+	
+	protected Object reflect(IRubyObject obj, String attr) {
+		return JavaEmbedUtils.invokeMethod( obj.getRuntime(), obj, attr, EMPTY_OBJECT_ARRAY, Object.class );
 	}
 
 	private void requireOrLoad(Ruby runtime, String classLocation) {
