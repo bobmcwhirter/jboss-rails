@@ -21,23 +21,51 @@ public class RubyXMLStreamDataReader {
 
 	public Object read(Ruby runtime, XMLStreamReader input, RubyType type) throws XMLStreamException {
 		log.info("TOP read(" + type.getName() + ")");
+		log.info(" input: " + input.getEventType());
+		log.info(" input: " + input.getName() );
 		QName name = input.getName();
 		Object result = null;
 		if (type instanceof RubyComplexType) {
 			log.info("read complex");
-			result = read(runtime, input, (RubyComplexType) type);
-		} else if (type instanceof RubySimpleType<?>) {
+			result = readComplex(runtime, input, (RubyComplexType) type);
+		} else if (type instanceof RubySimpleType) {
 			log.info("read primitive");
-			result = ((RubySimpleType<?>) type).read( input.getText() );
-			log.info(" --->" + result );
+			result = readPrimitive(input, (RubySimpleType<?>) type);
+			log.info(" --->" + result);
 		}
 		skipToEnd(input, name);
 		return result;
 	}
 
-	public Object read(Ruby runtime, XMLStreamReader input, RubyComplexType type) throws XMLStreamException {
+	public Object readPrimitive(XMLStreamReader input, RubySimpleType<?> type) throws XMLStreamException {
+		QName name = input.getName();
+		
+		readXMLAttributesAndNamespaces(input);
+		
+		String text = collectText(input);
+		Object result = type.read( text );
+		
+		skipToEnd( input , name);
+		
+		return result;
+	}
+	
+	public String collectText(XMLStreamReader input) throws XMLStreamException {
+		int event = input.next();
+		
+		StringBuilder text = new StringBuilder();
+		
+		while ( event == XMLStreamConstants.CHARACTERS || event == XMLStreamConstants.CDATA || event == XMLStreamConstants.SPACE ) {
+			text.append( input.getText() );
+			event = input.next();
+		}
+		
+		return text.toString();
+	}
 
-		log.info("read(..., " + type.getName() + ")  -- " + input.getEventType());
+	public Object readComplex(Ruby runtime, XMLStreamReader input, RubyComplexType type) throws XMLStreamException {
+
+		log.info("readComplexType(..., " + type.getName() + ")  -- " + input.getEventType());
 
 		QName name = input.getName();
 
@@ -46,25 +74,25 @@ public class RubyXMLStreamDataReader {
 		readXMLAttributesAndNamespaces(input);
 
 		while (input.next() != XMLStreamConstants.START_ELEMENT) {
-			if ( input.getEventType() == XMLStreamConstants.END_ELEMENT ) {
+			if (input.getEventType() == XMLStreamConstants.END_ELEMENT) {
 				return null;
 			}
 			log.info("skip: " + input.getEventType());
 		}
-		
+
 		IRubyObject rubyObject = null;
-		
+
 		if (type.isArraySubclass()) {
-			rubyObject = createRubyObject( runtime, type );
+			rubyObject = createRubyObject(runtime, type);
 			RubyAttribute memberAttr = type.getArrayAttribute();
 			while (input.getEventType() == XMLStreamConstants.START_ELEMENT) {
 				readArrayMember(runtime, input, rubyObject, memberAttr);
 				input.nextTag();
 			}
 			// FIXME
-			//result = rubyObject;
+			// result = rubyObject;
 		} else {
-			rubyObject = createRubyObject( runtime, type );
+			rubyObject = createRubyObject(runtime, type);
 			while (input.getEventType() == XMLStreamConstants.START_ELEMENT) {
 				readAttribute(runtime, input, type, rubyObject);
 				input.nextTag();
@@ -100,7 +128,8 @@ public class RubyXMLStreamDataReader {
 		}
 	}
 
-	private void readArrayMember(Ruby runtime, XMLStreamReader input, IRubyObject rubyObject, RubyAttribute arrayAttr) throws XMLStreamException {
+	private void readArrayMember(Ruby runtime, XMLStreamReader input, IRubyObject rubyObject, RubyAttribute arrayAttr)
+			throws XMLStreamException {
 		log.info("readArrayMember(" + arrayAttr.getName() + ")");
 
 		String name = input.getName().getLocalPart();
@@ -112,33 +141,34 @@ public class RubyXMLStreamDataReader {
 		RubyType memberType = arrayAttr.getType();
 
 		Object memberValue = read(runtime, input, memberType);
-		
-		addRubyArrayMember( rubyObject, memberValue );
+
+		addRubyArrayMember(rubyObject, memberValue);
 	}
 
 	private void addRubyArrayMember(IRubyObject rubyObject, Object memberValue) {
-		JavaEmbedUtils.invokeMethod(rubyObject.getRuntime(), rubyObject, "<<", new Object[]{ memberValue }, void.class );
+		JavaEmbedUtils.invokeMethod(rubyObject.getRuntime(), rubyObject, "<<", new Object[] { memberValue }, void.class);
 	}
 
-	private void readAttribute(Ruby runtime, XMLStreamReader input, RubyComplexType ownerType, IRubyObject rubyObject) throws XMLStreamException {
+	private void readAttribute(Ruby runtime, XMLStreamReader input, RubyComplexType ownerType, IRubyObject rubyObject)
+			throws XMLStreamException {
 		log.info("readAttribute(" + input.getNamespaceURI() + ":" + input.getLocalName() + ") on " + ownerType.getName());
 
 		String name = input.getName().getLocalPart();
 		RubyAttribute rubyAttr = ownerType.getAttribute(name);
-		
-		if ( rubyAttr == null ) {
-			throw new XMLStreamException( "no attribute for <" + name + ">" );
+
+		if (rubyAttr == null) {
+			throw new XMLStreamException("no attribute for <" + name + ">");
 		}
-		
+
 		RubyType attrType = rubyAttr.getType();
 
 		Object attrValue = read(runtime, input, attrType);
-		
-		setRubyAttribute(rubyObject, name, attrValue );
+
+		setRubyAttribute(rubyObject, name, attrValue);
 	}
 
 	private void setRubyAttribute(IRubyObject rubyObject, String name, Object attrValue) {
-		JavaEmbedUtils.invokeMethod(rubyObject.getRuntime(), rubyObject, name + "=", new Object[]{ attrValue }, void.class );
+		JavaEmbedUtils.invokeMethod(rubyObject.getRuntime(), rubyObject, name + "=", new Object[] { attrValue }, void.class);
 	}
 
 	private int readXMLAttributesAndNamespaces(XMLStreamReader input) throws XMLStreamException {
@@ -148,9 +178,9 @@ public class RubyXMLStreamDataReader {
 		}
 		return eventType;
 	}
-	
+
 	private IRubyObject createRubyObject(Ruby runtime, RubyType type) {
-		IRubyObject object = runtime.evalScriptlet( type.getNewInstanceFragment() );
+		IRubyObject object = runtime.evalScriptlet(type.getNewInstanceFragment());
 		return object;
 	}
 

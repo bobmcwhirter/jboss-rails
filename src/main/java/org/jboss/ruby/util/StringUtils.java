@@ -4,6 +4,20 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StringUtils {
+	
+    public static String underscore(String word) {
+        String firstPattern = "([A-Z]+)([A-Z][a-z])";
+        String secondPattern = "([a-z\\d])([A-Z])";
+        String replacementPattern = "$1_$2";
+        word = word.replaceAll("\\.", "/"); // replace package separator with slash
+        word = word.replaceAll("\\$", "__"); // replace $ with two underscores for inner classes
+        word = word.replaceAll(firstPattern, replacementPattern); // replace capital letter with _ plus lowercase letter
+        word = word.replaceAll(secondPattern, replacementPattern);
+        word = word.replace('-', '_');
+        word = word.toLowerCase();
+        return word;
+    }
+
 	public static String camelize(String word, boolean lowercaseFirstLetter) {
 		// replace all slashes with dots (package separator)
 		Pattern p = Pattern.compile("\\/(.?)");

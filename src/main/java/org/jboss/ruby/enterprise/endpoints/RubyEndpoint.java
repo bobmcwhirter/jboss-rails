@@ -33,6 +33,8 @@ public class RubyEndpoint {
 
 	//private String dir;
 	private URL wsdlLocation;
+	
+	private String classLocation;
 	private String endpointClassName;
 	
 	private String targetNamespace;
@@ -66,6 +68,14 @@ public class RubyEndpoint {
 	
 	public String getAddress() {
 		return this.address;
+	}
+	
+	public void setClassLocation(String classLocation) {
+		this.classLocation = classLocation;
+	}
+	
+	public String getClassLocation() {
+		return this.classLocation;
 	}
 	
 	public void setEndpointClassName(String endpointClassName) {
@@ -117,7 +127,7 @@ public class RubyEndpoint {
 		RubyEndpointHandler serviceBean = createServiceBean( dataBinding );
 		serverFactory.setServiceName( new QName( getTargetNamespace(), getPortName() ) );
 		serverFactory.setEndpointName( new QName( getTargetNamespace(), getPortName() ) );
-		serverFactory.setServiceClass( RubyWebServiceHandler.class );
+		serverFactory.setServiceClass( RubyEndpointHandler.class );
 		serverFactory.setInvoker( createInvoker( serviceBean ) );
 		
 		serverFactory.setAddress( getAddress() );
@@ -136,7 +146,7 @@ public class RubyEndpoint {
 	
 
 	private RubyEndpointHandler createServiceBean(RubyDataBinding dataBinding) {
-		return new RubyEndpointHandler( this.runtimePool, this.endpointClassName, dataBinding );
+		return new RubyEndpointHandler( this.runtimePool, this.classLocation, this.endpointClassName, dataBinding );
 	}
 	
 	private Invoker createInvoker(RubyEndpointHandler handler) {

@@ -66,11 +66,12 @@ public class RubyEndpointDeployer extends AbstractDeployer {
 
 		ValueMetaData poolInjection = beanBuilder.createInject("jboss.ruby.runtime.pool." + unit.getSimpleName());
 		beanBuilder.addPropertyMetaData("rubyRuntimePool", poolInjection);
+		beanBuilder.addPropertyMetaData("classLocation", metaData.getClassLocation());
 		beanBuilder.addPropertyMetaData("endpointClassName", metaData.getEndpointClassName());
 		beanBuilder.addPropertyMetaData("wsdlLocation", metaData.getWsdlLocation() );
 		beanBuilder.addPropertyMetaData("targetNamespace", metaData.getTargetNamespace());
 		beanBuilder.addPropertyMetaData("portName", metaData.getPortName());
-		//beanBuilder.addPropertyMetaData("address", metaData.getName());
+		beanBuilder.addPropertyMetaData("address", metaData.getName());
 		//beanBuilder.addPropertyMetaData("verifySignature", metaData.getInboundSecurity().isVerifySignature());
 		//beanBuilder.addPropertyMetaData("verifyTimestamp", metaData.getInboundSecurity().isVerifyTimestamp());
 		//beanBuilder.addPropertyMetaData("trustStore", metaData.getInboundSecurity().getTrustStore());

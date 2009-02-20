@@ -14,7 +14,6 @@ import org.apache.cxf.service.model.BindingOperationInfo;
 import org.apache.cxf.service.model.MessagePartInfo;
 import org.jboss.logging.Logger;
 import org.jboss.ruby.enterprise.endpoints.RubyEndpointHandler;
-import org.jboss.ruby.enterprise.endpoints.RubyWebServiceHandler;
 
 public class RubyEndpointInvoker implements Invoker {
 
