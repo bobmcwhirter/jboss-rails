@@ -38,9 +38,8 @@ import org.jboss.deployers.vfs.plugins.client.AbstractVFSDeployment;
 import org.jboss.deployers.vfs.spi.deployer.AbstractVFSParsingDeployer;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.logging.Logger;
-import org.jboss.metadata.web.spec.WebMetaData;
 import org.jboss.rails.core.metadata.RailsApplicationMetaData;
-import org.jboss.ruby.enterprise.web.metadata.RackWebMetaData;
+import org.jboss.ruby.enterprise.web.rack.metadata.RackWebApplicationMetaData;
 import org.jboss.virtual.VFS;
 import org.jboss.virtual.VirtualFile;
 
@@ -51,7 +50,7 @@ public class RailsRootReferenceParsingDeployer extends AbstractVFSParsingDeploye
 
 	public RailsRootReferenceParsingDeployer() {
 		super(RailsApplicationMetaData.class);
-		addOutput(RackWebMetaData.class);
+		addOutput(RackWebApplicationMetaData.class);
 		setSuffix("-rails.yml");
 		setStage(DeploymentStages.REAL);
 		setTopLevelOnly(true);
@@ -104,7 +103,7 @@ public class RailsRootReferenceParsingDeployer extends AbstractVFSParsingDeploye
 		unit.addAttachment("jboss.rails.root.deployer", deployer);
 	}
 
-	private Deployment createDeployment(RailsApplicationMetaData railsMetaData, RackWebMetaData webMetaData) throws MalformedURLException, IOException {
+	private Deployment createDeployment(RailsApplicationMetaData railsMetaData, RackWebApplicationMetaData webMetaData) throws MalformedURLException, IOException {
 		Deployment deployment = new AbstractVFSDeployment(railsMetaData.getRailsRoot());
 
 		MutableAttachments attachments = ((MutableAttachments) deployment.getPredeterminedManagedObjects());
@@ -112,7 +111,7 @@ public class RailsRootReferenceParsingDeployer extends AbstractVFSParsingDeploye
 		attachments.addAttachment(RailsApplicationMetaData.class, railsMetaData);
 
 		if (webMetaData != null) {
-			attachments.addAttachment(RackWebMetaData.class, webMetaData);
+			attachments.addAttachment(RackWebApplicationMetaData.class, webMetaData);
 		}
 
 		return deployment;
@@ -137,12 +136,14 @@ public class RailsRootReferenceParsingDeployer extends AbstractVFSParsingDeploye
 				railsMetaData.setRailsEnv(railsEnv);
 			}
 
-			RackWebMetaData webMetaData = null;
+			RackWebApplicationMetaData webMetaData = null;
 			
 			if (web != null) {
 				String context = (String) web.get("context");
 				String host = (String) web.get("host");
-				webMetaData = new RackWebMetaData(context, host);
+				webMetaData = new RackWebApplicationMetaData();
+				webMetaData.setHost( host );
+				webMetaData.setContext(context);
 			}
 
 			return createDeployment(railsMetaData, webMetaData);

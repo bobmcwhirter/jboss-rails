@@ -21,9 +21,6 @@
  */
 package org.jboss.rails.scheduler.deployers;
 
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.spi.deployer.helpers.AbstractSimpleRealDeployer;

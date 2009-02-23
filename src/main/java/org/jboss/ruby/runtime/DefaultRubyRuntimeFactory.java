@@ -1,6 +1,7 @@
 package org.jboss.ruby.runtime;
 
 import java.io.PrintStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,7 +19,7 @@ public class DefaultRubyRuntimeFactory implements RubyRuntimeFactory {
 	private List<String> loadPaths = null;
 	private String initScript = null;
 
-	private ClassLoader classLoader;
+	private RubyDynamicClassLoader classLoader;
 
 	public DefaultRubyRuntimeFactory() {
 		this( null, null );
@@ -38,17 +39,24 @@ public class DefaultRubyRuntimeFactory implements RubyRuntimeFactory {
 		
 	}
 	
-	public void setClassLoader(ClassLoader classLoader) {
+	public void setClassLoader(RubyDynamicClassLoader classLoader) {
 		this.classLoader = classLoader;
 	}
 	
-	public ClassLoader getClassLoader() {
+	public RubyDynamicClassLoader getClassLoader() {
 		return this.classLoader;
 	}
 	
 	public Ruby createRubyRuntime() throws Exception {
 		log.info( "createRubyRuntime()" );
 		RubyInstanceConfig config = new RubyInstanceConfig();
+		
+		if ( this.classLoader != null ) {
+			log.info( "setting classloader to: " + classLoader );
+			URL resource = classLoader.getResource( "path/to/bob.rb" );
+			log.info( "path/to/bob.rb ---> " + resource );
+			config.setLoader( this.classLoader );
+		}
 
 		try {
 			String binjruby = RubyInstanceConfig.class.getResource("/META-INF/jruby.home/bin/jruby").toURI().getSchemeSpecificPart();

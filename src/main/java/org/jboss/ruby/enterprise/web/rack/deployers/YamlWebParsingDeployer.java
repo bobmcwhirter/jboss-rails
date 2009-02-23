@@ -19,7 +19,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.ruby.enterprise.web.deployers;
+package org.jboss.ruby.enterprise.web.rack.deployers;
 
 import java.util.Map;
 
@@ -35,13 +35,10 @@ public class YamlWebParsingDeployer extends AbstractVFSParsingDeployer<RackWebAp
 		super( RackWebApplicationMetaData.class );
 		setName( "jboss-web.yml" );
 	}
-	
-	@Override
+		
 	@SuppressWarnings("unchecked")
-	protected RackWebApplicationMetaData parse(VFSDeploymentUnit unit, VirtualFile file, RackWebApplicationMetaData root) throws Exception {
-		
+	protected RackWebApplicationMetaData parse(VFSDeploymentUnit unit, VirtualFile file, RackWebApplicationMetaData arg2) throws Exception {
 		Map<String,String> web = (Map<String, String>) Yaml.load( file.openStream() );
-		
 		
 		String context = web.get( "context" );
 		
@@ -57,10 +54,8 @@ public class YamlWebParsingDeployer extends AbstractVFSParsingDeployer<RackWebAp
 		
 		
 		RackWebApplicationMetaData webMetaData = new RackWebApplicationMetaData();
-		
-		webMetaData.setHost( host );
 		webMetaData.setContext( context );
-		
+		webMetaData.setHost( host );
 		return webMetaData;
 	}
 
