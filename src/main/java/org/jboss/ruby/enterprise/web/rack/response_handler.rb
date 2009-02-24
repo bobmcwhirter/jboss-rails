@@ -6,15 +6,17 @@ module JBoss
         status  = rack_response[0]
         headers = rack_response[1]
         body    = rack_response[2]
+        status_code, status_string = status.split
+        status_code.strip!
+        status_string.strip!
+        servlet_response.setStatus( status_code.to_i )
         headers.each{|key,value|
-          puts "#{key} = #{value}"
           for v in value
             servlet_response.setHeader( key, v )
           end
         }
         out = servlet_response.getWriter()
         body.each{|str|
-          puts str
           out.write( str );
         }
       end

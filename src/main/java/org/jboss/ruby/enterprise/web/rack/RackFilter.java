@@ -30,24 +30,17 @@ public class RackFilter implements Filter {
 	@SuppressWarnings("deprecation")
 	public void init(FilterConfig filterConfig) throws ServletException {
 		Kernel kernel = (Kernel) filterConfig.getServletContext().getAttribute(KERNEL_NAME);
-		log.info( "kernel is " + kernel );
-		
 		String rackAppFactoryName = filterConfig.getInitParameter( RACK_APP_POOL_INIT_PARAM );
-		
-		log.info( "rack app factory name is " + rackAppFactoryName );
-		
 		KernelRegistryEntry entry = kernel.getRegistry().findEntry( rackAppFactoryName );
 		if ( entry != null ) {
 			this.rackAppFactory = (RackApplicationPool) entry.getTarget();
 		}
-		log.info( "rack app factory is " + this.rackAppFactory );
 	}
 
 	public void destroy() {
 	}
 
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-		log.info( "doFilter(" + request + ", ..." );
 		if ( request instanceof HttpServletRequest && response instanceof HttpServletResponse ) {
 			doFilter( (HttpServletRequest) request, (HttpServletResponse) response, chain );
 		}
@@ -58,7 +51,6 @@ public class RackFilter implements Filter {
 		
 		try {
 			rackApp = borrowRackApplication();
-			log.info( "using rack application: " + rackApp );
 			Object rackEnv = rackApp.createEnvironment( request );
 			rackApp.call(rackEnv).respond(response);
 		} catch (Exception e) {

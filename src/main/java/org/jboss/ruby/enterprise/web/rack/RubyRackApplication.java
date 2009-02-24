@@ -26,7 +26,6 @@ public class RubyRackApplication implements RackApplication {
 	
 	private void rackUp(String script) {
 		String fullScript = "require %q(rack/builder)\n" + script;
-		log.info( "rackUp(" + fullScript + ")" );
 		rubyApp = this.ruby.evalScriptlet( fullScript );
 	}
 	
@@ -40,16 +39,11 @@ public class RubyRackApplication implements RackApplication {
 		
 		RubyModule envBuilder = ruby.getClassFromPath( "JBoss::Rack::EnvironmentBuilder" );
 		
-		log.info( "envBuilder: " + envBuilder );
-		
-		Object env = JavaEmbedUtils.invokeMethod( ruby, envBuilder, "build", new Object[] { request, input, errors }, Object.class );
-		log.info( "built: " + env );
-		return env;
+		return JavaEmbedUtils.invokeMethod( ruby, envBuilder, "build", new Object[] { request, input, errors }, Object.class );
 	}
 
 	public RackResponse call(Object env) {
 		IRubyObject response = (RubyArray) JavaEmbedUtils.invokeMethod( this.ruby, this.rubyApp, "call", new Object[]{env}, RubyArray.class);
-		log.info( "response [" + response + "]" );
 		return new RubyRackResponse( response );
 	}
 

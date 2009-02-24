@@ -45,9 +45,9 @@ public class RailsRackDeployer extends AbstractSimpleVFSRealDeployer<RailsApplic
 	protected String getRackUpScript() {
 		// "  use RailsSetup, helper\n" +
 		String script = 
+			"require %q(org/jboss/rails/web/deployers/rails_rack_dispatcher)\n" +
 			"::Rack::Builder.new {\n" + 
-			//"  run ::JBoss::Rails::RackApplication.new()\n" + 
-			"  run ActionController::Dispatcher.new()\n" +
+			"  run JBoss::Rails::Rack::Dispatcher.new()\n" +
 			"}.to_app\n";
 
 		return script;
