@@ -6,6 +6,8 @@ public class RackWebApplicationMetaData {
 	private String context;
 	
 	private String rackApplicationFactoryName;
+	
+	private String staticPathPrefix;
 
 	public RackWebApplicationMetaData() {
 		
@@ -33,6 +35,14 @@ public class RackWebApplicationMetaData {
 	
 	public String getRackApplicationFactoryName() {
 		return this.rackApplicationFactoryName;
+	}
+	
+	public void setStaticPathPrefix(String staticPathPrefix) {
+		this.staticPathPrefix = staticPathPrefix;
+	}
+	
+	public String getStaticPathPrefix() {
+		return this.staticPathPrefix;
 	}
 
 }
