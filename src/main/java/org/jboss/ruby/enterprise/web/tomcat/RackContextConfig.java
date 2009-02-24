@@ -26,7 +26,6 @@ import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.deploy.FilterDef;
 import org.apache.catalina.deploy.FilterMap;
 import org.apache.catalina.startup.ContextConfig;
-import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.logging.Logger;
 
 /**

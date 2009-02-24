@@ -26,7 +26,6 @@ import org.jboss.ruby.enterprise.webservices.databinding.simple.RubyFloatType;
 import org.jboss.ruby.enterprise.webservices.databinding.simple.RubyIntegerType;
 import org.jboss.ruby.enterprise.webservices.databinding.simple.RubyStringType;
 import org.jboss.ruby.runtime.RubyRuntimePool;
-import org.jruby.Ruby;
 import org.w3c.dom.Node;
 
 public class RubyDataBinding extends AbstractDataBinding {

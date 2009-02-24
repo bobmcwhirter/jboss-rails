@@ -4,10 +4,8 @@ import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.DeploymentStages;
-import org.jboss.deployers.spi.deployer.helpers.AbstractDeployer;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.ruby.enterprise.endpoints.cxf.RubyCXFBus;
-import org.jboss.ruby.enterprise.endpoints.metadata.RubyEndpointMetaData;
 
 /** REAL deployer to provision a CXF bus if a RubyWebServiceMetaData is present.
  * 

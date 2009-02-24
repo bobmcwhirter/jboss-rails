@@ -6,10 +6,8 @@ import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.spi.deployer.helpers.AbstractDeployer;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
-import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.ruby.runtime.RubyRuntimeFactory;
 import org.jboss.ruby.runtime.RubyRuntimeFactoryProxy;
-import org.jboss.ruby.runtime.metadata.RubyRuntimeMetaData;
 
 public class RubyRuntimeFactoryPublishingDeployer extends AbstractDeployer {
 

@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
 import org.jboss.logging.Logger;
-import org.jruby.Ruby;
 
 public class RackFilter implements Filter {
 	

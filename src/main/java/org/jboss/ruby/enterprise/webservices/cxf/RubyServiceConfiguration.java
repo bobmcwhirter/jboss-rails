@@ -2,11 +2,9 @@ package org.jboss.ruby.enterprise.webservices.cxf;
 
 import java.lang.reflect.Method;
 
-import javax.xml.namespace.QName;
 import javax.xml.transform.stax.StAXSource;
 
 import org.apache.cxf.service.factory.DefaultServiceConfiguration;
-import org.apache.cxf.service.model.OperationInfo;
 
 public class RubyServiceConfiguration extends DefaultServiceConfiguration {
 	

@@ -1,7 +1,6 @@
 package org.jboss.ruby.enterprise.endpoints.cxf;
 
 import java.util.Map;
-import java.util.Vector;
 
 import org.apache.cxf.binding.soap.SoapMessage;
 import org.apache.cxf.interceptor.Fault;

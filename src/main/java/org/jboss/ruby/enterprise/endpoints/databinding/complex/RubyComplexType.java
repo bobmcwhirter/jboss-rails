@@ -13,7 +13,6 @@ import org.apache.ws.commons.schema.XmlSchemaComplexType;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.apache.ws.commons.schema.XmlSchemaGroupBase;
 import org.apache.ws.commons.schema.XmlSchemaParticle;
-import org.apache.ws.commons.schema.XmlSchemaSequence;
 import org.jboss.logging.Logger;
 import org.jboss.ruby.enterprise.endpoints.databinding.RubyDataBinding;
 import org.jboss.ruby.enterprise.endpoints.databinding.RubyType;

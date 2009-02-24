@@ -10,7 +10,6 @@ import org.jboss.ruby.runtime.DefaultRubyRuntimeFactory;
 import org.jboss.ruby.runtime.RubyDynamicClassLoader;
 import org.jboss.ruby.runtime.RubyRuntimeFactory;
 import org.jboss.ruby.runtime.metadata.RubyRuntimeMetaData;
-import org.jruby.Ruby;
 
 public class RubyRuntimeFactoryDeployer extends AbstractSimpleVFSRealDeployer<RubyRuntimeMetaData> {
 

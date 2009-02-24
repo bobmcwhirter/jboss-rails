@@ -1,13 +1,10 @@
 package org.jboss.ruby.enterprise.web.rack;
 
-import java.io.ByteArrayOutputStream;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.jboss.logging.Logger;
 import org.jruby.Ruby;
 import org.jruby.RubyArray;
-import org.jruby.RubyHash;
 import org.jruby.RubyIO;
 import org.jruby.RubyModule;
 import org.jruby.javasupport.JavaEmbedUtils;
