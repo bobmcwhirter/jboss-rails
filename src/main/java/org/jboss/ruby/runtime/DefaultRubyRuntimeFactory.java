@@ -34,7 +34,6 @@ public class DefaultRubyRuntimeFactory implements RubyRuntimeFactory {
 			this.loadPaths = Collections.emptyList();
 		}
 		this.initScript = initScript;
-		log.info( "constructor" );
 		
 	}
 	
@@ -47,13 +46,9 @@ public class DefaultRubyRuntimeFactory implements RubyRuntimeFactory {
 	}
 	
 	public Ruby createRubyRuntime() throws Exception {
-		log.info( "createRubyRuntime()" );
 		RubyInstanceConfig config = new RubyInstanceConfig();
 		
 		if ( this.classLoader != null ) {
-			log.info( "setting classloader to: " + classLoader );
-			URL resource = classLoader.getResource( "path/to/bob.rb" );
-			log.info( "path/to/bob.rb ---> " + resource );
 			config.setLoader( this.classLoader );
 		}
 
@@ -68,10 +63,8 @@ public class DefaultRubyRuntimeFactory implements RubyRuntimeFactory {
 		config.setOutput( getOutput() );
 		config.setError( getError() );
 
-		log.info( "LOAD_PATHS: " + loadPaths );
 		Ruby runtime = JavaEmbedUtils.initialize(loadPaths, config);
 		
-		log.info( "INIT_SCRIPT: " + this.initScript );
 		if ( this.initScript != null ) {
 			runtime.evalScriptlet( this.initScript );
 		}

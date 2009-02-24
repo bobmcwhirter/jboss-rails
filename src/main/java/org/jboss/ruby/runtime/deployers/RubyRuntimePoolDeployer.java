@@ -22,7 +22,7 @@ public class RubyRuntimePoolDeployer extends AbstractSimpleVFSRealDeployer<RubyR
 	@Override
 	public void deploy(VFSDeploymentUnit unit, RubyRuntimeMetaData metaData) throws DeploymentException {
 		String poolName = "jboss.ruby.runtime.pool." + unit.getSimpleName();
-		log.info( "creating RubyRuntimePool: " + poolName );
+		log.trace( "creating RubyRuntimePool: " + poolName );
 		BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder( poolName, 
 				SharedRubyRuntimePool.class.getName() );
 		ValueMetaData factoryInjection = builder.createInject( "jboss.ruby.runtime.factory." + unit.getSimpleName() );

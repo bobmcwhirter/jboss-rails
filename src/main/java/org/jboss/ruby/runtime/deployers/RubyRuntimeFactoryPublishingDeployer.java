@@ -21,7 +21,7 @@ public class RubyRuntimeFactoryPublishingDeployer extends AbstractDeployer {
 
 		if (factory != null) {
 			String factoryName = "jboss.ruby.runtime.factory." + unit.getSimpleName();
-			log.info("publishing RubyRuntimeFactory: " + factoryName);
+			log.trace("publishing RubyRuntimeFactory: " + factoryName);
 			BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder(factoryName, RubyRuntimeFactoryProxy.class.getName());
 			builder.addConstructorParameter(RubyRuntimeFactory.class.getName(), factory);
 			BeanMetaData factoryBean = builder.getBeanMetaData();
