@@ -1,13 +1,14 @@
 package org.jboss.ruby.runtime;
 
 import java.io.PrintStream;
-import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.jboss.kernel.Kernel;
 import org.jboss.logging.Logger;
 import org.jruby.Ruby;
+import org.jruby.RubyClass;
 import org.jruby.RubyInstanceConfig;
 import org.jruby.javasupport.JavaEmbedUtils;
 
@@ -15,6 +16,7 @@ public class DefaultRubyRuntimeFactory implements RubyRuntimeFactory {
 	
 	private static final Logger log = Logger.getLogger( DefaultRubyRuntimeFactory.class );
 
+	private Kernel kernel;
 	private List<String> loadPaths = null;
 	private String initScript = null;
 
@@ -35,6 +37,14 @@ public class DefaultRubyRuntimeFactory implements RubyRuntimeFactory {
 		}
 		this.initScript = initScript;
 		
+	}
+	
+	public void setKernel(Kernel kernel) {
+		this.kernel = kernel;
+	}
+	
+	public Kernel getKernel() {
+		return this.kernel;
 	}
 	
 	public void setClassLoader(RubyDynamicClassLoader classLoader) {
@@ -68,9 +78,16 @@ public class DefaultRubyRuntimeFactory implements RubyRuntimeFactory {
 		if ( this.initScript != null ) {
 			runtime.evalScriptlet( this.initScript );
 		}
+		injectKernel(runtime);
 		return runtime;
 	}
 	
+	private void injectKernel(Ruby runtime) {
+		runtime.evalScriptlet( "require %q(jboss/kernel)" );
+		RubyClass jbossKernel = (RubyClass) runtime.getClassFromPath( "JBoss::Kernel" );
+		JavaEmbedUtils.invokeMethod(runtime, jbossKernel, "kernel=", new Object[] { this.kernel }, void.class );
+	}
+
 	public Map<Object,Object> getEnvironment() {
 		return Collections.emptyMap();
 	}

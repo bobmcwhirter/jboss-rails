@@ -17,7 +17,9 @@
 
   <!-- Runtime factories -->
 
-  <bean name="RubyRuntimeFactoryDeployer"           class="org.jboss.ruby.runtime.deployers.RubyRuntimeFactoryDeployer"/>
+  <bean name="RubyRuntimeFactoryDeployer"           class="org.jboss.ruby.runtime.deployers.RubyRuntimeFactoryDeployer">
+    <property name="kernel"><inject bean="jboss.kernel:service=Kernel"/></property>
+  </bean>
   <bean name="RubyRuntimeFactoryPublishingDeployer" class="org.jboss.ruby.runtime.deployers.RubyRuntimeFactoryPublishingDeployer"/>
   <bean name="RubyRuntimePoolDeployer"              class="org.jboss.ruby.runtime.deployers.RubyRuntimePoolDeployer"/>
 
