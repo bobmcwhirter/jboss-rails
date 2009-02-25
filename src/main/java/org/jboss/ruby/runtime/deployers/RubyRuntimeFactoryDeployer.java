@@ -11,6 +11,7 @@ import org.jboss.ruby.runtime.DefaultRubyRuntimeFactory;
 import org.jboss.ruby.runtime.RubyDynamicClassLoader;
 import org.jboss.ruby.runtime.RubyRuntimeFactory;
 import org.jboss.ruby.runtime.metadata.RubyRuntimeMetaData;
+import org.jboss.virtual.plugins.context.memory.MemoryContextFactory;
 
 public class RubyRuntimeFactoryDeployer extends AbstractSimpleVFSRealDeployer<RubyRuntimeMetaData> {
 
@@ -40,6 +41,7 @@ public class RubyRuntimeFactoryDeployer extends AbstractSimpleVFSRealDeployer<Ru
 		try {
 			RubyDynamicClassLoader classLoader = createClassLoader(unit);
 			factory.setClassLoader(classLoader);
+			unit.addAttachment( RubyDynamicClassLoader.class, classLoader );
 		} catch (MalformedURLException e) {
 			throw new DeploymentException(e);
 		}

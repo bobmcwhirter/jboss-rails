@@ -14,8 +14,8 @@ import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.apache.ws.commons.schema.XmlSchemaGroupBase;
 import org.apache.ws.commons.schema.XmlSchemaParticle;
 import org.jboss.logging.Logger;
-import org.jboss.ruby.enterprise.endpoints.databinding.RubyDataBinding;
 import org.jboss.ruby.enterprise.endpoints.databinding.RubyType;
+import org.jboss.ruby.enterprise.endpoints.databinding.RubyTypeSpace;
 
 public class RubyComplexType extends RubyType {
 
@@ -27,7 +27,7 @@ public class RubyComplexType extends RubyType {
 	private Map<QName, RubyAttribute> attributesByElementName = new HashMap<QName, RubyAttribute>();
 	private Map<String, RubyAttribute> attributesByName = new HashMap<String, RubyAttribute>();
 
-	public RubyComplexType(RubyDataBinding dataBinding, XmlSchemaComplexType xsdType) {
+	public RubyComplexType(XmlSchemaComplexType xsdType) {
 		super(xsdType.getName());
 		this.xsdType = xsdType;
 	}
@@ -37,7 +37,7 @@ public class RubyComplexType extends RubyType {
 	}
 
 	@SuppressWarnings("unchecked")
-	protected void initialize(RubyDataBinding dataBinding) {
+	protected void initialize(RubyTypeSpace typeSpace) {
 		XmlSchemaParticle particle = xsdType.getParticle();
 		if (particle instanceof XmlSchemaGroupBase) {
 			XmlSchemaGroupBase group = (XmlSchemaGroupBase) particle;
@@ -46,7 +46,7 @@ public class RubyComplexType extends RubyType {
 				if (sequenceParticle instanceof XmlSchemaElement) {
 					XmlSchemaElement element = (XmlSchemaElement) sequenceParticle;
 					QName elementTypeName = element.getSchemaTypeName();
-					RubyType rubyAttrType = dataBinding.getTypeByQName(elementTypeName);
+					RubyType rubyAttrType = typeSpace.getTypeByQName(elementTypeName);
 					RubyAttribute rubyAttr = new RubyAttribute(rubyAttrType, element);
 					log.info("add attr " + rubyAttr.getName() + " on " + getName());
 					this.attributes.add(rubyAttr);

@@ -6,8 +6,9 @@ import javax.xml.namespace.QName;
 
 import org.apache.cxf.interceptor.Fault;
 import org.jboss.logging.Logger;
-import org.jboss.ruby.enterprise.endpoints.databinding.RubyDataBinding;
+import org.jboss.ruby.enterprise.endpoints.cxf.RubyDataBinding;
 import org.jboss.ruby.enterprise.endpoints.databinding.RubyType;
+import org.jboss.ruby.enterprise.endpoints.databinding.RubyTypeSpace;
 import org.jboss.ruby.runtime.RubyRuntimePool;
 import org.jboss.ruby.util.StringUtils;
 import org.jruby.Ruby;
@@ -33,19 +34,19 @@ public class RubyEndpointHandler {
 	private String classLocation;
 	private String endpointClassName;
 
-	private RubyDataBinding dataBinding;
+	private RubyTypeSpace typeSpace;
 
-	public RubyEndpointHandler(RubyRuntimePool runtimePool, String classLocation, String endpointClassName, RubyDataBinding dataBinding) {
+	public RubyEndpointHandler(RubyRuntimePool runtimePool, String classLocation, String endpointClassName, RubyTypeSpace typeSpace) {
 		this.endpointLogger = Logger.getLogger( "jboss.ruby.endpoints." + endpointClassName );
 		this.runtimePool = runtimePool;
 		this.classLocation = classLocation;
 		this.endpointClassName = endpointClassName;
-		this.dataBinding = dataBinding;
+		this.typeSpace = typeSpace;
 	}
 
 	public Object invoke(Principal principal, String operationName, Object request, QName responseTypeName) {
 		log.info("invoke(" + operationName + ", " + request + ", " + responseTypeName + ")");
-		RubyType responseType = dataBinding.getTypeByQName(responseTypeName);
+		RubyType responseType = typeSpace.getTypeByQName(responseTypeName);
 		String responseCreator = null;
 		if (responseType != null) {
 			responseCreator = responseType.getNewInstanceFragment();

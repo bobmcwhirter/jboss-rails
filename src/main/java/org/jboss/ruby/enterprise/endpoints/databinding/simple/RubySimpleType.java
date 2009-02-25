@@ -1,7 +1,7 @@
 package org.jboss.ruby.enterprise.endpoints.databinding.simple;
 
-import org.jboss.ruby.enterprise.endpoints.databinding.RubyDataBinding;
 import org.jboss.ruby.enterprise.endpoints.databinding.RubyType;
+import org.jboss.ruby.enterprise.endpoints.databinding.RubyTypeSpace;
 
 public abstract class RubySimpleType<T> extends RubyType {
 	
@@ -22,7 +22,7 @@ public abstract class RubySimpleType<T> extends RubyType {
 		return true;
 	}
 		
-	protected void initialize(RubyDataBinding binding) {
+	protected void initialize(RubyTypeSpace typeSpace) {
 		// nothing
 	}
 	

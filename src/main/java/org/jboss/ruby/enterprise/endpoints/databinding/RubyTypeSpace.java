@@ -1,19 +1,22 @@
 package org.jboss.ruby.enterprise.endpoints.databinding;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
+import javax.wsdl.Definition;
+import javax.wsdl.WSDLException;
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.cxf.common.xmlschema.SchemaCollection;
-import org.apache.cxf.databinding.AbstractDataBinding;
-import org.apache.cxf.databinding.DataReader;
-import org.apache.cxf.databinding.DataWriter;
-import org.apache.cxf.service.Service;
+import org.apache.cxf.Bus;
+import org.apache.cxf.service.model.SchemaInfo;
 import org.apache.cxf.service.model.ServiceInfo;
+import org.apache.cxf.service.model.ServiceSchemaInfo;
+import org.apache.cxf.wsdl.WSDLManager;
+import org.apache.cxf.wsdl11.SchemaUtil;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaComplexType;
 import org.apache.ws.commons.schema.XmlSchemaObject;
@@ -25,24 +28,77 @@ import org.jboss.ruby.enterprise.endpoints.databinding.simple.RubyDateTimeType;
 import org.jboss.ruby.enterprise.endpoints.databinding.simple.RubyFloatType;
 import org.jboss.ruby.enterprise.endpoints.databinding.simple.RubyIntegerType;
 import org.jboss.ruby.enterprise.endpoints.databinding.simple.RubyStringType;
-import org.jboss.ruby.runtime.RubyRuntimePool;
-import org.w3c.dom.Node;
+import org.jboss.ruby.runtime.RubyDynamicClassLoader;
+import org.w3c.dom.Element;
 
-public class RubyDataBinding extends AbstractDataBinding {
+public class RubyTypeSpace {
 
-	private static final Logger log = Logger.getLogger(RubyDataBinding.class);
-	private static final Class<?>[] SUPPORTED_READER_FORMATS = new Class[] { Node.class };
-	private static final Class<?>[] SUPPORTED_WRITER_FORMATS = new Class[] { Node.class };
 	private static final String XML_SCHEMA_NS = "http://www.w3.org/2001/XMLSchema";
+	private static final Logger log = Logger.getLogger(RubyTypeSpace.class);
 	
-	private RubyRuntimePool rubyRuntimePool;
+	private URL wsdlLocation;
+
+	private Bus bus;
+	private RubyDynamicClassLoader classLoader;
 	
+	private Map<String, Element> schemaList = new HashMap<String, Element>();
 	private Map<QName,RubyType> typesByQName = new HashMap<QName,RubyType>();
 	private Map<String,RubyType> typesByClassName = new HashMap<String,RubyType>();
+	private String rubyPath;
+
+	public RubyTypeSpace() {
+
+	}
 	
-	public RubyDataBinding(RubyRuntimePool rubyRuntimePool) {
-		this.rubyRuntimePool = rubyRuntimePool;
+	public void setWsdlLocation(URL wsdlLocation) {
+		this.wsdlLocation = wsdlLocation;
+	}
+
+	public URL getWsdlLocation() {
+		return this.wsdlLocation;
+	}
+
+	public void setBus(Bus bus) {
+		this.bus = bus;
+	}
+
+	public Bus getBus() {
+		return bus;
+	}
+	
+	public void setRubyDynamicClassLoader(RubyDynamicClassLoader classLoader) {
+		this.classLoader = classLoader;
+	}
+	
+	public RubyDynamicClassLoader getRubyDynamicClassLoader() {
+		return this.classLoader;
+	}
+	
+	public void setRubyPath(String rubyPath) {
+		this.rubyPath = rubyPath;
+	}
+	
+	public String getRubyPath() {
+		return this.rubyPath;
+	}
+
+	public void start() throws WSDLException, MalformedURLException {
+		
 		initializePrimitiveTypes();
+
+		ServiceSchemaInfo serviceSchemaInfo = setUpSchemas();
+
+		List<SchemaInfo> schemas = serviceSchemaInfo.getSchemaInfoList();
+
+		for (SchemaInfo schema : schemas) {
+			XmlSchema xmlSchema = schema.getSchema();
+			loadSchema( xmlSchema );
+		}
+
+		log.info( "DEFINE: " );
+		log.info( getRubyClassDefinitions() );
+		
+		this.classLoader.putFile( rubyPath + ".rb", getRubyClassDefinitions() );
 	}
 	
 	private void initializePrimitiveTypes() {
@@ -62,56 +118,32 @@ public class RubyDataBinding extends AbstractDataBinding {
 		//typesByQName.put( new QName( XML_SCHEMA_NS, "time" ), new RubyPrimitiveType( "Time", "Time.now") );
 		//typesByQName.put( new QName( XML_SCHEMA_NS, "date" ), new RubyPrimitiveType( "Time", "Time.now") );
 	}
+	
+	ServiceSchemaInfo setUpSchemas() throws WSDLException {
+		WSDLManager wsdlManager = bus.getExtension(WSDLManager.class);
 
-	public <T> DataReader<T> createReader(Class<T> type) {
-		log.info( "createReader(" + type + ")" );
-		if ( type == XMLStreamReader.class ) {
-			return new RubyDataReader<T>( this );
-		}
-		if ( type == Node.class ) {
-			return new RubyDataReader<T>( this );
-		}
-		return null;
-	}
+		Definition def = wsdlManager.getDefinition(wsdlLocation);
+		
+		ServiceSchemaInfo serviceSchemaInfo = wsdlManager.getSchemasForDefinition(def);
 
-	public <T> DataWriter<T> createWriter(Class<T> type) {
-		log.info( "createWriter(" + type + ")" );
-		if ( type == XMLStreamWriter.class ) {
-			return (DataWriter<T>) new RubyDataWriter<T>( this );
-		} 
-		if ( type == Node.class ) {
-			return (DataWriter<T>) new RubyDataWriter<T>( this );
-		}
-		return null;
-	}
-
-	public Class<?>[] getSupportedReaderFormats() {
-		return SUPPORTED_READER_FORMATS;
-	}
-
-	public Class<?>[] getSupportedWriterFormats() {
-		return SUPPORTED_WRITER_FORMATS;
-	}
-
-	public void initialize(Service service) {
-		log.info( "initialize(" + service + ")" );
-		for ( ServiceInfo serviceInfo : service.getServiceInfos() ) {
-			loadSchemas( serviceInfo );
-		}
-	}
-
-	private void loadSchemas(ServiceInfo serviceInfo) {
-		log.info( "loadSchema(" + serviceInfo + ")" );
-		SchemaCollection schemas = serviceInfo.getXmlSchemaCollection();
-		for ( XmlSchema schema : schemas.getXmlSchemas() ) {
-			if ( schema.getTargetNamespace().equals( XML_SCHEMA_NS ) ) {
-				log.info( "skip XMLSchema" );
-				continue;
+		if (serviceSchemaInfo == null) {
+			SchemaUtil schemaUtil = new SchemaUtil(bus, this.schemaList);
+			ServiceInfo serviceInfo = new ServiceInfo();
+			schemaUtil.getSchemas(def, serviceInfo);
+			serviceSchemaInfo = new ServiceSchemaInfo();
+			serviceSchemaInfo.setSchemaElementList(this.schemaList);
+			serviceSchemaInfo.setSchemaCollection(serviceInfo.getXmlSchemaCollection());
+			serviceSchemaInfo.setSchemaInfoList(serviceInfo.getSchemas());
+			if (wsdlManager != null) {
+				wsdlManager.putSchemasForDefinition(def, serviceSchemaInfo);
 			}
-			loadSchema( schema );
 		}
-	}
 
+		schemaList.putAll(serviceSchemaInfo.getSchemaElementList());
+		
+		return serviceSchemaInfo;
+	}
+	
 	@SuppressWarnings("unchecked")
 	private void loadSchema(XmlSchema schema) {
 		log.info( "loadSchema(" + schema + ")" );
@@ -129,17 +161,9 @@ public class RubyDataBinding extends AbstractDataBinding {
 	}
 
 	private void loadType(QName name, XmlSchemaObject xsdType) {
-		RubyComplexType type = new RubyComplexType( this, (XmlSchemaComplexType) xsdType );
+		RubyComplexType type = new RubyComplexType( (XmlSchemaComplexType) xsdType );
 		this.typesByQName.put( name, type );
 		this.typesByClassName.put( type.getName(), type );
-	}
-	
-	public RubyType getTypeByQName(QName name) {
-		return this.typesByQName.get( name );
-	}
-	
-	public RubyType getTypeByClassName(String name) {
-		return this.typesByClassName.get( name );
 	}
 	
 	public String getRubyClassDefinitions() {
@@ -154,8 +178,15 @@ public class RubyDataBinding extends AbstractDataBinding {
 		return defs.toString();
 	}
 
-	public RubyRuntimePool getRubyRuntimePool() {
-		return this.rubyRuntimePool;
+	public void stop() {
+
 	}
 
+	public RubyType getTypeByQName(QName qname) {
+		return this.typesByQName.get( qname );
+	}
+
+	public RubyType getTypeByClassName(String className) {
+		return this.typesByClassName.get( className );
+	}
 }

@@ -28,14 +28,19 @@
   <bean name="YamlScheduleParsingDeployer"          class="org.jboss.ruby.enterprise.scheduler.deployers.YamlScheduleParsingDeployer"/>
   <bean name="ScheduleDeployer"                     class="org.jboss.ruby.enterprise.scheduler.deployers.ScheduleDeployer"/>
 
-  <!-- Endpoint Deployment  -->
+  <!-- Endpoint Infrastructure) -->
 
-<!--
   <bean name="CXFBusDeployer"                       class="org.jboss.ruby.enterprise.endpoints.cxf.deployers.CXFBusDeployer"/>
   <bean name="CXFServletDeployer"                   class="org.jboss.ruby.enterprise.endpoints.cxf.deployers.CXFServletDeployer"/>
-  <bean name="RubyEndpointsIntrospectionDeployer"   class="org.jboss.ruby.enterprise.endpoints.deployers.RubyEndpointsIntrospectionDeployer"/>
+
+  <!-- Endpoint Databinding -->
+
+  <bean name="RubyTypeSpaceDeployer"                class="org.jboss.ruby.enterprise.endpoints.deployers.RubyTypeSpaceDeployer"/>
+
+  <!-- Endpoint Services -->
+
+  <bean name="RubyEndpointIntrospectionDeployer"    class="org.jboss.ruby.enterprise.endpoints.deployers.RubyEndpointIntrospectionDeployer"/>
   <bean name="RubyEndpointDeployer"                 class="org.jboss.ruby.enterprise.endpoints.deployers.RubyEndpointDeployer"/>
--->
 
   <!-- 
      |

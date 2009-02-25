@@ -27,8 +27,10 @@ public class RackWebApplicationDeployer extends AbstractSimpleVFSRealDeployer<Ra
 
 	public RackWebApplicationDeployer() {
 		super(RackWebApplicationMetaData.class);
-		setStage(DeploymentStages.PRE_REAL);
+		addInput(JBossWebMetaData.class);
 		addOutput(JBossWebMetaData.class);
+		setStage(DeploymentStages.PRE_REAL);
+		setRelativeOrder(1000);
 	}
 
 	@Override
@@ -64,7 +66,14 @@ public class RackWebApplicationDeployer extends AbstractSimpleVFSRealDeployer<Ra
 		filterMapping.setFilterName("jboss.rack");
 		filterMapping.setUrlPatterns(Collections.singletonList("/*"));
 
-		webMetaData.setFilterMappings(Collections.singletonList(filterMapping));
+		List<FilterMappingMetaData> filterMappings = webMetaData.getFilterMappings();
+
+		if (filterMappings == null) {
+			filterMappings = new ArrayList<FilterMappingMetaData>();
+			webMetaData.setFilterMappings(filterMappings);
+		}
+
+		filterMappings.add(filterMapping);
 
 		webMetaData.setContextRoot(metaData.getContext());
 		if (metaData.getHost() != null) {
@@ -79,7 +88,7 @@ public class RackWebApplicationDeployer extends AbstractSimpleVFSRealDeployer<Ra
 
 			ParamValueMetaData resourceRootParam = new ParamValueMetaData();
 			resourceRootParam.setParamName("resource.root");
-			resourceRootParam.setParamValue( metaData.getStaticPathPrefix() );
+			resourceRootParam.setParamValue(metaData.getStaticPathPrefix());
 			staticServlet.setInitParam(Collections.singletonList(resourceRootParam));
 			servlets.add(staticServlet);
 			webMetaData.setServlets(servlets);
@@ -87,7 +96,13 @@ public class RackWebApplicationDeployer extends AbstractSimpleVFSRealDeployer<Ra
 			ServletMappingMetaData staticMapping = new ServletMappingMetaData();
 			staticMapping.setServletName("jboss.static");
 			staticMapping.setUrlPatterns(Collections.singletonList("/*"));
-			webMetaData.setServletMappings(Collections.singletonList(staticMapping));
+
+			List<ServletMappingMetaData> servletMappings = webMetaData.getServletMappings();
+			if (servletMappings == null) {
+				servletMappings = new ArrayList<ServletMappingMetaData>();
+				webMetaData.setServletMappings(servletMappings);
+			}
+			servletMappings.add(staticMapping);
 		}
 
 		unit.addAttachment(JBossWebMetaData.class, webMetaData);

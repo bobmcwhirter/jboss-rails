@@ -1,4 +1,4 @@
-package org.jboss.ruby.enterprise.endpoints.databinding;
+package org.jboss.ruby.enterprise.endpoints.cxf;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -13,6 +13,8 @@ import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.message.Attachment;
 import org.apache.cxf.service.model.MessagePartInfo;
 import org.jboss.logging.Logger;
+import org.jboss.ruby.enterprise.endpoints.databinding.RubyTypeSpace;
+import org.jboss.ruby.enterprise.endpoints.databinding.RubyXMLStreamDataWriter;
 
 public class RubyDataWriter<T> implements DataWriter<T> {
 	
@@ -22,12 +24,10 @@ public class RubyDataWriter<T> implements DataWriter<T> {
 	private Map<String,Object> properties = new HashMap<String,Object>();
 	private Schema schema;
 	
-	private RubyDataBinding dataBinding;
 	private RubyXMLStreamDataWriter streamWriter;
 	
-	public RubyDataWriter(RubyDataBinding dataBinding) {
-		this.dataBinding = dataBinding;
-		this.streamWriter = new RubyXMLStreamDataWriter( dataBinding );
+	public RubyDataWriter(RubyTypeSpace typeSpace) {
+		this.streamWriter = new RubyXMLStreamDataWriter( typeSpace );
 	}
 	
 	public void setAttachments(Collection<Attachment> attachments) {

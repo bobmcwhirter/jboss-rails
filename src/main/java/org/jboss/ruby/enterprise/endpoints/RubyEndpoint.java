@@ -9,14 +9,17 @@ import org.apache.cxf.Bus;
 import org.apache.cxf.binding.soap.SoapBindingFactory;
 import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.frontend.ServerFactoryBean;
+import org.apache.cxf.interceptor.LoggingInInterceptor;
+import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.apache.cxf.service.factory.AbstractServiceConfiguration;
 import org.apache.cxf.service.factory.ReflectionServiceFactoryBean;
 import org.apache.cxf.service.invoker.Invoker;
 import org.jboss.logging.Logger;
+import org.jboss.ruby.enterprise.endpoints.cxf.RubyDataBinding;
 import org.jboss.ruby.enterprise.endpoints.cxf.RubyEndpointInvoker;
 import org.jboss.ruby.enterprise.endpoints.cxf.RubyReflectionServiceFactoryBean;
 import org.jboss.ruby.enterprise.endpoints.cxf.RubyServiceConfiguration;
-import org.jboss.ruby.enterprise.endpoints.databinding.RubyDataBinding;
+import org.jboss.ruby.enterprise.endpoints.databinding.RubyTypeSpace;
 import org.jboss.ruby.runtime.RubyRuntimePool;
 
 /** The bean within MC representing a deployed Ruby WebService.
@@ -28,10 +31,11 @@ public class RubyEndpoint {
 	private static final Logger log = Logger.getLogger( RubyEndpoint.class );
 
 	private RubyRuntimePool runtimePool;
+	private RubyTypeSpace typeSpace;
 	private Bus bus;
 	private Server server;
 
-	//private String dir;
+	private String name;
 	private URL wsdlLocation;
 	
 	private String classLocation;
@@ -44,6 +48,14 @@ public class RubyEndpoint {
 	
 	public RubyEndpoint() {
 		
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public String getName() {
+		return this.name;
 	}
 	
 	public void setBus(Bus bus) {
@@ -110,6 +122,14 @@ public class RubyEndpoint {
 		return this.portName;
 	}
 	
+	public void setRubyTypeSpace(RubyTypeSpace typeSpace) {
+		this.typeSpace = typeSpace;
+	}
+	
+	public RubyTypeSpace getRubyTypeSpace() {
+		return this.typeSpace;
+	}
+	
 	public void start() {
 		log.info( "start()" );
 		AbstractServiceConfiguration serviceConfig = new RubyServiceConfiguration( getPortName() );
@@ -121,15 +141,18 @@ public class RubyEndpoint {
         serverFactory.setBus( bus );
 		serverFactory.setServiceFactory( serviceFactory );
 		
-		RubyDataBinding dataBinding = new RubyDataBinding( this.runtimePool );
+		RubyDataBinding dataBinding = new RubyDataBinding( this.runtimePool, this.name );
+		dataBinding.setRubyTypeSpace( this.typeSpace );
+		
 		serviceFactory.setDataBinding( dataBinding );
 		
-		RubyEndpointHandler serviceBean = createServiceBean( dataBinding );
+		RubyEndpointHandler serviceBean = createServiceBean();
 		serverFactory.setServiceName( new QName( getTargetNamespace(), getPortName() ) );
 		serverFactory.setEndpointName( new QName( getTargetNamespace(), getPortName() ) );
 		serverFactory.setServiceClass( RubyEndpointHandler.class );
 		serverFactory.setInvoker( createInvoker( serviceBean ) );
 		
+		log.info( "setting address to [" + getAddress() + "]" );
 		serverFactory.setAddress( getAddress() );
 		serverFactory.setWsdlURL( getWsdlLocation().toExternalForm() );
 		
@@ -139,14 +162,17 @@ public class RubyEndpoint {
 		
 		this.server = serverFactory.create();
 		
-		log.info( "RUBY CLASS DEFS: " + dataBinding.getRubyClassDefinitions() );
+		this.server.getEndpoint().getInInterceptors().add( new LoggingInInterceptor() );
+		this.server.getEndpoint().getOutFaultInterceptors().add( new LoggingOutInterceptor() );
+		
+		//log.info( "RUBY CLASS DEFS: " + dataBinding.getRubyClassDefinitions() );
 		
 		this.server.start();
 	}
 	
 
-	private RubyEndpointHandler createServiceBean(RubyDataBinding dataBinding) {
-		return new RubyEndpointHandler( this.runtimePool, this.classLocation, this.endpointClassName, dataBinding );
+	private RubyEndpointHandler createServiceBean() {
+		return new RubyEndpointHandler( this.runtimePool, this.classLocation, this.endpointClassName, this.typeSpace );
 	}
 	
 	private Invoker createInvoker(RubyEndpointHandler handler) {

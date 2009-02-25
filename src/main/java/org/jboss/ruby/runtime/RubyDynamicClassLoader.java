@@ -5,6 +5,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 
 import org.jboss.virtual.MemoryFileFactory;
+import org.jboss.virtual.plugins.context.memory.MemoryContextFactory;
 
 public class RubyDynamicClassLoader extends URLClassLoader {
 	
@@ -16,7 +17,7 @@ public class RubyDynamicClassLoader extends URLClassLoader {
 	
 	RubyDynamicClassLoader(URL baseUrl, ClassLoader parent) {
 		super( new URL[]{ baseUrl  }, parent );
-		
+		MemoryContextFactory.getInstance().createRoot( baseUrl );
 		this.baseUrl = baseUrl;
 	}
 	

@@ -14,11 +14,11 @@ import org.jruby.RubyClass;
 import org.jruby.javasupport.JavaEmbedUtils;
 import org.jruby.runtime.builtin.IRubyObject;
 
-public class RubyEndpointsIntrospectionDeployer extends AbstractDeployer {
+public class RubyEndpointIntrospectionDeployer extends AbstractDeployer {
 
 	private static final Object[] EMPTY_OBJECT_ARRAY = new Object[]{};
 
-	public RubyEndpointsIntrospectionDeployer() {
+	public RubyEndpointIntrospectionDeployer() {
 		setStage(DeploymentStages.POST_CLASSLOADER);
 		setAllInputs(true);
 		addOutput(RubyEndpointMetaData.class);

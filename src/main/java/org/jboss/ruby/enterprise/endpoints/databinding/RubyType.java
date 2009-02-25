@@ -12,7 +12,7 @@ public abstract class RubyType {
 		return this.name;
 	}
 	
-	protected abstract void initialize(RubyDataBinding binding); 
+	protected abstract void initialize(RubyTypeSpace typeSpace); 
 	
 	public abstract String getNewInstanceFragment();
 	

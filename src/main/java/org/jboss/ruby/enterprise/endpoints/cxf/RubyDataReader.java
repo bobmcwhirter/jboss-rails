@@ -1,4 +1,4 @@
-package org.jboss.ruby.enterprise.endpoints.databinding;
+package org.jboss.ruby.enterprise.endpoints.cxf;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -10,12 +10,14 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.validation.Schema;
 
 import org.apache.cxf.databinding.DataReader;
-import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.message.Attachment;
 import org.apache.cxf.service.model.MessagePartInfo;
 import org.jboss.logging.Logger;
+import org.jboss.ruby.enterprise.endpoints.databinding.RubyType;
+import org.jboss.ruby.enterprise.endpoints.databinding.RubyTypeSpace;
+import org.jboss.ruby.enterprise.endpoints.databinding.RubyXMLStreamDataReader;
+import org.jboss.ruby.runtime.RubyRuntimePool;
 import org.jruby.Ruby;
-import org.jruby.javasupport.JavaEmbedUtils;
 import org.jruby.runtime.builtin.IRubyObject;
 
 public class RubyDataReader<T> implements DataReader<T> {
@@ -26,21 +28,24 @@ public class RubyDataReader<T> implements DataReader<T> {
 	private Map<String, Object> properties = new HashMap<String, Object>();
 	private Schema schema;
 
-	private RubyDataBinding dataBinding;
+	private RubyTypeSpace typeSpace;
+	private RubyRuntimePool runtimePool;
+	private String name;
+	
 	private RubyXMLStreamDataReader reader;
 
-	public RubyDataReader(RubyDataBinding dataBinding) {
-		this.dataBinding = dataBinding;
+	public RubyDataReader(RubyTypeSpace typeSpace, RubyRuntimePool runtimePool, String name) {
+		this.typeSpace = typeSpace;
+		this.runtimePool = runtimePool;
+		this.name = name;
 		this.reader = new RubyXMLStreamDataReader();
 	}
 
 	public Object read(T input) {
-		log.info("read(" + input + ")");
 		return read(null, input);
 	}
 
 	public Object read(MessagePartInfo partInfo, T input) {
-		log.info("read(" + partInfo + ", " + input + ")");
 		if (input instanceof XMLStreamReader) {
 			return read(partInfo, (XMLStreamReader) input);
 		}
@@ -48,29 +53,22 @@ public class RubyDataReader<T> implements DataReader<T> {
 	}
 
 	private Object read(MessagePartInfo partInfo, XMLStreamReader input) {
-		log.info("read(" + partInfo + ", (XMLStreamReader) " + input + ")");
-		log.info("  partName: " + partInfo.getName());
-		log.info("  typeName: " + partInfo.getTypeQName());
 		Ruby runtime = null;
+		RubyType type = typeSpace.getTypeByQName(partInfo.getTypeQName());
 		try {
-			runtime = dataBinding.getRubyRuntimePool().borrowRuntime();
-			System.err.println( "-\n-\n-\n-\n" + dataBinding.getRubyClassDefinitions() + "\n-\n-\n-\n" );
-			runtime.evalScriptlet( dataBinding.getRubyClassDefinitions() );
-			RubyType type = dataBinding.getTypeByQName(partInfo.getTypeQName());
-			IRubyObject o = (IRubyObject) reader.read(runtime, input, type);
-			String insp = (String) JavaEmbedUtils.invokeMethod( o.getRuntime(), o, "inspect", new Object[]{}, String.class );
-			log.info( "READ TO:\n" + insp );
-			return o;
+			runtime = runtimePool.borrowRuntime();
+			runtime.evalScriptlet( "require %q(" + typeSpace.getRubyPath() + ")" );
+			return (IRubyObject) reader.read(runtime, input, type);
 		} catch (XMLStreamException e) {
-			throw new Fault(e);
+			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new Fault(e);
 		} finally {
-			if (runtime != null) {
-				dataBinding.getRubyRuntimePool().returnRuntime(runtime);
+			if ( runtime != null ) {
+				runtimePool.returnRuntime( runtime );
 			}
 		}
+		return null;
 	}
 
 	public Object read(QName name, T node, Class type) {
@@ -86,8 +84,6 @@ public class RubyDataReader<T> implements DataReader<T> {
 	}
 
 	public void setSchema(Schema schema) {
-		log.info("setSchema(" + schema + ")");
-		this.schema = schema;
 	}
 
 }
