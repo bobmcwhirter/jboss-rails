@@ -19,32 +19,57 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.ruby.enterprise.scheduler;
+package org.jboss.ruby.enterprise.jobs.metadata;
 
-import org.jboss.logging.Logger;
-import org.jruby.Ruby;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.quartz.StatefulJob;
+public class RubyJobMetaData {
 
-public class RubyJob implements Job, StatefulJob {
-	private Logger log;
+	private String group;
+	private String name;
+	private String description;
+	private String cronExpression;
+	private String rubyClassName;
+
+	public RubyJobMetaData() {
+		
+	}
 	
-	public RubyJob() {
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public String getName() {
+		return this.name;
+	}
+	
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
+	public String getDescription() {
+		return this.description;
+	}
+	
+	public void setCronExpression(String cronExpression) {
+		this.cronExpression = cronExpression;
+	}
+	
+	public String getCronExpression() {
+		return this.cronExpression;
+	}
+	
+	public void setGroup(String group) {
+		this.group = group;
 	}
 
-	public void execute(JobExecutionContext context) throws JobExecutionException {
-		String taskClass = (String) context.getJobDetail().getJobDataMap().get( "task.class.name");
-		log = Logger.getLogger( taskClass );
-		
-		Ruby runtime = (Ruby) context.getJobDetail().getJobDataMap().get( "ruby.runtime" );
-		String name= context.getJobDetail().getName();
-		
-		log.info( "Starting job: " + name );
-		String script = "$TASKS['" + name + "'].run\n";
-		runtime.evalScriptlet( script );
-		log.info( "Completed job: " + name );
+	public String getGroup() {
+		return this.group;
 	}
 
+	public void setRubyClassName(String rubyClassName) {
+		this.rubyClassName = rubyClassName;
+	}
+	
+	public String getRubyClassName() {
+		return this.rubyClassName;
+	}
 }

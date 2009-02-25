@@ -25,8 +25,8 @@
 
   <!-- Job Scheduling -->
 
-  <bean name="YamlScheduleParsingDeployer"          class="org.jboss.ruby.enterprise.scheduler.deployers.YamlScheduleParsingDeployer"/>
-  <bean name="ScheduleDeployer"                     class="org.jboss.ruby.enterprise.scheduler.deployers.ScheduleDeployer"/>
+  <bean name="YamlJobsParsingDeployer"              class="org.jboss.ruby.enterprise.jobs.deployers.YamlJobsParsingDeployer"/>
+  <bean name="RubyJobDeployer"                      class="org.jboss.ruby.enterprise.jobs.deployers.RubyJobDeployer"/>
 
   <!-- Endpoint Infrastructure) -->
 
@@ -59,8 +59,6 @@
 
   <!-- vendor/rails/.../version.rb -->
   <bean name="RailsVersionDeployer"            class="org.jboss.rails.core.deployers.RailsVersionDeployer"/>
-
-  <bean name="RailsScheduleDescribeDeployer"   class="org.jboss.rails.scheduler.deployers.RailsScheduleDescribeDeployer"/>
 
   <bean name="RailsRootReferenceParsingDeployer" class="org.jboss.rails.core.deployers.RailsRootReferenceParsingDeployer"/>
 

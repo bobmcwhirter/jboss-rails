@@ -1,6 +1,7 @@
 package org.jboss.ruby.runtime;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -17,24 +18,15 @@ public class DefaultRubyRuntimeFactory implements RubyRuntimeFactory {
 	private static final Logger log = Logger.getLogger( DefaultRubyRuntimeFactory.class );
 
 	private Kernel kernel;
-	private List<String> loadPaths = null;
 	private String initScript = null;
 
 	private RubyDynamicClassLoader classLoader;
 
 	public DefaultRubyRuntimeFactory() {
-		this( null, null );
+		this(null);
 	}
 	
-	public DefaultRubyRuntimeFactory(List<String> loadPaths) {
-		this( loadPaths, null );
-	}
-	
-	public DefaultRubyRuntimeFactory(List<String> loadPaths, String initScript) {
-		this.loadPaths = loadPaths;
-		if ( this.loadPaths == null ) {
-			this.loadPaths = Collections.emptyList();
-		}
+	public DefaultRubyRuntimeFactory(String initScript) {
 		this.initScript = initScript;
 		
 	}
@@ -72,8 +64,11 @@ public class DefaultRubyRuntimeFactory implements RubyRuntimeFactory {
 		config.setEnvironment( getEnvironment() );
 		config.setOutput( getOutput() );
 		config.setError( getError() );
+		
+		List<String> loadPath = new ArrayList<String>();
+		loadPath.add( "META-INF/jruby.home/lib/ruby/site_ruby/1.8" );
 
-		Ruby runtime = JavaEmbedUtils.initialize(loadPaths, config);
+		Ruby runtime = JavaEmbedUtils.initialize(loadPath, config);
 		
 		if ( this.initScript != null ) {
 			runtime.evalScriptlet( this.initScript );

@@ -9,14 +9,6 @@ public class RubyRuntimeMetaData {
 		
 	}
 	
-	public void setLoadPath(LoadPathMetaData loadPath) {
-		this.loadPath = loadPath;
-	}
-	
-	public LoadPathMetaData getLoadPath() {
-		return this.loadPath;
-	}
-	
 	public void setInitScript(String initScript) {
 		this.initScript = initScript;
 	}

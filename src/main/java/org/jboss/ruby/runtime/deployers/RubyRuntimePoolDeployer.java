@@ -5,6 +5,7 @@ import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.DeploymentStages;
+import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.deployers.vfs.spi.deployer.AbstractSimpleVFSRealDeployer;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.ruby.runtime.RubyRuntimeFactory;
@@ -21,15 +22,19 @@ public class RubyRuntimePoolDeployer extends AbstractSimpleVFSRealDeployer<RubyR
 
 	@Override
 	public void deploy(VFSDeploymentUnit unit, RubyRuntimeMetaData metaData) throws DeploymentException {
-		String poolName = "jboss.ruby.runtime.pool." + unit.getSimpleName();
-		log.trace( "creating RubyRuntimePool: " + poolName );
-		BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder( poolName, 
+		String beanName = getBeanName( unit );
+		log.info( "creating RubyRuntimePool: " + beanName );
+		BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder( beanName, 
 				SharedRubyRuntimePool.class.getName() );
 		ValueMetaData factoryInjection = builder.createInject( "jboss.ruby.runtime.factory." + unit.getSimpleName() );
 		builder.addConstructorParameter( RubyRuntimeFactory.class.getName(), factoryInjection );
 		BeanMetaData poolBean = builder.getBeanMetaData();
 		unit.addAttachment( BeanMetaData.class.getName() + "$RubyRuntimePool", poolBean, BeanMetaData.class );
 		
+	}
+	
+	public static String getBeanName(DeploymentUnit unit) {
+		return "jboss.ruby.runtime.pool." + unit.getName();
 	}
 
 }

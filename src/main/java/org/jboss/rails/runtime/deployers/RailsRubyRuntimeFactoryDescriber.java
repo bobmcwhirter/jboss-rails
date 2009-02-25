@@ -29,15 +29,6 @@ public class RailsRubyRuntimeFactoryDescriber extends AbstractDeployer {
 			unit.addAttachment( RubyRuntimeMetaData.class, runtimeMetaData );
 		}
 		
-		LoadPathMetaData loadPath = runtimeMetaData.getLoadPath();
-		
-		if ( loadPath == null ) {
-			loadPath = new LoadPathMetaData();
-			runtimeMetaData.setLoadPath( loadPath );
-			
-		}
-		
-		loadPath.addPath( "META-INF/jruby.home/lib/ruby/site_ruby/1.8" );
 		runtimeMetaData.setInitScript( initScript );
 		
 	}

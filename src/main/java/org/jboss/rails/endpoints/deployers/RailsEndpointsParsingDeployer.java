@@ -1,6 +1,7 @@
 package org.jboss.rails.endpoints.deployers;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.List;
 
@@ -10,8 +11,7 @@ import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.rails.core.metadata.RailsApplicationMetaData;
 import org.jboss.ruby.enterprise.endpoints.metadata.RubyEndpointMetaData;
-import org.jboss.ruby.runtime.metadata.LoadPathMetaData;
-import org.jboss.ruby.runtime.metadata.RubyRuntimeMetaData;
+import org.jboss.ruby.runtime.metadata.RubyLoadPathMetaData;
 import org.jboss.ruby.util.StringUtils;
 import org.jboss.virtual.VirtualFile;
 import org.jboss.virtual.plugins.vfs.helpers.SuffixMatchFilter;
@@ -50,23 +50,12 @@ public class RailsEndpointsParsingDeployer extends AbstractParsingDeployer {
 
 	}
 
-	protected void addLoadPath(DeploymentUnit unit, VirtualFile endpointsDir) {
-		RubyRuntimeMetaData runtimeMetaData = unit.getAttachment(RubyRuntimeMetaData.class);
+	protected void addLoadPath(DeploymentUnit unit, VirtualFile endpointsDir) throws MalformedURLException, URISyntaxException {
+		RubyLoadPathMetaData loadPathMetaData = new RubyLoadPathMetaData();
 
-		if (runtimeMetaData == null) {
-			runtimeMetaData = new RubyRuntimeMetaData();
-			unit.addAttachment(RubyRuntimeMetaData.class, runtimeMetaData);
-		}
+		loadPathMetaData.setURL(endpointsDir.toURL());
 
-		LoadPathMetaData loadPathMetaData = runtimeMetaData.getLoadPath();
-
-		if (loadPathMetaData == null) {
-			loadPathMetaData = new LoadPathMetaData();
-			runtimeMetaData.setLoadPath(loadPathMetaData);
-		}
-
-		RailsApplicationMetaData railsAppMetaData = unit.getAttachment(RailsApplicationMetaData.class);
-		loadPathMetaData.addPath(railsAppMetaData.getRailsRootPath() + "/" + endpointsDir.getPathName() );
+		unit.addAttachment(RubyLoadPathMetaData.class.getName() + "$" + unit.getName() + "$endpoints", loadPathMetaData, RubyLoadPathMetaData.class);
 	}
 
 	protected void scanEndpointsDir(DeploymentUnit unit, VirtualFile endpointsDir) throws IOException, URISyntaxException {
@@ -93,7 +82,7 @@ public class RailsEndpointsParsingDeployer extends AbstractParsingDeployer {
 		metaData.setName(name);
 		metaData.setEndpointClassName(getEndpointClassName(name));
 		metaData.setWsdlLocation(wsdl.toURL());
-		metaData.setClassLocation( classLocation );
+		metaData.setClassLocation(classLocation);
 		unit.addAttachment(RubyEndpointMetaData.class.getName() + "$" + name, metaData, RubyEndpointMetaData.class);
 	}
 

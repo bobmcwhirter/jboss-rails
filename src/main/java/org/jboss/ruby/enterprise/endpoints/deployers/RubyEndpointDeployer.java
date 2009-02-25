@@ -12,6 +12,7 @@ import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.logging.Logger;
 import org.jboss.ruby.enterprise.endpoints.RubyEndpoint;
 import org.jboss.ruby.enterprise.endpoints.metadata.RubyEndpointMetaData;
+import org.jboss.ruby.runtime.deployers.RubyRuntimePoolDeployer;
 
 /**
  * REAL stage deployer to deploy all <code>RubyEndpointMetaData</code> in a
@@ -64,7 +65,7 @@ public class RubyEndpointDeployer extends AbstractDeployer {
 
 		BeanMetaDataBuilder beanBuilder = BeanMetaDataBuilder.createBuilder(beanName, RubyEndpoint.class.getName());
 
-		ValueMetaData poolInjection = beanBuilder.createInject("jboss.ruby.runtime.pool." + unit.getSimpleName());
+		ValueMetaData poolInjection = beanBuilder.createInject( RubyRuntimePoolDeployer.getBeanName( unit ) );
 		beanBuilder.addPropertyMetaData("rubyRuntimePool", poolInjection);
 		beanBuilder.addPropertyMetaData("name", metaData.getName() );
 		beanBuilder.addPropertyMetaData("classLocation", metaData.getClassLocation());

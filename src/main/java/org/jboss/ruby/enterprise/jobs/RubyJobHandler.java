@@ -19,13 +19,32 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.ruby.enterprise.scheduler;
+package org.jboss.ruby.enterprise.jobs;
 
-public interface ScheduleDeploymentMBean {
+import org.jboss.logging.Logger;
+import org.jboss.ruby.runtime.RubyRuntimePool;
+import org.quartz.Job;
+import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.quartz.StatefulJob;
+
+public class RubyJobHandler implements Job, StatefulJob {
+	private static final Logger log = Logger.getLogger( RubyJobHandler.class );
 	
-	public void start() throws Exception;
-	public void stop();
-	public String getStatus();
-	public int getNumberOfTasks();
+	public RubyJobHandler() {
+	}
+
+	public void execute(JobExecutionContext context) throws JobExecutionException {
+		
+		JobDetail jobDetail = context.getJobDetail();
+		JobDataMap jobDataMap = jobDetail.getJobDataMap();
+		
+		String rubyClassName = (String) jobDataMap.get( RubyJob.RUBY_CLASS_NAME_KEY );
+		RubyRuntimePool runtimePool = (RubyRuntimePool) jobDataMap.get( RubyJob.RUNTIME_POOL_KEY );
+		
+		log.info( "execute(" + rubyClassName + ", " + runtimePool + ")" );
+	}
 
 }
