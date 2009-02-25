@@ -23,6 +23,11 @@ package org.jboss.ruby.enterprise.jobs;
 
 import org.jboss.logging.Logger;
 import org.jboss.ruby.runtime.RubyRuntimePool;
+import org.jboss.ruby.util.StringUtils;
+import org.jruby.Ruby;
+import org.jruby.RubyClass;
+import org.jruby.RubyModule;
+import org.jruby.javasupport.JavaEmbedUtils;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -32,6 +37,7 @@ import org.quartz.StatefulJob;
 
 public class RubyJobHandler implements Job, StatefulJob {
 	private static final Logger log = Logger.getLogger( RubyJobHandler.class );
+	private static final Object[] EMPTY_OBJECT_ARRAY = new Object[]{};
 	
 	public RubyJobHandler() {
 	}
@@ -43,6 +49,37 @@ public class RubyJobHandler implements Job, StatefulJob {
 		
 		String rubyClassName = (String) jobDataMap.get( RubyJob.RUBY_CLASS_NAME_KEY );
 		RubyRuntimePool runtimePool = (RubyRuntimePool) jobDataMap.get( RubyJob.RUNTIME_POOL_KEY );
+		
+		Ruby ruby = null;
+		
+		try {
+			ruby = runtimePool.borrowRuntime();
+			
+			String requirePath = StringUtils.underscore( rubyClassName ).replaceAll( "::", "/" );
+			String require = "load %q(" + requirePath + ".rb)";
+			log.info( "REQUIRE [" + require + "]" );
+			
+			ruby.evalScriptlet( require );
+			
+			RubyModule rubyClass = ruby.getClassFromPath( rubyClassName );
+			
+			log.info( "RubyClass: " + rubyClass );
+			
+			Object rubyObj = JavaEmbedUtils.invokeMethod(ruby, rubyClass, "new", EMPTY_OBJECT_ARRAY, Object.class );
+			
+			log.info( "rubyObj = " + rubyObj );
+			
+			JavaEmbedUtils.invokeMethod( ruby, rubyObj, "run", EMPTY_OBJECT_ARRAY, void.class );
+			
+			
+		} catch (Exception e) {
+			throw new JobExecutionException( e );
+		} finally {
+			if ( ruby != null ) {
+				runtimePool.returnRuntime( ruby );
+			}
+			
+		}
 		
 		log.info( "execute(" + rubyClassName + ", " + runtimePool + ")" );
 	}

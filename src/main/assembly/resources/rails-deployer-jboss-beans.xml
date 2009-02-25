@@ -67,4 +67,6 @@
   <!-- Endpoint Deployment  -->
   <bean name="RailsEndpointsParsingDeployer"       class="org.jboss.rails.endpoints.deployers.RailsEndpointsParsingDeployer"/>
 
+  <bean name="RailsJobsRubyLoadPathDescriber"      class="org.jboss.rails.jobs.deployers.RailsJobsRubyLoadPathDescriber"/>
+
 </deployment>
