@@ -1,5 +1,6 @@
 package org.jboss.ruby.runtime.deployers;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashSet;
@@ -15,6 +16,7 @@ import org.jboss.ruby.runtime.RubyDynamicClassLoader;
 import org.jboss.ruby.runtime.RubyRuntimeFactory;
 import org.jboss.ruby.runtime.metadata.RubyLoadPathMetaData;
 import org.jboss.ruby.runtime.metadata.RubyRuntimeMetaData;
+import org.jruby.Ruby;
 
 public class RubyRuntimeFactoryDeployer extends AbstractSimpleVFSRealDeployer<RubyRuntimeMetaData> {
 
@@ -24,11 +26,11 @@ public class RubyRuntimeFactoryDeployer extends AbstractSimpleVFSRealDeployer<Ru
 		super(RubyRuntimeMetaData.class);
 		setStage(DeploymentStages.CLASSLOADER);
 	}
-	
+
 	public void setKernel(Kernel kernel) {
 		this.kernel = kernel;
 	}
-	
+
 	public Kernel getKernel() {
 		return this.kernel;
 	}
@@ -39,30 +41,31 @@ public class RubyRuntimeFactoryDeployer extends AbstractSimpleVFSRealDeployer<Ru
 		log.trace("creating RubyRuntimeFactory: " + factoryName);
 
 		DefaultRubyRuntimeFactory factory = new DefaultRubyRuntimeFactory(metaData.getInitScript());
-		factory.setKernel( this.kernel );
+		factory.setKernel(this.kernel);
 
 		try {
 			RubyDynamicClassLoader classLoader = createClassLoader(unit);
 			factory.setClassLoader(classLoader);
-			unit.addAttachment( RubyDynamicClassLoader.class, classLoader );
+			unit.addAttachment(RubyDynamicClassLoader.class, classLoader);
 		} catch (MalformedURLException e) {
 			throw new DeploymentException(e);
 		}
 
 		unit.addAttachment(RubyRuntimeFactory.class, factory);
+
 	}
 
 	private RubyDynamicClassLoader createClassLoader(VFSDeploymentUnit unit) throws MalformedURLException {
-		
-		Set<? extends RubyLoadPathMetaData> allMetaData = unit.getAllMetaData( RubyLoadPathMetaData.class );
-		
+
+		Set<? extends RubyLoadPathMetaData> allMetaData = unit.getAllMetaData(RubyLoadPathMetaData.class);
+
 		Set<URL> urls = new HashSet<URL>();
-		
-		for ( RubyLoadPathMetaData each : allMetaData ) {
-			urls.add( each.getURL() );
+
+		for (RubyLoadPathMetaData each : allMetaData) {
+			urls.add(each.getURL());
 		}
-		
-		RubyDynamicClassLoader classLoader = RubyDynamicClassLoader.create(unit.getSimpleName(), urls, unit.getClassLoader() );
+
+		RubyDynamicClassLoader classLoader = RubyDynamicClassLoader.create(unit.getSimpleName(), urls, unit.getClassLoader());
 		return classLoader;
 	}
 
