@@ -26,6 +26,10 @@ public class BaseEndpointRb {
 	public void setPrincipal(Principal principal) {
 		this.principal = principal;
 	}
+	
+	public Principal getPrincipal() {
+		return this.principal;
+	}
 
 	public void setRequest(Object request) {
 		this.request = request;

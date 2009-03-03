@@ -10,6 +10,8 @@ import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.spi.deployer.helpers.AbstractDeployer;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.logging.Logger;
+import org.jboss.ruby.enterprise.crypto.metadata.CryptoMetaData;
+import org.jboss.ruby.enterprise.crypto.metadata.CryptoStoreMetaData;
 import org.jboss.ruby.enterprise.endpoints.RubyEndpoint;
 import org.jboss.ruby.enterprise.endpoints.metadata.RubyEndpointMetaData;
 import org.jboss.ruby.runtime.deployers.RubyRuntimePoolDeployer;
@@ -36,21 +38,22 @@ public class RubyEndpointDeployer extends AbstractDeployer {
 		super();
 		setStage(DeploymentStages.REAL);
 		setAllInputs(true);
+		addInput(CryptoMetaData.class);
 		setOutput(BeanMetaData.class);
 	}
 
 	public void deploy(DeploymentUnit unit) throws DeploymentException {
 		Set<? extends RubyEndpointMetaData> allMetaData = unit.getAllMetaData(RubyEndpointMetaData.class);
-		
-		if ( allMetaData.size() == 0 ) {
+
+		if (allMetaData.size() == 0) {
 			return;
 		}
-		
+
 		BeanMetaData busBean = unit.getAttachment(BeanMetaData.class + "$cxf.bus", BeanMetaData.class);
 		if (busBean == null) {
 			throw new DeploymentException("No CXF Bus available");
 		}
-		
+
 		for (RubyEndpointMetaData each : allMetaData) {
 			deployWebService(unit, busBean, each);
 		}
@@ -63,22 +66,38 @@ public class RubyEndpointDeployer extends AbstractDeployer {
 
 		BeanMetaDataBuilder beanBuilder = BeanMetaDataBuilder.createBuilder(beanName, RubyEndpoint.class.getName());
 
-		ValueMetaData poolInjection = beanBuilder.createInject( RubyRuntimePoolDeployer.getBeanName( unit ) );
+		ValueMetaData poolInjection = beanBuilder.createInject(RubyRuntimePoolDeployer.getBeanName(unit));
 		beanBuilder.addPropertyMetaData("rubyRuntimePool", poolInjection);
-		beanBuilder.addPropertyMetaData("name", metaData.getName() );
+		beanBuilder.addPropertyMetaData("name", metaData.getName());
 		beanBuilder.addPropertyMetaData("classLocation", metaData.getClassLocation());
 		beanBuilder.addPropertyMetaData("endpointClassName", metaData.getEndpointClassName());
-		beanBuilder.addPropertyMetaData("wsdlLocation", metaData.getWsdlLocation() );
+		beanBuilder.addPropertyMetaData("wsdlLocation", metaData.getWsdlLocation());
 		beanBuilder.addPropertyMetaData("targetNamespace", metaData.getTargetNamespace());
 		beanBuilder.addPropertyMetaData("portName", metaData.getPortName());
 		beanBuilder.addPropertyMetaData("address", "/" + metaData.getName());
+
+		ValueMetaData typeSpaceInjection = beanBuilder.createInject(RubyTypeSpaceDeployer.getBeanName(unit, metaData.getName()));
+		beanBuilder.addPropertyMetaData("rubyTypeSpace", typeSpaceInjection);
+
+		beanBuilder.addPropertyMetaData("verifyTimestamp", metaData.getSecurityMetaData().getInboundSecurityMetaData().isVerifyTimestamp());
+		beanBuilder.addPropertyMetaData("verifySignature", metaData.getSecurityMetaData().getInboundSecurityMetaData().isVerifySignature());
 		
-		ValueMetaData typeSpaceInjection = beanBuilder.createInject( RubyTypeSpaceDeployer.getBeanName( unit, metaData.getName() ) );
-		beanBuilder.addPropertyMetaData( "rubyTypeSpace", typeSpaceInjection );
-		
-		//beanBuilder.addPropertyMetaData("verifySignature", metaData.getInboundSecurity().isVerifySignature());
-		//beanBuilder.addPropertyMetaData("verifyTimestamp", metaData.getInboundSecurity().isVerifyTimestamp());
-		//beanBuilder.addPropertyMetaData("trustStore", metaData.getInboundSecurity().getTrustStore());
+		CryptoMetaData crypto = unit.getAttachment(CryptoMetaData.class);
+
+		if (crypto != null) {
+			String storeName = metaData.getSecurityMetaData().getInboundSecurityMetaData().getTrustStore();
+			if (storeName == null) {
+				storeName = "truststore";
+			}
+
+			CryptoStoreMetaData storeMetaData = crypto.getCryptoStoreMetaData(storeName);
+
+			if (storeMetaData != null) {
+				beanBuilder.addPropertyMetaData("trustStoreFile", storeMetaData.getStore() );
+				beanBuilder.addPropertyMetaData("trustStorePassword", storeMetaData.getPassword() );
+			}
+		}
+
 
 		ValueMetaData busInjection = beanBuilder.createInject(busBean.getName());
 		beanBuilder.addPropertyMetaData("bus", busInjection);
@@ -86,5 +105,4 @@ public class RubyEndpointDeployer extends AbstractDeployer {
 		BeanMetaData beanMetaData = beanBuilder.getBeanMetaData();
 		unit.addAttachment(BeanMetaData.class + "$endpoint." + metaData.getName(), beanMetaData, BeanMetaData.class);
 	}
-
 }

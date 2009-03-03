@@ -21,6 +21,8 @@ public class RailsEndpointsParsingDeployer extends AbstractParsingDeployer {
 	private static final String ENDPOINTS_DIR = "app/endpoints/";
 	private static final String SUFFIX = ".wsdl";
 	private static final SuffixMatchFilter SUFFIX_FILTER = new SuffixMatchFilter(SUFFIX);
+	
+	private static final String DEFAULT_TRUST_STORE = "auth/truststore.jks";
 
 	public RailsEndpointsParsingDeployer() {
 		setInput(RailsApplicationMetaData.class);

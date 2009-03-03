@@ -8,6 +8,10 @@
      |
      -->
 
+  <!-- Crypto -->
+
+  <bean name="CryptoYamlParsingDeployer"            class="org.jboss.ruby.enterprise.crypto.deployers.CryptoYamlParsingDeployer" />
+
   <!-- Rack and Web --> 
 
   <bean name="YamlWebParsingDeployer"               class="org.jboss.ruby.enterprise.web.rack.deployers.YamlWebParsingDeployer"/>
@@ -50,6 +54,9 @@
 
   <!-- RAILS_ROOT structure recognition -->
   <bean name="RailsStructure" class="org.jboss.rails.core.deployers.RailsStructure"/>
+
+  <!-- Crypto -->
+  <bean name="RailsCryptoYamlPostParsingDeployer" class="org.jboss.rails.crypto.deployers.RailsCryptoYamlPostParsingDeployer"/>
 
   <!-- Rack -->
   <bean name="RailsRackDeployer" class="org.jboss.rails.web.deployers.RailsRackDeployer"/>
