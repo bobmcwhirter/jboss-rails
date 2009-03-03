@@ -22,7 +22,7 @@ public class RubyScheduler {
 	public String getName() {
 		return this.name;
 	}
-
+	
 	public Scheduler getScheduler() {
 		return this.scheduler;
 	}
@@ -39,7 +39,8 @@ public class RubyScheduler {
 
 	public void stop() throws SchedulerException {
 		log.info("Stopping Ruby job scheduler: " + getName());
-		this.scheduler.shutdown();
+		this.scheduler.shutdown( true );
+		log.info("Stopped Ruby job scheduler: " + getName());
 	}
 
 }
