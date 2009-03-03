@@ -42,11 +42,10 @@ public class YamlJobsParsingDeployer extends AbstractParsingDeployer {
 		if ( unit instanceof VFSDeploymentUnit ) {
 			deploy( (VFSDeploymentUnit) unit );
 		}
-		
 	}
 	
 	protected void deploy(VFSDeploymentUnit unit) throws DeploymentException {
-		VirtualFile metaData = unit.getMetaDataFile( "jboss-jobs.yml" );
+		VirtualFile metaData = unit.getMetaDataFile( "jobs.yml" );
 		if ( metaData != null ) {
 			parse( unit, metaData );
 		}
@@ -70,7 +69,7 @@ public class YamlJobsParsingDeployer extends AbstractParsingDeployer {
 				jobMetaData.setDescription(description);
 				jobMetaData.setRubyClassName( job );
 				jobMetaData.setCronExpression( cron.trim() );
-				unit.addAttachment( RubyJobMetaData.class.getName() + "$" + unit.getName() + "$" + jobName, jobMetaData, RubyJobMetaData.class );
+				unit.addAttachment( RubyJobMetaData.class.getName() + "$" + jobName, jobMetaData, RubyJobMetaData.class );
 			}
 		} catch (IOException e) {
 			throw new DeploymentException(e);

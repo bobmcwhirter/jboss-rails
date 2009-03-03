@@ -21,6 +21,8 @@
  */
 package org.jboss.ruby.enterprise.jobs;
 
+import java.util.Date;
+
 import org.jboss.logging.Logger;
 import org.jboss.ruby.runtime.RubyRuntimePool;
 import org.jboss.ruby.util.StringUtils;
@@ -36,59 +38,65 @@ import org.quartz.JobExecutionException;
 import org.quartz.StatefulJob;
 
 public class RubyJobHandler implements Job, StatefulJob {
-	private static final Logger log = Logger.getLogger( RubyJobHandler.class );
-	private static final Object[] EMPTY_OBJECT_ARRAY = new Object[]{};
-	
+	private static final Logger log = Logger.getLogger(RubyJobHandler.class);
+	private static final Object[] EMPTY_OBJECT_ARRAY = new Object[] {};
+
 	public RubyJobHandler() {
 	}
 
 	public void execute(JobExecutionContext context) throws JobExecutionException {
-		
+
 		JobDetail jobDetail = context.getJobDetail();
 		JobDataMap jobDataMap = jobDetail.getJobDataMap();
 		
-		String rubyClassName = (String) jobDataMap.get( RubyJob.RUBY_CLASS_NAME_KEY );
-		RubyRuntimePool runtimePool = (RubyRuntimePool) jobDataMap.get( RubyJob.RUNTIME_POOL_KEY );
-		
+		String rubyClassName = (String) jobDataMap.get(RubyJob.RUBY_CLASS_NAME_KEY);
+		RubyRuntimePool runtimePool = (RubyRuntimePool) jobDataMap.get(RubyJob.RUNTIME_POOL_KEY);
+
 		Ruby ruby = null;
-		
+
 		try {
 			ruby = runtimePool.borrowRuntime();
-			
-			loadSupport( ruby );
-			
-			String requirePath = StringUtils.underscore( rubyClassName ).replaceAll( "::", "/" );
+
+			loadSupport(ruby);
+
+			String requirePath = StringUtils.underscore(rubyClassName).replaceAll("::", "/");
 			String require = "load %q(" + requirePath + ".rb)";
-			
-			ruby.evalScriptlet( require );
-			
-			RubyModule rubyClass = ruby.getClassFromPath( rubyClassName );
-			
-			BaseJobRb javaJob = (BaseJobRb) JavaEmbedUtils.invokeMethod(ruby, rubyClass, "new", EMPTY_OBJECT_ARRAY, BaseJobRb.class );
-			
-			injectLogger( javaJob, rubyClassName );
-			
-			IRubyObject rubyJob = JavaEmbedUtils.javaToRuby(ruby, javaJob);
-			
-			JavaEmbedUtils.invokeMethod( ruby, rubyJob, "run", EMPTY_OBJECT_ARRAY, void.class );
-		} catch (Exception e) {
-			throw new JobExecutionException( e );
-		} finally {
-			if ( ruby != null ) {
-				runtimePool.returnRuntime( ruby );
+
+			ruby.evalScriptlet(require);
+
+			RubyModule rubyClass = ruby.getClassFromPath(rubyClassName);
+
+			try {
+				BaseJobRb javaJob = (BaseJobRb) JavaEmbedUtils.invokeMethod(ruby, rubyClass, "new", EMPTY_OBJECT_ARRAY, BaseJobRb.class);
+
+				injectLogger(javaJob, rubyClassName);
+
+				IRubyObject rubyJob = JavaEmbedUtils.javaToRuby(ruby, javaJob);
+
+				JavaEmbedUtils.invokeMethod(ruby, rubyJob, "run", EMPTY_OBJECT_ARRAY, void.class);
+			} catch (ClassCastException e) {
+				log.error( "Job is not a JBoss::Jobs::BaseJob subclass, unscheduling." );
+				context.getScheduler().unscheduleJob( context.getTrigger().getName(), context.getTrigger().getGroup() );
 			}
-			
+		} catch (Exception e) {
+			throw new JobExecutionException(e);
+		} finally {
+			if (ruby != null) {
+				runtimePool.returnRuntime(ruby);
+			}
+
 		}
 	}
+
 	protected void loadSupport(Ruby runtime) {
 		String supportScript = "require %q(jboss/jobs/base_job)\n";
 		runtime.evalScriptlet(supportScript);
 	}
 
 	private void injectLogger(BaseJobRb javaJob, String rubyClassName) {
-		String loggerName = rubyClassName.replaceAll( "::", "." );
-		Logger logger = Logger.getLogger( loggerName );
-		javaJob.setLogger( logger );
+		String loggerName = rubyClassName.replaceAll("::", ".");
+		Logger logger = Logger.getLogger(loggerName);
+		javaJob.setLogger(logger);
 	}
 
 }
