@@ -18,6 +18,10 @@ public class RubyDynamicClassLoader extends URLClassLoader {
 		this.baseUrl = baseUrl;
 	}
 	
+	public void destroy() {
+		MemoryContextFactory.getInstance().deleteRoot( baseUrl );
+	}
+	
 	public void putFile(String path, String contents) throws MalformedURLException {
 		URL fileUrl = new URL( this.baseUrl, path );
 		MemoryFileFactory.putFile(fileUrl, contents.getBytes());

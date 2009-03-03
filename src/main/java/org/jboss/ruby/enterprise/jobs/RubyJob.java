@@ -90,6 +90,7 @@ public class RubyJob {
 	}
 
 	public void start() throws ParseException, SchedulerException {
+		log.info( "Starting Ruby job: " + this.group + "." + this.name );
 		JobDetail jobDetail = new JobDetail();
 
 		jobDetail.setGroup(this.group);
@@ -112,6 +113,7 @@ public class RubyJob {
 	}
 
 	public void stop() throws SchedulerException {
+		log.info( "Stopping Ruby job: " + this.group + "." + this.name );
 		scheduler.unscheduleJob( getTriggerName(), this.group );
 	}
 

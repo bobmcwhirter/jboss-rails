@@ -59,7 +59,7 @@ public class RubyEndpointIntrospectionDeployer extends AbstractDeployer {
 		
 	}
 
-	protected void introspect(Ruby runtime, RubyEndpointMetaData metaData) {
+	protected void introspect(Ruby runtime, RubyEndpointMetaData metaData) throws DeploymentException {
 		log.debug("introspecting: " + metaData);
 		String classLocation = metaData.getClassLocation();
 
@@ -69,6 +69,22 @@ public class RubyEndpointIntrospectionDeployer extends AbstractDeployer {
 		
 		RubyClass rubyClass = runtime.getClass(metaData.getEndpointClassName());
 		log.debug("ruby class is " + rubyClass);
+		
+		RubyClass cur = rubyClass;
+		
+		boolean superClassFound = false;
+		
+		while ( cur != null ) {
+			if ( cur.getName().equals( "JBoss::Endpoints::BaseEndpoint" ) ) {
+				superClassFound = true;
+				break;
+			}
+			cur = cur.getSuperClass();
+		}
+		
+		if ( ! superClassFound) {
+			throw new DeploymentException( "Endpoint " + metaData.getEndpointClassName() + " does not have JBoss::Endpoints::BaseEndpoint as a superclass." );
+		}
 		
 		String targetNamespace = (String) reflect( rubyClass, "target_namespace" );
 		String portName        = (String) reflect( rubyClass, "port_name" );
@@ -85,8 +101,9 @@ public class RubyEndpointIntrospectionDeployer extends AbstractDeployer {
 		
 		if ( metaData.getSecurityMetaData() == null ) {
 			metaData.setSecurityMetaData( securityMetaData );
-		
 		}
+		
+		log.info( "security: " + securityMetaData );
 	}
 	
 	protected Object reflect(IRubyObject obj, String attr) {

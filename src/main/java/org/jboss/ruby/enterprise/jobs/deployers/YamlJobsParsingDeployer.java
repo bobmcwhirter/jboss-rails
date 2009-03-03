@@ -65,7 +65,7 @@ public class YamlJobsParsingDeployer extends AbstractParsingDeployer {
 				RubyJobMetaData jobMetaData = new RubyJobMetaData();
 				
 				jobMetaData.setName(jobName);
-				jobMetaData.setGroup( unit.getName() );
+				jobMetaData.setGroup( unit.getSimpleName() );
 				jobMetaData.setDescription(description);
 				jobMetaData.setRubyClassName( job );
 				jobMetaData.setCronExpression( cron.trim() );

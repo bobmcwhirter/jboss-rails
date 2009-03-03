@@ -48,7 +48,7 @@ public class RubyJobHandler implements Job, StatefulJob {
 
 		JobDetail jobDetail = context.getJobDetail();
 		JobDataMap jobDataMap = jobDetail.getJobDataMap();
-		
+
 		String rubyClassName = (String) jobDataMap.get(RubyJob.RUBY_CLASS_NAME_KEY);
 		RubyRuntimePool runtimePool = (RubyRuntimePool) jobDataMap.get(RubyJob.RUNTIME_POOL_KEY);
 
@@ -56,9 +56,9 @@ public class RubyJobHandler implements Job, StatefulJob {
 
 		try {
 			ruby = runtimePool.borrowRuntime();
-
+			
 			loadSupport(ruby);
-
+			
 			String requirePath = StringUtils.underscore(rubyClassName).replaceAll("::", "/");
 			String require = "load %q(" + requirePath + ".rb)";
 
@@ -75,8 +75,8 @@ public class RubyJobHandler implements Job, StatefulJob {
 
 				JavaEmbedUtils.invokeMethod(ruby, rubyJob, "run", EMPTY_OBJECT_ARRAY, void.class);
 			} catch (ClassCastException e) {
-				log.error( "Job is not a JBoss::Jobs::BaseJob subclass, unscheduling." );
-				context.getScheduler().unscheduleJob( context.getTrigger().getName(), context.getTrigger().getGroup() );
+				log.error("Job is not a JBoss::Jobs::BaseJob subclass, unscheduling.");
+				context.getScheduler().unscheduleJob(context.getTrigger().getName(), context.getTrigger().getGroup());
 			}
 		} catch (Exception e) {
 			throw new JobExecutionException(e);

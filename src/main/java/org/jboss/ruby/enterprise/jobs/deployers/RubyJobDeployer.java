@@ -21,6 +21,7 @@
  */
 package org.jboss.ruby.enterprise.jobs.deployers;
 
+import java.util.Properties;
 import java.util.Set;
 
 import org.jboss.beans.metadata.spi.BeanMetaData;
@@ -31,6 +32,7 @@ import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.spi.deployer.helpers.AbstractDeployer;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.ruby.enterprise.jobs.RubyJob;
+import org.jboss.ruby.enterprise.jobs.RubyScheduler;
 import org.jboss.ruby.enterprise.jobs.metadata.RubyJobMetaData;
 import org.jboss.ruby.runtime.deployers.RubyRuntimePoolDeployer;
 import org.quartz.Scheduler;
@@ -52,42 +54,38 @@ public class RubyJobDeployer extends AbstractDeployer {
 			return;
 		}
 
-		StdSchedulerFactory factory = new StdSchedulerFactory();
-		try {
-			Scheduler scheduler = factory.getScheduler();
-
-			for (RubyJobMetaData metaData : allMetaData) {
-				deploy(unit, scheduler, metaData);
-			}
-		} catch (SchedulerException e) {
-			throw new DeploymentException( e );
+		for (RubyJobMetaData metaData : allMetaData) {
+			deploy(unit, metaData);
 		}
 
 	}
 
-	protected void deploy(DeploymentUnit unit, Scheduler scheduler, RubyJobMetaData metaData) throws DeploymentException {
+	protected void deploy(DeploymentUnit unit, RubyJobMetaData metaData) throws DeploymentException {
 		String beanName = "jboss.ruby.jobs." + unit.getName() + "." + metaData.getName();
-		
-		log.debug( "deploying job: " + beanName );
+
+		log.debug("deploying job: " + beanName);
 
 		BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder(beanName, RubyJob.class.getName());
+
+		builder.addPropertyMetaData("group", metaData.getGroup());
+		builder.addPropertyMetaData("name", metaData.getName());
+		builder.addPropertyMetaData("rubyClassName", metaData.getRubyClassName());
+		builder.addPropertyMetaData("description", metaData.getDescription());
+		builder.addPropertyMetaData("cronExpression", metaData.getCronExpression());
 		
+		BeanMetaData schedulerBean = unit.getAttachment( BeanMetaData.class.getName() + "$" + RubyScheduler.class.getName(), BeanMetaData.class );
 		
-		builder.addPropertyMetaData( "group", metaData.getGroup());
-		builder.addPropertyMetaData( "name", metaData.getName() );
-		builder.addPropertyMetaData( "rubyClassName", metaData.getRubyClassName());
-		builder.addPropertyMetaData( "description", metaData.getDescription() );
-		builder.addPropertyMetaData( "cronExpression", metaData.getCronExpression() );
-		builder.addPropertyMetaData( "scheduler", scheduler);
+		ValueMetaData schedulerInjection = builder.createInject( schedulerBean.getName(), "scheduler" );
 		
-		ValueMetaData poolInjection = builder.createInject( RubyRuntimePoolDeployer.getBeanName( unit ) );
-		builder.addPropertyMetaData( "rubyRuntimePool", poolInjection);
-		
+		builder.addPropertyMetaData("scheduler", schedulerInjection);
+
+		ValueMetaData poolInjection = builder.createInject(RubyRuntimePoolDeployer.getBeanName(unit));
+		builder.addPropertyMetaData("rubyRuntimePool", poolInjection);
+
 		BeanMetaData beanMetaData = builder.getBeanMetaData();
-		
-		unit.addAttachment( BeanMetaData.class.getName() + "$" + RubyJob.class.getName() + "$" + beanName, beanMetaData, BeanMetaData.class );
+
+		unit.addAttachment(BeanMetaData.class.getName() + "$" + RubyJob.class.getName() + "$" + beanName, beanMetaData, BeanMetaData.class);
 
 	}
-
 
 }

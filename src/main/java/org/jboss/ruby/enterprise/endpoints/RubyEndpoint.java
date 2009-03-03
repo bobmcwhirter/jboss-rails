@@ -173,7 +173,7 @@ public class RubyEndpoint {
 	}
 
 	public void start() {
-		log.debug("start()");
+		log.info( "Starting Ruby Endpoint: " + this.endpointClassName );
 		AbstractServiceConfiguration serviceConfig = new RubyServiceConfiguration(getPortName());
 		ReflectionServiceFactoryBean serviceFactory = new RubyReflectionServiceFactoryBean();
 		serviceFactory.setServiceConfigurations(Collections.singletonList(serviceConfig));
@@ -252,7 +252,7 @@ public class RubyEndpoint {
 	}
 
 	public void stop() {
-		log.debug("stop()");
+		log.info( "Stopping Ruby Endpoint: " + this.endpointClassName );
 		this.server.stop();
 		this.server = null;
 	}

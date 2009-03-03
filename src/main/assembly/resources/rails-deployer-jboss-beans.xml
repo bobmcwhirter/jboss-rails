@@ -30,6 +30,7 @@
   <!-- Job Scheduling -->
 
   <bean name="YamlJobsParsingDeployer"              class="org.jboss.ruby.enterprise.jobs.deployers.YamlJobsParsingDeployer"/>
+  <bean name="RubySchedulerDeployer"                class="org.jboss.ruby.enterprise.jobs.deployers.RubySchedulerDeployer"/>
   <bean name="RubyJobDeployer"                      class="org.jboss.ruby.enterprise.jobs.deployers.RubyJobDeployer"/>
 
   <!-- Endpoint Infrastructure) -->

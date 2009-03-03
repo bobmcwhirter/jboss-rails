@@ -69,4 +69,18 @@ public class RubyRuntimeFactoryDeployer extends AbstractSimpleVFSRealDeployer<Ru
 		return classLoader;
 	}
 
+	@Override
+	public void undeploy(VFSDeploymentUnit unit, RubyRuntimeMetaData deployment) {
+		RubyDynamicClassLoader cl = unit.getAttachment( RubyDynamicClassLoader.class );
+		
+		if ( cl != null ) {
+			log.info( "destroying RubyDynamicClassLoader: " + cl );
+			cl.destroy();
+		} else {
+			log.info( "no classloader to destroy" );
+		}
+	}
+	
+	
+
 }

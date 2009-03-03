@@ -36,7 +36,7 @@ public class InboundSecurityMetaData {
 	}
 	
 	public String toString() {
-		return "[InboundSecurityMetaData: verifySignature=" + this.verifySignature + "; verifyTimestamp=" + this.verifyTimestamp + "]";
+		return "[InboundSecurityMetaData: verifySignature=" + this.verifySignature + "; verifyTimestamp=" + this.verifyTimestamp + "; trustStore=" + trustStore + "]";
 	}
 	
 
