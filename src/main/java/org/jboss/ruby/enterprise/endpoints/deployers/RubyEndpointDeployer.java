@@ -13,7 +13,9 @@ import org.jboss.logging.Logger;
 import org.jboss.ruby.enterprise.crypto.metadata.CryptoMetaData;
 import org.jboss.ruby.enterprise.crypto.metadata.CryptoStoreMetaData;
 import org.jboss.ruby.enterprise.endpoints.RubyEndpoint;
+import org.jboss.ruby.enterprise.endpoints.metadata.InboundSecurityMetaData;
 import org.jboss.ruby.enterprise.endpoints.metadata.RubyEndpointMetaData;
+import org.jboss.ruby.enterprise.endpoints.metadata.SecurityMetaData;
 import org.jboss.ruby.runtime.deployers.RubyRuntimePoolDeployer;
 
 /**
@@ -79,25 +81,39 @@ public class RubyEndpointDeployer extends AbstractDeployer {
 		ValueMetaData typeSpaceInjection = beanBuilder.createInject(RubyTypeSpaceDeployer.getBeanName(unit, metaData.getName()));
 		beanBuilder.addPropertyMetaData("rubyTypeSpace", typeSpaceInjection);
 
-		beanBuilder.addPropertyMetaData("verifyTimestamp", metaData.getSecurityMetaData().getInboundSecurityMetaData().isVerifyTimestamp());
-		beanBuilder.addPropertyMetaData("verifySignature", metaData.getSecurityMetaData().getInboundSecurityMetaData().isVerifySignature());
-		
-		CryptoMetaData crypto = unit.getAttachment(CryptoMetaData.class);
+		SecurityMetaData securityMetaData = metaData.getSecurityMetaData();
 
-		if (crypto != null) {
-			String storeName = metaData.getSecurityMetaData().getInboundSecurityMetaData().getTrustStore();
-			if (storeName == null) {
-				storeName = "truststore";
-			}
+		if (securityMetaData != null) {
 
-			CryptoStoreMetaData storeMetaData = crypto.getCryptoStoreMetaData(storeName);
+			InboundSecurityMetaData inboundSecurity = securityMetaData.getInboundSecurityMetaData();
 
-			if (storeMetaData != null) {
-				beanBuilder.addPropertyMetaData("trustStoreFile", storeMetaData.getStore() );
-				beanBuilder.addPropertyMetaData("trustStorePassword", storeMetaData.getPassword() );
+			if (inboundSecurity != null) {
+				beanBuilder.addPropertyMetaData("verifyTimestamp", inboundSecurity.isVerifyTimestamp());
+				beanBuilder.addPropertyMetaData("verifySignature", inboundSecurity.isVerifySignature());
+
+				if (inboundSecurity.isVerifySignature()) {
+					CryptoMetaData crypto = unit.getAttachment(CryptoMetaData.class);
+
+					if (crypto != null) {
+						String storeName = metaData.getSecurityMetaData().getInboundSecurityMetaData().getTrustStore();
+						if (storeName == null) {
+							storeName = "truststore";
+						}
+
+						CryptoStoreMetaData storeMetaData = crypto.getCryptoStoreMetaData(storeName);
+
+						if (storeMetaData != null) {
+							beanBuilder.addPropertyMetaData("trustStoreFile", storeMetaData.getStore());
+							beanBuilder.addPropertyMetaData("trustStorePassword", storeMetaData.getPassword());
+						} else {
+							throw new DeploymentException( "no such crypto store: " + storeName );
+						}
+					} else {
+						throw new DeploymentException( "unable to setup crypto" );
+					}
+				}
 			}
 		}
-
 
 		ValueMetaData busInjection = beanBuilder.createInject(busBean.getName());
 		beanBuilder.addPropertyMetaData("bus", busInjection);

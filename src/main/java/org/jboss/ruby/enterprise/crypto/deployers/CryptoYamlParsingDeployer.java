@@ -32,8 +32,6 @@ public class CryptoYamlParsingDeployer extends AbstractVFSParsingDeployer<Crypto
 			metaData.addCryptoStoreMetaData( storeMetaData );
 		}
 		
-		log.info( "crypto: " + metaData );
-		
 		return metaData;
 	}
 
