@@ -27,6 +27,7 @@ import org.jboss.ruby.util.StringUtils;
 import org.jruby.Ruby;
 import org.jruby.RubyModule;
 import org.jruby.javasupport.JavaEmbedUtils;
+import org.jruby.runtime.builtin.IRubyObject;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -54,6 +55,8 @@ public class RubyJobHandler implements Job, StatefulJob {
 		try {
 			ruby = runtimePool.borrowRuntime();
 			
+			loadSupport( ruby );
+			
 			String requirePath = StringUtils.underscore( rubyClassName ).replaceAll( "::", "/" );
 			String require = "load %q(" + requirePath + ".rb)";
 			
@@ -61,11 +64,13 @@ public class RubyJobHandler implements Job, StatefulJob {
 			
 			RubyModule rubyClass = ruby.getClassFromPath( rubyClassName );
 			
-			Object rubyObj = JavaEmbedUtils.invokeMethod(ruby, rubyClass, "new", EMPTY_OBJECT_ARRAY, Object.class );
+			BaseJobRb javaJob = (BaseJobRb) JavaEmbedUtils.invokeMethod(ruby, rubyClass, "new", EMPTY_OBJECT_ARRAY, BaseJobRb.class );
 			
-			JavaEmbedUtils.invokeMethod( ruby, rubyObj, "run", EMPTY_OBJECT_ARRAY, void.class );
+			injectLogger( javaJob, rubyClassName );
 			
+			IRubyObject rubyJob = JavaEmbedUtils.javaToRuby(ruby, javaJob);
 			
+			JavaEmbedUtils.invokeMethod( ruby, rubyJob, "run", EMPTY_OBJECT_ARRAY, void.class );
 		} catch (Exception e) {
 			throw new JobExecutionException( e );
 		} finally {
@@ -74,6 +79,16 @@ public class RubyJobHandler implements Job, StatefulJob {
 			}
 			
 		}
+	}
+	protected void loadSupport(Ruby runtime) {
+		String supportScript = "require %q(jboss/jobs/base_job)\n";
+		runtime.evalScriptlet(supportScript);
+	}
+
+	private void injectLogger(BaseJobRb javaJob, String rubyClassName) {
+		String loggerName = rubyClassName.replaceAll( "::", "." );
+		Logger logger = Logger.getLogger( loggerName );
+		javaJob.setLogger( logger );
 	}
 
 }

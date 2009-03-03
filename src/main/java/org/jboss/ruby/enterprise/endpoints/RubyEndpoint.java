@@ -254,5 +254,6 @@ public class RubyEndpoint {
 	public void stop() {
 		log.debug("stop()");
 		this.server.stop();
+		this.server = null;
 	}
 }
