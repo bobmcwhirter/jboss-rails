@@ -45,7 +45,7 @@ public class RubyEndpointHandler {
 	}
 
 	public Object invoke(Principal principal, String operationName, Object request, QName responseTypeName) {
-		log.info("invoke(" + operationName + ", " + request + ", " + responseTypeName + ")");
+		log.trace("invoke(" + operationName + ", " + request + ", " + responseTypeName + ")");
 		RubyType responseType = typeSpace.getTypeByQName(responseTypeName);
 		String responseCreator = null;
 		if (responseType != null) {
@@ -86,7 +86,7 @@ public class RubyEndpointHandler {
 	}
 
 	private void inject(BaseEndpointRb endpoint, Principal principal, Object request, String responseCreator) {
-		log.info("inject(" + endpoint + ", ...)");
+		log.trace("inject(" + endpoint + ", ...)");
 		endpoint.setPrincipal(principal);
 		endpoint.setRequest(request);
 		endpoint.setResponseCreator(responseCreator);
@@ -95,25 +95,23 @@ public class RubyEndpointHandler {
 
 	private Object invoke(IRubyObject endpoint, String operationName) {
 		String methodName = StringUtils.underscore(operationName);
-		log.info("invoke(" + endpoint + ", " + operationName + ") [" + methodName + "]");
+		log.trace("invoke(" + endpoint + ", " + operationName + ") [" + methodName + "]");
 		Object response = JavaEmbedUtils.invokeMethod(endpoint.getRuntime(), endpoint, methodName, EMPTY_OBJECT_ARRAY, Object.class);
-		log.info("response is: " + response);
+		log.trace("response is: " + response);
 		return response;
 	}
 
 	protected void loadSupport(Ruby runtime) {
 		String supportScript = "require %q(jboss/endpoints/base_endpoint)\n";
-		log.info("eval: " + supportScript);
 		runtime.evalScriptlet(supportScript);
 	}
 
 	private void loadEndpointClassLocation(Ruby ruby) {
 		if (this.classLocation == null) {
-			log.info("no classLocation, not loading");
+			log.debug("no classLocation, not loading");
 			return;
 		}
 		String load = "load %q(" + this.classLocation + ".rb)\n";
-		log.info("eval: " + load);
 		ruby.evalScriptlet(load);
 	}
 

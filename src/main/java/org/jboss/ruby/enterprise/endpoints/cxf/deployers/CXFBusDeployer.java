@@ -26,7 +26,7 @@ public class CXFBusDeployer extends AbstractCXFDeployer {
 			return;
 		}
 		
-		log.info( "deploying CXF bus for: " + unit );
+		log.debug( "deploying CXF bus for: " + unit );
 		
 		unit.getAttachment( Object.class );
 		

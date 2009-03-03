@@ -68,7 +68,7 @@ public class RubyJobDeployer extends AbstractDeployer {
 	protected void deploy(DeploymentUnit unit, Scheduler scheduler, RubyJobMetaData metaData) throws DeploymentException {
 		String beanName = "jboss.ruby.jobs." + unit.getName() + "." + metaData.getName();
 		
-		log.info( "deploying job: " + beanName );
+		log.debug( "deploying job: " + beanName );
 
 		BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder(beanName, RubyJob.class.getName());
 		

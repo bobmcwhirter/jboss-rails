@@ -24,7 +24,7 @@ public class RailsRackDeployer extends AbstractSimpleVFSRealDeployer<RailsApplic
 	@Override
 	public void deploy(VFSDeploymentUnit unit, RailsApplicationMetaData railsAppMetaData) throws DeploymentException {
 
-		log.info("deploying rails rack app");
+		log.debug("deploying rails rack app");
 		RackWebApplicationMetaData rackWebAppMetaData = unit.getAttachment(RackWebApplicationMetaData.class);
 
 		if (rackWebAppMetaData == null) {

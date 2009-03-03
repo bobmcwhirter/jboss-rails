@@ -38,92 +38,90 @@ import org.jboss.rails.core.metadata.RailsVersionMetaData;
 import org.jboss.virtual.VirtualFile;
 
 public class RailsVersionDeployer extends AbstractParsingDeployer {
-	
-	private static final Logger log = Logger.getLogger( RailsVersionDeployer.class );
-	
+
+	private static final Logger log = Logger.getLogger(RailsVersionDeployer.class);
+
 	public RailsVersionDeployer() {
-		setInput(RailsApplicationMetaData.class );
+		setInput(RailsApplicationMetaData.class);
 		setOutput(RailsVersionMetaData.class);
 	}
 
 	public void deploy(DeploymentUnit unit) throws DeploymentException {
-		log.info( "Deploying: " + unit.getName() );
-		RailsApplicationMetaData railsMetaData = unit.getAttachment( RailsApplicationMetaData.class );
+		RailsApplicationMetaData railsMetaData = unit.getAttachment(RailsApplicationMetaData.class);
 		VirtualFile railsRoot = railsMetaData.getRailsRoot();
-		
-		log.info( "Determining version of Rails for " + railsRoot );
-		
+
+		log.debug("Determining version of Rails for " + railsRoot);
+
 		VirtualFile railsVersionFile = null;
-		
+
 		try {
-			railsVersionFile = railsRoot.getChild( "/vendor/rails/railties/lib/rails/version.rb" );
-			if ( railsVersionFile.exists() ) {
-				// okay
+			railsVersionFile = railsRoot.getChild("/vendor/rails/railties/lib/rails/version.rb");
+			if (railsVersionFile == null || !railsVersionFile.exists()) {
+				throw new DeploymentException("Rails should be 'vendorized' under RAILS_ROOT/vendor/rails/ to deploy on JBoss-Rails");
 			}
 		} catch (IOException e) {
-			throw new DeploymentException( e );
+			throw new DeploymentException("Rails should be 'vendorized' under RAILS_ROOT/vendor/rails/ to deploy on JBoss-Rails");
 		}
-		
-			
-		if ( true ) {
-			Pattern majorPattern = Pattern.compile( "^\\s*MAJOR\\s*=\\s*([0-9]+)\\s*$" );
-			Pattern minorPattern = Pattern.compile( "^\\s*MINOR\\s*=\\s*([0-9]+)\\s*$" );
-			Pattern tinyPattern  = Pattern.compile( "^\\s*TINY\\s*=\\s*([0-9]+)\\s*$" );
-			
+
+		if (true) {
+			Pattern majorPattern = Pattern.compile("^\\s*MAJOR\\s*=\\s*([0-9]+)\\s*$");
+			Pattern minorPattern = Pattern.compile("^\\s*MINOR\\s*=\\s*([0-9]+)\\s*$");
+			Pattern tinyPattern = Pattern.compile("^\\s*TINY\\s*=\\s*([0-9]+)\\s*$");
+
 			Integer major = null;
 			Integer minor = null;
-			Integer tiny  = null;
-			
+			Integer tiny = null;
+
 			BufferedReader in = null;
 			try {
 				InputStream inStream = railsVersionFile.openStream();
-				InputStreamReader inReader = new InputStreamReader( inStream );
-				in = new BufferedReader( inReader );
+				InputStreamReader inReader = new InputStreamReader(inStream);
+				in = new BufferedReader(inReader);
 				String line = null;
-				
+
 				try {
-					while ( ( line = in.readLine() ) != null ) {
-						if ( major == null ) {
-							Matcher matcher = majorPattern.matcher( line );
-							if ( matcher.matches() ) {
+					while ((line = in.readLine()) != null) {
+						if (major == null) {
+							Matcher matcher = majorPattern.matcher(line);
+							if (matcher.matches()) {
 								String value = matcher.group(1).trim();
-								major = new Integer( value );
+								major = new Integer(value);
 							}
-						} else if ( minor == null ) {
-							Matcher matcher = minorPattern.matcher( line );
-							if ( matcher.matches() ) {
+						} else if (minor == null) {
+							Matcher matcher = minorPattern.matcher(line);
+							if (matcher.matches()) {
 								String value = matcher.group(1).trim();
-								minor = new Integer( value );
+								minor = new Integer(value);
 							}
-						} else if ( tiny == null ) {
-							Matcher matcher = tinyPattern.matcher( line );
-							if ( matcher.matches() ) {
+						} else if (tiny == null) {
+							Matcher matcher = tinyPattern.matcher(line);
+							if (matcher.matches()) {
 								String value = matcher.group(1).trim();
-								tiny = new Integer( value );
+								tiny = new Integer(value);
 							}
 						}
 					}
 				} catch (IOException e) {
-					throw new DeploymentException( e );
+					throw new DeploymentException(e);
 				}
 			} catch (FileNotFoundException e) {
-				throw new DeploymentException( e );
+				throw new DeploymentException(e);
 			} catch (IOException e) {
-				throw new DeploymentException( e );
+				throw new DeploymentException(e);
 			} finally {
-				if ( in != null ) {
+				if (in != null) {
 					try {
 						in.close();
 					} catch (IOException e) {
-						throw new DeploymentException( e );
+						throw new DeploymentException(e);
 					}
 				}
 			}
-			RailsVersionMetaData railsVersionMetaData = new RailsVersionMetaData( major.intValue(), minor.intValue(), tiny.intValue() );
-			unit.addAttachment( RailsVersionMetaData.class, railsVersionMetaData );
-			log.info( "deploying version " + railsVersionMetaData );
+			RailsVersionMetaData railsVersionMetaData = new RailsVersionMetaData(major.intValue(), minor.intValue(), tiny.intValue());
+			unit.addAttachment(RailsVersionMetaData.class, railsVersionMetaData);
+			log.debug("deploying Rails version: " + railsVersionMetaData);
 		}
-		
+
 	}
 
 }

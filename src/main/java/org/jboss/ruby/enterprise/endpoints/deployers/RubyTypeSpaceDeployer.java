@@ -30,11 +30,10 @@ public class RubyTypeSpaceDeployer extends AbstractDeployer {
 			return;
 		}
 
-		log.info("deploying for: " + unit);
+		log.debug("deploying for: " + unit);
 
 		BeanMetaData busMetaData = unit.getAttachment(BeanMetaData.class + "$cxf.bus", BeanMetaData.class);
 
-		log.info("bus md: " + busMetaData);
 		RubyDynamicClassLoader classLoader = unit.getAttachment(RubyDynamicClassLoader.class);
 
 		for (RubyEndpointMetaData endpointMetaData : allMetaData) {

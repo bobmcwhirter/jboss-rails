@@ -131,7 +131,7 @@ public class RubyEndpoint {
 	}
 	
 	public void start() {
-		log.info( "start()" );
+		log.debug( "start()" );
 		AbstractServiceConfiguration serviceConfig = new RubyServiceConfiguration( getPortName() );
 		ReflectionServiceFactoryBean serviceFactory = new RubyReflectionServiceFactoryBean();
 		serviceFactory.setServiceConfigurations( Collections.singletonList( serviceConfig ) );
@@ -152,20 +152,16 @@ public class RubyEndpoint {
 		serverFactory.setServiceClass( RubyEndpointHandler.class );
 		serverFactory.setInvoker( createInvoker( serviceBean ) );
 		
-		log.info( "setting address to [" + getAddress() + "]" );
 		serverFactory.setAddress( getAddress() );
 		serverFactory.setWsdlURL( getWsdlLocation().toExternalForm() );
-		
 		
 		SoapBindingFactory bindingFactory = new SoapBindingFactory();
 		serverFactory.setBindingFactory( bindingFactory );
 		
 		this.server = serverFactory.create();
 		
-		this.server.getEndpoint().getInInterceptors().add( new LoggingInInterceptor() );
-		this.server.getEndpoint().getOutFaultInterceptors().add( new LoggingOutInterceptor() );
-		
-		//log.info( "RUBY CLASS DEFS: " + dataBinding.getRubyClassDefinitions() );
+		//this.server.getEndpoint().getInInterceptors().add( new LoggingInInterceptor() );
+		//this.server.getEndpoint().getOutFaultInterceptors().add( new LoggingOutInterceptor() );
 		
 		this.server.start();
 	}
@@ -180,7 +176,7 @@ public class RubyEndpoint {
 	}
 
 	public void stop() {
-		log.info( "stop()" );
+		log.debug( "stop()" );
 		this.server.stop();
 	}
 }

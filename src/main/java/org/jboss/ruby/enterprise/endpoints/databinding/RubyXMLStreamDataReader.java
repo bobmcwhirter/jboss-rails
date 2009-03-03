@@ -101,9 +101,9 @@ public class RubyXMLStreamDataReader {
 				break;
 			case (XMLStreamConstants.END_ELEMENT):
 				if (input.getName().equals(name)) {
-					log.info("  RETURN");
+					//log.info("  RETURN");
 				} else {
-					log.info("  SKIP");
+					//log.info("  SKIP");
 				}
 				return;
 			}

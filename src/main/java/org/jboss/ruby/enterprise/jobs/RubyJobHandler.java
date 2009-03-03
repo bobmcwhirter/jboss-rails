@@ -25,7 +25,6 @@ import org.jboss.logging.Logger;
 import org.jboss.ruby.runtime.RubyRuntimePool;
 import org.jboss.ruby.util.StringUtils;
 import org.jruby.Ruby;
-import org.jruby.RubyClass;
 import org.jruby.RubyModule;
 import org.jruby.javasupport.JavaEmbedUtils;
 import org.quartz.Job;
@@ -57,17 +56,12 @@ public class RubyJobHandler implements Job, StatefulJob {
 			
 			String requirePath = StringUtils.underscore( rubyClassName ).replaceAll( "::", "/" );
 			String require = "load %q(" + requirePath + ".rb)";
-			log.info( "REQUIRE [" + require + "]" );
 			
 			ruby.evalScriptlet( require );
 			
 			RubyModule rubyClass = ruby.getClassFromPath( rubyClassName );
 			
-			log.info( "RubyClass: " + rubyClass );
-			
 			Object rubyObj = JavaEmbedUtils.invokeMethod(ruby, rubyClass, "new", EMPTY_OBJECT_ARRAY, Object.class );
-			
-			log.info( "rubyObj = " + rubyObj );
 			
 			JavaEmbedUtils.invokeMethod( ruby, rubyObj, "run", EMPTY_OBJECT_ARRAY, void.class );
 			
@@ -80,8 +74,6 @@ public class RubyJobHandler implements Job, StatefulJob {
 			}
 			
 		}
-		
-		log.info( "execute(" + rubyClassName + ", " + runtimePool + ")" );
 	}
 
 }

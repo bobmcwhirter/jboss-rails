@@ -46,7 +46,7 @@ import org.jboss.virtual.plugins.vfs.helpers.SuffixMatchFilter;
  * 
  * @author Bob McWhirter
  */
-public class RailsStructure extends AbstractVFSStructureDeployer implements JarExtensionProvider {
+public class RailsStructure extends AbstractVFSStructureDeployer {
 
 	/** Filter for finding *.jar files. */
 	private static final VirtualFileFilter JAR_FILTER = new SuffixMatchFilter(".jar", VisitorAttributes.DEFAULT);
@@ -93,18 +93,8 @@ public class RailsStructure extends AbstractVFSStructureDeployer implements JarE
 
 						// Flag this archive for unpacking
 						//context.setModificationType( ModificationType.EXPLODE );
-						context.setModificationType(ModificationType.UNPACK);
+						//context.setModificationType(ModificationType.UNPACK);
 						
-						/*
-						for ( VirtualFile child : file.getChildren() ) {
-							log.info( "CREATE CONTEXTINFO FOR CHILD: " + child.getName() );
-							ContextInfo childContextInfo = StructureMetaDataFactory.createContextInfo( child.getName() );
-							childContextInfo.setModificationType( ModificationType.TEMP );
-							log.info( "contextinfo for child " + child.getName() + " == " + childContextInfo );
-							structureContext.addChild( childContextInfo );
-						}
-						*/
-
 						// Do the classpath loading for lib/java/
 						addLibJavaClasspath(structureContext, context);
 						//1addPluginJars(structureContext, context);
@@ -168,8 +158,4 @@ public class RailsStructure extends AbstractVFSStructureDeployer implements JarE
 		}
 	}
 
-	public String getJarExtension() {
-		log.info("getJarExtension()");
-		return ".rails";
-	}
 }

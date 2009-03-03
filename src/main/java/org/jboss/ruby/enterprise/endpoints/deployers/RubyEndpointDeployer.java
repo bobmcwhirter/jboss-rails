@@ -40,7 +40,6 @@ public class RubyEndpointDeployer extends AbstractDeployer {
 	}
 
 	public void deploy(DeploymentUnit unit) throws DeploymentException {
-		log.info("attempt ruby ws deploy against: " + unit);
 		Set<? extends RubyEndpointMetaData> allMetaData = unit.getAllMetaData(RubyEndpointMetaData.class);
 		
 		if ( allMetaData.size() == 0 ) {
@@ -58,10 +57,9 @@ public class RubyEndpointDeployer extends AbstractDeployer {
 	}
 
 	public void deployWebService(DeploymentUnit unit, BeanMetaData busBean, RubyEndpointMetaData metaData) throws DeploymentException {
-		log.info("Deploying webservices for : " + metaData);
+		log.debug("Deploying webservices for : " + metaData);
 
 		String beanName = BEAN_PREFIX + "." + unit.getSimpleName() + "." + metaData.getName();
-		log.info("BeanMetaData for " + beanName);
 
 		BeanMetaDataBuilder beanBuilder = BeanMetaDataBuilder.createBuilder(beanName, RubyEndpoint.class.getName());
 

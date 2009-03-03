@@ -6,7 +6,7 @@ import org.jruby.Ruby;
 
 public class RubyRackApplicationFactory implements RackApplicationFactory {
 	
-	private static final Logger log = Logger.getLogger( RubyRackApplication.class );
+	private static final Logger log = Logger.getLogger( RubyRackApplicationFactory.class );
 
 	private RubyRuntimeFactory runtimeFactory;
 	private String rackUpScript;
@@ -35,8 +35,6 @@ public class RubyRackApplicationFactory implements RackApplicationFactory {
 		Ruby ruby = getRubyRuntimeFactory().createRubyRuntime();
 		
 		RubyRackApplication rackApp = new RubyRackApplication( ruby, rackUpScript );
-		
-		log.info( "created rackApp: " + rackApp );
 		
 		return rackApp;
 	}

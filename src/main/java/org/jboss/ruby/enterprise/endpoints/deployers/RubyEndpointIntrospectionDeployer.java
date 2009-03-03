@@ -55,13 +55,12 @@ public class RubyEndpointIntrospectionDeployer extends AbstractDeployer {
 
 	protected void loadSupport(Ruby runtime) {
 		String supportScript = "require %q(jboss/endpoints/base_endpoint)\n";
-		log.info( "eval: " + supportScript );
 		runtime.evalScriptlet( supportScript );
 		
 	}
 
 	protected void introspect(Ruby runtime, RubyEndpointMetaData metaData) {
-		log.info("introspecting: " + metaData);
+		log.debug("introspecting: " + metaData);
 		String classLocation = metaData.getClassLocation();
 
 		if (classLocation != null) {
@@ -69,7 +68,7 @@ public class RubyEndpointIntrospectionDeployer extends AbstractDeployer {
 		}
 		
 		RubyClass rubyClass = runtime.getClass(metaData.getEndpointClassName());
-		log.info("ruby class is " + rubyClass);
+		log.debug("ruby class is " + rubyClass);
 		
 		String targetNamespace = (String) reflect( rubyClass, "target_namespace" );
 		String portName        = (String) reflect( rubyClass, "port_name" );
@@ -99,7 +98,7 @@ public class RubyEndpointIntrospectionDeployer extends AbstractDeployer {
 			classLocation = classLocation + ".rb";
 		}
 		String require = "load %q(" + classLocation + ")\n";
-		log.info("eval: " + require);
+		log.debug("eval: " + require);
 		runtime.evalScriptlet(require);
 	}
 

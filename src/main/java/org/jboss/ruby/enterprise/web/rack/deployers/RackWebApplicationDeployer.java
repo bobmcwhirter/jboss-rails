@@ -36,7 +36,7 @@ public class RackWebApplicationDeployer extends AbstractSimpleVFSRealDeployer<Ra
 	@Override
 	public void deploy(VFSDeploymentUnit unit, RackWebApplicationMetaData metaData) throws DeploymentException {
 
-		log.info("deploying " + unit);
+		log.debug("deploying " + unit);
 
 		JBossWebMetaData webMetaData = unit.getAttachment(JBossWebMetaData.class);
 

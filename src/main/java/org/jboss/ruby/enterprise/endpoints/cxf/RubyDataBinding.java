@@ -37,7 +37,6 @@ public class RubyDataBinding extends AbstractDataBinding {
 	}
 
 	public <T> DataReader<T> createReader(Class<T> type) {
-		log.info( "createReader(" + type + ")" );
 		if ( type == XMLStreamReader.class ) {
 			return new RubyDataReader<T>( this.typeSpace, this.runtimePool, name );
 		}
@@ -48,7 +47,6 @@ public class RubyDataBinding extends AbstractDataBinding {
 	}
 
 	public <T> DataWriter<T> createWriter(Class<T> type) {
-		log.info( "createWriter(" + type + ")" );
 		if ( type == XMLStreamWriter.class ) {
 			return (DataWriter<T>) new RubyDataWriter<T>( this.typeSpace );
 		} 
@@ -67,8 +65,7 @@ public class RubyDataBinding extends AbstractDataBinding {
 	}
 
 	public void initialize(Service service) {
-		log.info( "initialize(" + service + ")" );
-		
+		// intentionally left blank
 	}
 
 }

@@ -95,8 +95,7 @@ public class RubyTypeSpace {
 			loadSchema( xmlSchema );
 		}
 
-		log.info( "DEFINE: " );
-		log.info( getRubyClassDefinitions() );
+		log.debug( getRubyClassDefinitions() );
 		
 		this.classLoader.putFile( rubyPath + ".rb", getRubyClassDefinitions() );
 	}
@@ -146,7 +145,6 @@ public class RubyTypeSpace {
 	
 	@SuppressWarnings("unchecked")
 	private void loadSchema(XmlSchema schema) {
-		log.info( "loadSchema(" + schema + ")" );
 		XmlSchemaObjectTable types = schema.getSchemaTypes();
 		
 		for ( Iterator<QName> i = types.getNames(); i.hasNext() ; ) {

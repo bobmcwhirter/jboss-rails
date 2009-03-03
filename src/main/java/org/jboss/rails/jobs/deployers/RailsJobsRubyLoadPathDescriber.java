@@ -21,12 +21,11 @@ public class RailsJobsRubyLoadPathDescriber extends AbstractSimpleVFSRealDeploye
 
 	@Override
 	public void deploy(VFSDeploymentUnit unit, RailsApplicationMetaData root) throws DeploymentException {
-		log.info( "DEPLOY [" + unit + "]" );
 		VirtualFile jobsDir;
 		try {
 			jobsDir = unit.getRoot().getChild("app/jobs");
 			if (jobsDir != null) {
-				log.info( "adding jobsDir [" + jobsDir.toURL() + "]" );
+				log.debug( "adding jobsDir [" + jobsDir.toURL() + "]" );
 				RubyLoadPathMetaData loadPathMetaData = new RubyLoadPathMetaData();
 				loadPathMetaData.setURL( jobsDir.toURL() );
 				unit.addAttachment( RubyLoadPathMetaData.class.getName() + "$jobs", loadPathMetaData, RubyLoadPathMetaData.class );

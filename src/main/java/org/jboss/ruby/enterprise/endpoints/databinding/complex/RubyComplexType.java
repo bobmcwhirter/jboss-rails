@@ -48,7 +48,6 @@ public class RubyComplexType extends RubyType {
 					QName elementTypeName = element.getSchemaTypeName();
 					RubyType rubyAttrType = typeSpace.getTypeByQName(elementTypeName);
 					RubyAttribute rubyAttr = new RubyAttribute(rubyAttrType, element);
-					log.info("add attr " + rubyAttr.getName() + " on " + getName());
 					this.attributes.add(rubyAttr);
 					this.attributesByElementName.put(element.getQName(), rubyAttr);
 					this.attributesByName.put(rubyAttr.getRubyName(), rubyAttr);

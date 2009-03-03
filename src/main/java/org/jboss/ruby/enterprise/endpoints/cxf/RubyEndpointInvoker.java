@@ -30,8 +30,6 @@ public class RubyEndpointInvoker implements Invoker {
 
 	public Object invoke(Exchange exchange, Object in) {
 		
-		log.info( "INVOKE" );
-		
         BindingOperationInfo bop = exchange.get(BindingOperationInfo.class);
         MessagePartInfo partInfo = bop.getOutput().getMessageParts().get( 0 );
         
@@ -62,7 +60,6 @@ public class RubyEndpointInvoker implements Invoker {
 		if ( operationName.endsWith( "\"" ) ) {
 			operationName = operationName.substring(0, operationName.length() - 1 );
 		}
-		log.info("operationname=" + operationName);
 		return operationName;
 	}
 

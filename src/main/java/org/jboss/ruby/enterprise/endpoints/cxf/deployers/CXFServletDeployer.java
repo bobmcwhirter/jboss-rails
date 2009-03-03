@@ -33,12 +33,11 @@ public class CXFServletDeployer extends AbstractCXFDeployer {
 			return;
 		}
 		
-		log.info( "Deploy CXF servlet for " + unit );
+		log.debug( "Deploy CXF servlet for " + unit );
 		JBossWebMetaData webMetaData = unit.getAttachment(JBossWebMetaData.class );
 		
 		
 		if ( webMetaData == null ) {
-			log.info( "creating new JBossWebMetaData" );
 			webMetaData = new JBossWebMetaData();
 			unit.addAttachment( JBossWebMetaData.class, webMetaData );
 		}
@@ -58,7 +57,6 @@ public class CXFServletDeployer extends AbstractCXFDeployer {
 		
 		JBossServletsMetaData servlets = webMetaData.getServlets();
 		if ( servlets == null ) {
-			log.info( "creating new Servlets" );
 			servlets = new JBossServletsMetaData();
 			webMetaData.setServlets( servlets );
 		}
@@ -72,13 +70,9 @@ public class CXFServletDeployer extends AbstractCXFDeployer {
 		List<ServletMappingMetaData> servletMappings = webMetaData.getServletMappings();
 		
 		if ( servletMappings == null ) {
-			log.info( "creating new ServletMappings" );
 			servletMappings = new ArrayList<ServletMappingMetaData>();
 			webMetaData.setServletMappings(servletMappings);
 		}
-		
-		log.info( "servletMappings=" + servletMappings );
-		log.info( "servletMappings.class=" + servletMappings.getClass() );
 		
 		servletMappings.add( servletMapping );
 		

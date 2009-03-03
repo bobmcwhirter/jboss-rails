@@ -26,32 +26,29 @@ public class RubyReflectionServiceFactoryBean extends ReflectionServiceFactoryBe
 				initializeWSDLOperation(intf, o, method);
 			}
 		} catch (SecurityException e) {
-			e.printStackTrace();
-			log.error(e);
+			log.error("Unable to initialize WSDL operations", e);
 		} catch (NoSuchMethodException e) {
-			e.printStackTrace();
-			log.error(e);
+			log.error("Unable to initialize WSDL operations", e);
 		}
 	}
 
 	protected boolean isWrapped(Method m) {
-		//log.info( "isWrapped(" + m + ") " + super.isWrapped( m ) );
-		//return super.isWrapped(m );
 		return false;
 	}
 	protected boolean initializeClassInfo(OperationInfo o, Method method, List<String> paramOrder) {
-		log.info( "initializeClassInfo(" + o + "...)" );
-		log.info( "op: " + o );
-		log.info( "op unwrapped: " + o.getUnwrappedOperation() );
-		boolean result = super.initializeClassInfo(o , method, paramOrder);
-		log.info( "SUPER: " + result );
+		
+		log.debug( "initializeClassInfo(" + o + "...)" );
+		log.debug( "op: " + o );
+		log.debug( "op unwrapped: " + o.getUnwrappedOperation() );
+		//boolean result = super.initializeClassInfo(o , method, paramOrder);
+		//log.info( "SUPER: " + result );
 		
 		for ( MessagePartInfo p : o.getInput().getMessageParts() ) {
 			p.setTypeClass( DOMSource.class );
-			log.info( "part: " + p );
-			//log.info( "part.type: " + p.getTypeClass() );
+			log.debug( "part: " + p );
 		}
-		return result;
+		//return result;
+		return true;
 
 	}
 

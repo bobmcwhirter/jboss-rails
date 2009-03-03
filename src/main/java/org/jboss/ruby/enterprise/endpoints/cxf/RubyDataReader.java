@@ -71,6 +71,7 @@ public class RubyDataReader<T> implements DataReader<T> {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	public Object read(QName name, T node, Class type) {
 		return read(node);
 	}
@@ -84,6 +85,7 @@ public class RubyDataReader<T> implements DataReader<T> {
 	}
 
 	public void setSchema(Schema schema) {
+		this.schema = schema;
 	}
 
 }

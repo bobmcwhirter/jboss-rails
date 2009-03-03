@@ -6,13 +6,7 @@ public class SecurityMetaData {
 	private OutboundSecurityMetaData outboundSecurityMetaData;
 
 	public SecurityMetaData() {
-		System.err.println( "no-arg ctor" );
 	}
-	
-	public SecurityMetaData(Object o) {
-		System.err.println( "1-arg ctor [" + o + "]" );
-	}
-
 	
 	public void setInboundSecurityMetaData(InboundSecurityMetaData inboundSecurityMetaData) {
 		this.inboundSecurityMetaData = inboundSecurityMetaData;

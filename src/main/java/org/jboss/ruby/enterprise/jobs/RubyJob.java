@@ -90,8 +90,6 @@ public class RubyJob {
 	}
 
 	public void start() throws ParseException, SchedulerException {
-		
-		log.info( "start: " + this );
 		JobDetail jobDetail = new JobDetail();
 
 		jobDetail.setGroup(this.group);
@@ -107,7 +105,6 @@ public class RubyJob {
 		CronTrigger trigger = new CronTrigger(getTriggerName(), this.group, this.cronExpression );
 		
 		scheduler.scheduleJob(jobDetail, trigger);
-
 	}
 	
 	private String getTriggerName() {
