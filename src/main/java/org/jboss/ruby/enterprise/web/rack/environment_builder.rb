@@ -7,7 +7,7 @@ module JBoss
       def self.build(servlet_request, input, errors)
         env = {}
         env['REQUEST_METHOD']    = servlet_request.getMethod()
-        env['SCRIPT_NAME']       = servlet_request.getContextPath() || ''
+        env['SCRIPT_NAME']       = "#{servlet_request.getContextPath()}#{servlet_request.getServletPath()}"
         env['PATH_INFO']         = servlet_request.getPathInfo()
         env['QUERY_STRING']      = servlet_request.getQueryString()
         env['SERVER_NAME']       = servlet_request.getServerName()

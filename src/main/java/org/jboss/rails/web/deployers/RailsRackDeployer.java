@@ -38,17 +38,20 @@ public class RailsRackDeployer extends AbstractSimpleVFSRealDeployer<RailsApplic
 		rackWebAppMetaData.setStaticPathPrefix( "/public" );
 
 		RubyRackApplicationMetaData rubyRackAppMetaData = new RubyRackApplicationMetaData();
-		rubyRackAppMetaData.setRackUpScript(getRackUpScript());
+		rubyRackAppMetaData.setRackUpScript(getRackUpScript( rackWebAppMetaData.getContext() ));
 
 		unit.addAttachment(RubyRackApplicationMetaData.class, rubyRackAppMetaData);
 	}
 
-	protected String getRackUpScript() {
-		// "  use RailsSetup, helper\n" +
+	protected String getRackUpScript(String context) {
+		if ( context.endsWith( "/" ) ) {
+			context = context.substring( 0, context.length() - 1 );
+		}
+		
 		String script = 
 			"require %q(org/jboss/rails/web/deployers/rails_rack_dispatcher)\n" +
 			"::Rack::Builder.new {\n" + 
-			"  run JBoss::Rails::Rack::Dispatcher.new()\n" +
+			"  run JBoss::Rails::Rack::Dispatcher.new(%q("+ context + "))\n" +
 			"}.to_app\n";
 
 		return script;
