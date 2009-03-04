@@ -32,9 +32,9 @@ import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.ruby.enterprise.jobs.metadata.RubyJobMetaData;
 import org.jboss.virtual.VirtualFile;
 
-public class YamlJobsParsingDeployer extends AbstractParsingDeployer {
+public class JobsYamlParsingDeployer extends AbstractParsingDeployer {
 
-	public YamlJobsParsingDeployer() {
+	public JobsYamlParsingDeployer() {
 		addOutput(RubyJobMetaData.class);
 	}
 
@@ -53,13 +53,11 @@ public class YamlJobsParsingDeployer extends AbstractParsingDeployer {
 
 	@SuppressWarnings("unchecked")
 	protected void parse(VFSDeploymentUnit unit, VirtualFile file) throws DeploymentException {
-		log.info("parsing jobfile: " + file);
 		try {
 			Map<String, Map<String, String>> results = (Map<String, Map<String, String>>) Yaml.load(file.openStream());
 
 			for (String jobName : results.keySet()) {
 				Map<String, String> jobSpec = results.get(jobName);
-				log.info("jobSpec: " + jobSpec);
 				String description = jobSpec.get("description");
 				String job = jobSpec.get("job");
 				String cron = jobSpec.get("cron");

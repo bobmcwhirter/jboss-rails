@@ -1,20 +1,22 @@
 package org.jboss.ruby.runtime.metadata;
 
+import org.jboss.ruby.runtime.RuntimeInitializer;
+
 public class RubyRuntimeMetaData {
 	
 	private LoadPathMetaData loadPath;
-	private String initScript;
+	private RuntimeInitializer initializer;
 
 	public RubyRuntimeMetaData() {
 		
 	}
 	
-	public void setInitScript(String initScript) {
-		this.initScript = initScript;
+	public void setRuntimeInitializer(RuntimeInitializer initializer) {
+		this.initializer = initializer;
 	}
 	
-	public String getInitScript() {
-		return this.initScript;
+	public RuntimeInitializer getRuntimeInitializer() {
+		return this.initializer;
 	}
 
 }

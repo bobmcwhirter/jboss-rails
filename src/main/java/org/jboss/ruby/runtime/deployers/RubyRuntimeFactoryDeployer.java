@@ -1,6 +1,5 @@
 package org.jboss.ruby.runtime.deployers;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashSet;
@@ -16,7 +15,7 @@ import org.jboss.ruby.runtime.RubyDynamicClassLoader;
 import org.jboss.ruby.runtime.RubyRuntimeFactory;
 import org.jboss.ruby.runtime.metadata.RubyLoadPathMetaData;
 import org.jboss.ruby.runtime.metadata.RubyRuntimeMetaData;
-import org.jruby.Ruby;
+import org.jboss.virtual.VirtualFile;
 
 public class RubyRuntimeFactoryDeployer extends AbstractSimpleVFSRealDeployer<RubyRuntimeMetaData> {
 
@@ -40,7 +39,7 @@ public class RubyRuntimeFactoryDeployer extends AbstractSimpleVFSRealDeployer<Ru
 		String factoryName = "jboss.ruby.runtime.factory." + unit.getSimpleName();
 		log.trace("creating RubyRuntimeFactory: " + factoryName);
 
-		DefaultRubyRuntimeFactory factory = new DefaultRubyRuntimeFactory(metaData.getInitScript());
+		DefaultRubyRuntimeFactory factory = new DefaultRubyRuntimeFactory(metaData.getRuntimeInitializer() );
 		factory.setKernel(this.kernel);
 
 		try {
@@ -64,8 +63,10 @@ public class RubyRuntimeFactoryDeployer extends AbstractSimpleVFSRealDeployer<Ru
 		for (RubyLoadPathMetaData each : allMetaData) {
 			urls.add(each.getURL());
 		}
+		
+		VirtualFile baseDir = unit.getAttachment( VirtualFile.class.getName() + "$ruby.baseDir", VirtualFile.class );
 
-		RubyDynamicClassLoader classLoader = RubyDynamicClassLoader.create(unit.getSimpleName(), urls, unit.getClassLoader());
+		RubyDynamicClassLoader classLoader = RubyDynamicClassLoader.create(unit.getSimpleName(), urls, unit.getClassLoader(), baseDir );
 		return classLoader;
 	}
 
@@ -74,10 +75,7 @@ public class RubyRuntimeFactoryDeployer extends AbstractSimpleVFSRealDeployer<Ru
 		RubyDynamicClassLoader cl = unit.getAttachment( RubyDynamicClassLoader.class );
 		
 		if ( cl != null ) {
-			log.info( "destroying RubyDynamicClassLoader: " + cl );
 			cl.destroy();
-		} else {
-			log.info( "no classloader to destroy" );
 		}
 	}
 	

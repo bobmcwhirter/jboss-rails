@@ -102,8 +102,6 @@ public class RubyEndpointIntrospectionDeployer extends AbstractDeployer {
 		if ( metaData.getSecurityMetaData() == null ) {
 			metaData.setSecurityMetaData( securityMetaData );
 		}
-		
-		log.info( "security: " + securityMetaData );
 	}
 	
 	protected Object reflect(IRubyObject obj, String attr) {

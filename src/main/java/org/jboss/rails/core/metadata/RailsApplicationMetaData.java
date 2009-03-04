@@ -47,7 +47,11 @@ public class RailsApplicationMetaData {
 	
 	public void setRailsRoot(VirtualFile railsRoot) throws MalformedURLException, URISyntaxException {
 		this.railsRoot = railsRoot;
-		this.railsRootPath = railsRoot.toURL().getFile();
+		String path = railsRoot.toURL().getFile();
+		if ( path.endsWith( "/" ) ) {
+			path = path.substring( 0, path.length() - 1 );
+		}
+		this.railsRootPath = path;
 	}
 	
 	public VirtualFile getRailsRoot() {
