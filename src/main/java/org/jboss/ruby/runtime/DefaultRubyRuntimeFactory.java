@@ -12,6 +12,7 @@ import org.jruby.Ruby;
 import org.jruby.RubyClass;
 import org.jruby.RubyInstanceConfig;
 import org.jruby.javasupport.JavaEmbedUtils;
+import org.jruby.util.ClassCache;
 
 public class DefaultRubyRuntimeFactory implements RubyRuntimeFactory {
 
@@ -21,6 +22,7 @@ public class DefaultRubyRuntimeFactory implements RubyRuntimeFactory {
 	private RuntimeInitializer initializer;
 
 	private RubyDynamicClassLoader classLoader;
+	private ClassCache classCache;
 
 	public DefaultRubyRuntimeFactory() {
 		this(null);
@@ -46,15 +48,16 @@ public class DefaultRubyRuntimeFactory implements RubyRuntimeFactory {
 		return this.classLoader;
 	}
 
-	public Ruby createRubyRuntime() throws Exception {
+	public synchronized Ruby createRubyRuntime() throws Exception {
 		RubyInstanceConfig config = new RubyInstanceConfig();
 
-		RubyDynamicClassLoader childLoader = null;
+		RubyDynamicClassLoader childLoader = this.classLoader.createChild();
+		config.setLoader(childLoader);
 		
-		if (this.classLoader != null) {
-			childLoader = this.classLoader.createChild();
-			config.setLoader(childLoader);
+		if ( this.classCache == null ) {
+			this.classCache = new ClassCache( this.classLoader );
 		}
+		config.setClassCache( classCache );
 
 		try {
 			String binjruby = RubyInstanceConfig.class.getResource("/META-INF/jruby.home/bin/jruby").toURI().getSchemeSpecificPart();

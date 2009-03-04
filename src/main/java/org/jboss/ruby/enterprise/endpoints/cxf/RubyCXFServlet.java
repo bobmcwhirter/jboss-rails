@@ -10,22 +10,21 @@ import org.jboss.kernel.spi.registry.KernelRegistryEntry;
 
 public class RubyCXFServlet extends CXFNonSpringServlet {
 	
+	private static final long serialVersionUID = -2809395081671794214L;
+	
 	private final String KERNEL_NAME = "jboss.kernel:service=Kernel";
 	
 	public RubyCXFServlet() {
 		
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void loadBus(ServletConfig servletConfig) throws ServletException {
 		String busName = servletConfig.getInitParameter( "cxf.bus.name" );
-		log( "busName is " + busName );
 		Kernel kernel = (Kernel) servletConfig.getServletContext().getAttribute( KERNEL_NAME );
-		log( "kernel is " + kernel );
 		KernelRegistryEntry entry = kernel.getRegistry().getEntry( busName );
-		log( "entry is " + entry );
 		this.bus = (Bus) entry.getTarget();
-		log( "bus is " + this.bus );
 		super.loadBus(servletConfig);
 	}
 	

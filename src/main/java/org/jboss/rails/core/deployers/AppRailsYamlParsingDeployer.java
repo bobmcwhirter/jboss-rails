@@ -104,7 +104,7 @@ public class AppRailsYamlParsingDeployer extends AbstractVFSParsingDeployer<Rail
 	}
 
 	private Deployment createDeployment(RailsApplicationMetaData railsMetaData, RackWebApplicationMetaData webMetaData) throws MalformedURLException, IOException {
-		Deployment deployment = new AbstractVFSDeployment(railsMetaData.getRailsRoot());
+		AbstractVFSDeployment deployment = new AbstractVFSDeployment(railsMetaData.getRailsRoot());
 
 		MutableAttachments attachments = ((MutableAttachments) deployment.getPredeterminedManagedObjects());
 

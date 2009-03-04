@@ -50,7 +50,6 @@ public class RailsEnvYamlParsingDeployer extends AbstractDeployer {
 		VirtualFile file = unit.getMetaDataFile("rails-env.yml");
 
 		if (file != null) {
-			log.info("parsing: " + file);
 			try {
 				RailsApplicationMetaData railsAppMetaData = unit.getAttachment(RailsApplicationMetaData.class);
 				railsAppMetaData = parse(unit, file, railsAppMetaData);
@@ -63,7 +62,6 @@ public class RailsEnvYamlParsingDeployer extends AbstractDeployer {
 
 	@SuppressWarnings("unchecked")
 	protected RailsApplicationMetaData parse(VFSDeploymentUnit unit, VirtualFile file, RailsApplicationMetaData root) throws Exception {
-		log.info("parsing: " + file);
 		try {
 			Map<String, String> parsed = (Map<String, String>) Yaml.load(file.openStream());
 
@@ -72,8 +70,6 @@ public class RailsEnvYamlParsingDeployer extends AbstractDeployer {
 			if (railsEnv == null || railsEnv.trim().equals("")) {
 				railsEnv = "development";
 			}
-
-			log.info("internally set rails_env: " + railsEnv);
 
 			RailsApplicationMetaData railsMetaData = root;
 
