@@ -24,22 +24,46 @@ package org.jboss.rails.core.deployers;
 import java.util.Map;
 
 import org.ho.yaml.Yaml;
-import org.jboss.deployers.vfs.spi.deployer.AbstractVFSParsingDeployer;
+import org.jboss.deployers.spi.DeploymentException;
+import org.jboss.deployers.spi.deployer.DeploymentStage;
+import org.jboss.deployers.spi.deployer.DeploymentStages;
+import org.jboss.deployers.spi.deployer.helpers.AbstractDeployer;
+import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.rails.core.metadata.RailsApplicationMetaData;
 import org.jboss.virtual.VirtualFile;
 
-public class RailsEnvironmentParsingDeployer extends AbstractVFSParsingDeployer<RailsApplicationMetaData> {
-	public RailsEnvironmentParsingDeployer() {
-		super(RailsApplicationMetaData.class);
-		// setName("environment.rb");
-		setName("jboss-rails-env.yml");
-		setTopLevelOnly(false);
+public class RailsEnvYamlParsingDeployer extends AbstractDeployer {
+	public RailsEnvYamlParsingDeployer() {
+		setStage(DeploymentStages.PARSE);
+		addInput(RailsApplicationMetaData.class);
+		addOutput(RailsApplicationMetaData.class);
+	}
+
+	public void deploy(DeploymentUnit unit) throws DeploymentException {
+		if (unit instanceof VFSDeploymentUnit) {
+			deploy((VFSDeploymentUnit) unit);
+		}
+	}
+
+	public void deploy(VFSDeploymentUnit unit) throws DeploymentException {
+		VirtualFile file = unit.getMetaDataFile("rails-env.yml");
+
+		if (file != null) {
+			log.info("parsing: " + file);
+			try {
+				RailsApplicationMetaData railsAppMetaData = unit.getAttachment(RailsApplicationMetaData.class);
+				railsAppMetaData = parse(unit, file, railsAppMetaData);
+				unit.addAttachment(RailsApplicationMetaData.class, railsAppMetaData);
+			} catch (Exception e) {
+				throw new DeploymentException(e);
+			}
+		}
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
 	protected RailsApplicationMetaData parse(VFSDeploymentUnit unit, VirtualFile file, RailsApplicationMetaData root) throws Exception {
+		log.info("parsing: " + file);
 		try {
 			Map<String, String> parsed = (Map<String, String>) Yaml.load(file.openStream());
 
@@ -49,8 +73,17 @@ public class RailsEnvironmentParsingDeployer extends AbstractVFSParsingDeployer<
 				railsEnv = "development";
 			}
 
-			RailsApplicationMetaData railsMetaData = new RailsApplicationMetaData(unit.getRoot(), railsEnv);
-			unit.addAttachment(RailsApplicationMetaData.class, railsMetaData);
+			log.info("internally set rails_env: " + railsEnv);
+
+			RailsApplicationMetaData railsMetaData = root;
+
+			if (railsMetaData == null) {
+				railsMetaData = new RailsApplicationMetaData(unit.getRoot(), railsEnv);
+			} else {
+				if (railsMetaData.getRailsEnv() == null) {
+					railsMetaData.setRailsEnv(railsEnv);
+				}
+			}
 			return railsMetaData;
 		} finally {
 			file.closeStreams();

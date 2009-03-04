@@ -30,14 +30,14 @@ public class RailsApplicationMetaData {
 
 	private VirtualFile railsRoot;
 	private String railsRootPath;
-	private String railsEnv = "development";
+	private String railsEnv;
 
 	public RailsApplicationMetaData() {
 		
 	}
 	
 	public RailsApplicationMetaData(VirtualFile railsRoot) throws MalformedURLException, URISyntaxException {
-		this( railsRoot, "development" );
+		this( railsRoot, null );
 	}
 	
 	public RailsApplicationMetaData(VirtualFile railsRoot, String railsEnv) throws MalformedURLException, URISyntaxException {

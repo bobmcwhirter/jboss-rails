@@ -64,8 +64,8 @@
   <!-- Rack -->
   <bean name="RailsRackDeployer"                    class="org.jboss.rails.web.deployers.RailsRackDeployer"/>
 
-  <!-- jboss-env.yml -->
-  <bean name="RailsEnvironmentParsingDeployer"      class="org.jboss.rails.core.deployers.RailsEnvironmentParsingDeployer"/>
+  <!-- rails-env.yml -->
+  <bean name="RailsEnvYamlParsingDeployer"          class="org.jboss.rails.core.deployers.RailsEnvYamlParsingDeployer"/>
 
   <!-- vendor/rails/.../version.rb -->
   <bean name="RailsVersionDeployer"            class="org.jboss.rails.core.deployers.RailsVersionDeployer"/>
