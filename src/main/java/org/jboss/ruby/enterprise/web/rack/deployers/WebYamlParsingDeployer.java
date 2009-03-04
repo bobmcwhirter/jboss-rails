@@ -29,33 +29,44 @@ import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.ruby.enterprise.web.rack.metadata.RackWebApplicationMetaData;
 import org.jboss.virtual.VirtualFile;
 
-public class YamlWebParsingDeployer extends AbstractVFSParsingDeployer<RackWebApplicationMetaData>{
+public class WebYamlParsingDeployer extends AbstractVFSParsingDeployer<RackWebApplicationMetaData> {
 
-	public YamlWebParsingDeployer() {
-		super( RackWebApplicationMetaData.class );
-		setName( "jboss-web.yml" );
+	public WebYamlParsingDeployer() {
+		super(RackWebApplicationMetaData.class);
+		setName("web.yml");
 	}
-		
+
 	@SuppressWarnings("unchecked")
 	protected RackWebApplicationMetaData parse(VFSDeploymentUnit unit, VirtualFile file, RackWebApplicationMetaData arg2) throws Exception {
-		Map<String,String> web = (Map<String, String>) Yaml.load( file.openStream() );
-		
-		String context = web.get( "context" );
-		
-		if ( context == null ) {
+		Map<String, String> web = (Map<String, String>) Yaml.load(file.openStream());
+
+		String context = web.get("context");
+
+		if (context == null) {
 			context = "/";
 		}
-		
-		String host = web.get( "host" );
-		
-		if ( host == null || host.trim().equals( "*") ) {
+
+		String host = web.get("host");
+
+		if (host == null || host.trim().equals("*")) {
 			host = "localhost";
 		}
+
+		RackWebApplicationMetaData webMetaData = unit.getAttachment(RackWebApplicationMetaData.class);
+
+		if (webMetaData == null) {
+			webMetaData = new RackWebApplicationMetaData();
+			unit.addAttachment( RackWebApplicationMetaData.class, webMetaData );
+		}
+
+		if ( webMetaData.getContext() == null ) {
+			webMetaData.setContext(context);
+		}
 		
+		if ( webMetaData.getHost() == null ) {
+			webMetaData.setHost(host);
+		}
 		
-		RackWebApplicationMetaData webMetaData = new RackWebApplicationMetaData();
-		webMetaData.setContext( context );
-		webMetaData.setHost( host );
 		return webMetaData;
 	}
 

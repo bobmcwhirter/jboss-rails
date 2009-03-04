@@ -35,41 +35,45 @@ import org.jboss.virtual.VirtualFile;
 public class YamlJobsParsingDeployer extends AbstractParsingDeployer {
 
 	public YamlJobsParsingDeployer() {
-		addOutput( RubyJobMetaData.class );
+		addOutput(RubyJobMetaData.class);
 	}
 
 	public void deploy(DeploymentUnit unit) throws DeploymentException {
-		if ( unit instanceof VFSDeploymentUnit ) {
-			deploy( (VFSDeploymentUnit) unit );
+		if (unit instanceof VFSDeploymentUnit) {
+			deploy((VFSDeploymentUnit) unit);
 		}
 	}
-	
+
 	protected void deploy(VFSDeploymentUnit unit) throws DeploymentException {
-		VirtualFile metaData = unit.getMetaDataFile( "jobs.yml" );
-		if ( metaData != null ) {
-			parse( unit, metaData );
+		VirtualFile metaData = unit.getMetaDataFile("jobs.yml");
+		if (metaData != null) {
+			parse(unit, metaData);
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	protected void parse(VFSDeploymentUnit unit, VirtualFile file) throws DeploymentException {
+		log.info("parsing jobfile: " + file);
 		try {
 			Map<String, Map<String, String>> results = (Map<String, Map<String, String>>) Yaml.load(file.openStream());
 
 			for (String jobName : results.keySet()) {
 				Map<String, String> jobSpec = results.get(jobName);
-				String description = jobSpec.get( "description" );
-				String job         = jobSpec.get( "job" );
-				String cron        = jobSpec.get( "cron" );
-				
-				RubyJobMetaData jobMetaData = new RubyJobMetaData();
-				
-				jobMetaData.setName(jobName);
-				jobMetaData.setGroup( unit.getSimpleName() );
-				jobMetaData.setDescription(description);
-				jobMetaData.setRubyClassName( job );
-				jobMetaData.setCronExpression( cron.trim() );
-				unit.addAttachment( RubyJobMetaData.class.getName() + "$" + jobName, jobMetaData, RubyJobMetaData.class );
+				log.info("jobSpec: " + jobSpec);
+				String description = jobSpec.get("description");
+				String job = jobSpec.get("job");
+				String cron = jobSpec.get("cron");
+
+				if (job != null) {
+					RubyJobMetaData jobMetaData = new RubyJobMetaData();
+
+					jobMetaData.setName(jobName);
+					jobMetaData.setGroup(unit.getSimpleName());
+					jobMetaData.setDescription(description);
+					jobMetaData.setRubyClassName(job);
+					jobMetaData.setCronExpression(cron.trim());
+					unit.addAttachment(RubyJobMetaData.class.getName() + "$" + jobName, jobMetaData, RubyJobMetaData.class);
+				}
 			}
 		} catch (IOException e) {
 			throw new DeploymentException(e);

@@ -95,7 +95,7 @@ public class RubyTypeSpace {
 			loadSchema( xmlSchema );
 		}
 
-		log.debug( getRubyClassDefinitions() );
+		log.trace( getRubyClassDefinitions() );
 		
 		this.classLoader.putFile( rubyPath + ".rb", getRubyClassDefinitions() );
 	}

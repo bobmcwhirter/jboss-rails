@@ -14,7 +14,7 @@
 
   <!-- Rack and Web --> 
 
-  <bean name="YamlWebParsingDeployer"               class="org.jboss.ruby.enterprise.web.rack.deployers.YamlWebParsingDeployer"/>
+  <bean name="WebYamlParsingDeployer"               class="org.jboss.ruby.enterprise.web.rack.deployers.WebYamlParsingDeployer"/>
 
   <bean name="RubyRackApplicationFactoryDeployer"   class="org.jboss.ruby.enterprise.web.rack.deployers.RubyRackApplicationFactoryDeployer"/>
   <bean name="RackWebApplicationDeployer"           class="org.jboss.ruby.enterprise.web.rack.deployers.RackWebApplicationDeployer"/>
@@ -53,22 +53,24 @@
      |
      -->
 
-  <!-- RAILS_ROOT structure recognition -->
-  <bean name="RailsStructure" class="org.jboss.rails.core.deployers.RailsStructure"/>
+  <!-- RAILS_ROOT structure & recognition -->
+  <bean name="RailsStructure"                       class="org.jboss.rails.core.deployers.RailsStructure"/>
+  <bean name="RailsRootRecognizingDeployer"         class="org.jboss.rails.core.deployers.RailsRootRecognizingDeployer"/>
+
 
   <!-- Crypto -->
-  <bean name="RailsCryptoYamlPostParsingDeployer" class="org.jboss.rails.crypto.deployers.RailsCryptoYamlPostParsingDeployer"/>
+  <bean name="RailsCryptoYamlPostParsingDeployer"   class="org.jboss.rails.crypto.deployers.RailsCryptoYamlPostParsingDeployer"/>
 
   <!-- Rack -->
-  <bean name="RailsRackDeployer" class="org.jboss.rails.web.deployers.RailsRackDeployer"/>
+  <bean name="RailsRackDeployer"                    class="org.jboss.rails.web.deployers.RailsRackDeployer"/>
 
   <!-- jboss-env.yml -->
-  <bean name="RailsEnvironmentParsingDeployer" class="org.jboss.rails.core.deployers.RailsEnvironmentParsingDeployer"/>
+  <bean name="RailsEnvironmentParsingDeployer"      class="org.jboss.rails.core.deployers.RailsEnvironmentParsingDeployer"/>
 
   <!-- vendor/rails/.../version.rb -->
   <bean name="RailsVersionDeployer"            class="org.jboss.rails.core.deployers.RailsVersionDeployer"/>
 
-  <bean name="RailsRootReferenceParsingDeployer" class="org.jboss.rails.core.deployers.RailsRootReferenceParsingDeployer"/>
+  <bean name="AppRailsYamlParsingDeployer" class="org.jboss.rails.core.deployers.AppRailsYamlParsingDeployer"/>
 
   <bean name="RailsRubyRuntimeFactoryDescriber"  class="org.jboss.rails.runtime.deployers.RailsRubyRuntimeFactoryDescriber"/>
 

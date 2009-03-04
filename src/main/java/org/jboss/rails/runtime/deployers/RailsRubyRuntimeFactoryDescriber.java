@@ -5,7 +5,6 @@ import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.spi.deployer.helpers.AbstractDeployer;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.rails.core.metadata.RailsApplicationMetaData;
-import org.jboss.ruby.runtime.metadata.LoadPathMetaData;
 import org.jboss.ruby.runtime.metadata.RubyRuntimeMetaData;
 
 public class RailsRubyRuntimeFactoryDescriber extends AbstractDeployer {
@@ -17,10 +16,13 @@ public class RailsRubyRuntimeFactoryDescriber extends AbstractDeployer {
 	}
 
 	public void deploy(DeploymentUnit unit) throws DeploymentException {
+		log.debug( "attempt deploy against: " + unit );
 		RailsApplicationMetaData railsMetaData = unit.getAttachment( RailsApplicationMetaData.class );
 		if ( railsMetaData == null ) {
+			log.debug( "no RailsApplicationMetaData attached" );
 			return;
 		}
+		log.debug( "actually deploy against: " + unit );
 		String initScript = createInitScript( railsMetaData.getRailsRootPath(), railsMetaData.getRailsEnv() );
 		
 		RubyRuntimeMetaData runtimeMetaData = unit.getAttachment( RubyRuntimeMetaData.class );

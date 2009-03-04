@@ -50,59 +50,37 @@ public class RailsStructure extends AbstractVFSStructureDeployer {
 
 	/** Filter for finding *.jar files. */
 	private static final VirtualFileFilter JAR_FILTER = new SuffixMatchFilter(".jar", VisitorAttributes.DEFAULT);
-	
 
 	/**
 	 * Construct.
 	 */
 	public RailsStructure() {
 		// We want this to fire before anything else, because we're selfish.
-		setRelativeOrder(-10000);
+		setRelativeOrder(1);
 	}
 
 	public boolean determineStructure(StructureContext structureContext) throws DeploymentException {
 		boolean recognized = false;
 		VirtualFile file = structureContext.getFile();
 
-		log.debug("attempt deploy against root: " + file);
-
-		if (file.getName().endsWith(".rails")) {
-			try {
-				log.info("PROTOCOL " + file.toURL().getProtocol());
-			} catch (Exception e) {
-				throw new DeploymentException(e);
-			}
-		}
-
 		ContextInfo context = null;
 
 		try {
 			if (JarUtils.isArchive(file.getName()) || !file.isLeaf()) {
-
-				// Look for config/environment.rb to identify this tree
-				// as a Ruby-on-Rails application.
-
 				VirtualFile config = file.getChild("config");
 				if (config != null) {
 					VirtualFile environment = config.getChild("environment.rb");
 					if (environment != null) {
-						log.debug("Recognized: " + file);
 
-						// Add the config/ directory to the metadata paths
-						context = createContext(structureContext, new String[] { "config" } );
+						context = createContext(structureContext, new String[] { "config" });
 
-						// Flag this archive for unpacking
-						//context.setModificationType( ModificationType.EXPLODE );
-						//context.setModificationType(ModificationType.UNPACK);
-						
-						// Do the classpath loading for lib/java/
 						addLibJavaClasspath(structureContext, context);
-						//1addPluginJars(structureContext, context);
 
 						MutableAttachments attachments = (MutableAttachments) context.getPredeterminedManagedObjects();
 						RailsApplicationMetaData railsAppMetaData = new RailsApplicationMetaData(file);
 						attachments.addAttachment(RailsApplicationMetaData.class, railsAppMetaData);
 						recognized = true;
+						log.debug("predetermined attachments: " + context.getPredeterminedManagedObjects());
 					}
 				}
 			}

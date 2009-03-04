@@ -239,14 +239,15 @@
         <directory>src/main/java</directory> 
         <includes>
           <include>**/*.rb</include>
+          <include>**/*.properties</include>
         </includes>
       </resource> 
       <resource> 
         <directory>src/main/ruby</directory> 
         <includes>
-          <include>**/*.rb</include>
+          <include>**/*</include>
         </includes>
-      </resource> 
+      </resource>
     </resources> 
     <plugins> 
       <plugin>
