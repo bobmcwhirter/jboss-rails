@@ -1,6 +1,6 @@
-[submodule "src/test/ballast/vendor/rails"]
-	path = src/test/ballast/vendor/rails
-	url = git://github.com/rails/rails.git
 [submodule "gems/activerecord-jdbc-adapter"]
 	path = gems/activerecord-jdbc-adapter
 	url = git://github.com/nicksieger/activerecord-jdbc-adapter.git
+[submodule "jboss-rails-support"]
+	path = jboss-rails-support
+	url = git://github.com/bobmcwhirter/jboss-rails-support.git

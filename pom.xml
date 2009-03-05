@@ -24,7 +24,10 @@
     <snapshotRepository>
       <id>oddthesis.SNAPSHOT.repo</id>
       <name>Odd Thesis SNAPSHOT repository</name>
+<!--
       <url>scpexe://repo.oddthesis.org/opt/oddthesis/repo/maven2/SNAPSHOTS</url>
+-->
+      <url>file://Users/bob/oddthesis-snapshot-repo</url>
     </snapshotRepository>
   </distributionManagement>
 
@@ -280,6 +283,8 @@
         <configuration>
           <descriptors>
             <descriptor>src/main/assembly/deployer.xml</descriptor>
+            <descriptor>src/main/assembly/support.xml</descriptor>
+            <descriptor>src/main/assembly/bin.xml</descriptor>
           </descriptors>
           <finalName>${pom.artifactId}-${pom.version}</finalName>
         </configuration>
@@ -301,6 +306,9 @@
             <configuration>
               <tasks>
                 <exec executable="rake" dir="${basedir}/gems/">
+                  <arg value="clean"/>
+                </exec>
+                <exec executable="rake" dir="${basedir}/jboss-rails-support/">
                   <arg value="clean"/>
                 </exec>
               </tasks>
@@ -326,6 +334,7 @@
             <phase>package</phase>
             <configuration>
               <tasks>
+                <exec executable="rake" dir="${basedir}/jboss-rails-support/" />
                 <exec executable="rm" dir="${basedir}/target">
                   <arg value="-f"/>
                   <arg value="${artifactId}.deployer"/>

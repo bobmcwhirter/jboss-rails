@@ -1,14 +1,3 @@
-Copy the exploded "jboss-rails.deployer/" directory to the 'deployers/' 
-directory of server configuration you're using.
+Please see full installation instructions available at:
 
-For example, if you are using the 'all' configuration, you could
-execute this commandline
-
-  $ cp -R jboss-rails.deployer $JBOSS_HOME/server/all/deployers/
-
-It is recommended (but not strictly necessary) to stop the AS before
-adding in the deployer.
-
-To ease development, please see the JBoss Rails Plugin project at:
-
-  * http://oddthesis.org/theses/jboss-rails/projects/jboss-rails-plugin
+http://oddthesis.org/theses/jboss-rails/projects/jboss-rails/pages/enable-rails-in-jboss-as5

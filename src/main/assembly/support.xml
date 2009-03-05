@@ -1,0 +1,20 @@
+<assembly>
+  <id>support</id>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <fileSets>
+    <fileSet>
+      <directory>jboss-rails-support</directory>
+      <outputDirectory>/jboss-rails-support-${pom.version}</outputDirectory>
+      <includes>
+        <include>**/*</include>
+      </includes>
+      <excludes>
+        <exclude>.git/**</exclude>
+        <exclude>pkg/**</exclude>
+      </excludes>
+    </fileSet>
+  </fileSets>
+</assembly>
