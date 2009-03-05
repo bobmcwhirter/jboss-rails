@@ -15,6 +15,20 @@
     <url>http://github.com/bobmcwhirter/jboss-rails/tree/master</url>
   </scm>
 
+  <distributionManagement>
+    <repository>
+      <id>oddthesis.repo</id>
+      <name>Odd Thesis repository</name>
+      <url>scpexe://repo.oddthesis.org/opt/oddthesis/repo/maven2</url>
+    </repository>
+    <snapshotRepository>
+      <id>oddthesis.SNAPSHOT.repo</id>
+      <name>Odd Thesis SNAPSHOT repository</name>
+      <url>scpexe://repo.oddthesis.org/opt/oddthesis/repo/maven2/SNAPSHOTS</url>
+    </snapshotRepository>
+  </distributionManagement>
+
+
 
   <dependencies>
 
@@ -329,6 +343,19 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
 <!--
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
