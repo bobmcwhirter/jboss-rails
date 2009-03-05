@@ -44,9 +44,4 @@
       </excludes>
     </dependencySet>
   </dependencySets>
-<!--
-  <componentDescriptors>
-    <componentDescriptor>src/main/assembly/common.xml</componentDescriptor>
-  </componentDescriptors>
--->
 </assembly>
