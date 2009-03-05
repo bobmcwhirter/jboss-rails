@@ -10,7 +10,7 @@
       <outputDirectory>/jboss-rails-${pom.version}</outputDirectory>
       <includes>
         <include>LICENSE*.txt</include>
-        <include>INSTALL-bin.txt</include>
+        <include>INSTALL.txt</include>
       </includes>
     </fileSet>
   </fileSets>

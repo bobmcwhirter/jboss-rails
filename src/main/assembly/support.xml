@@ -12,7 +12,11 @@
         <include>**/*</include>
       </includes>
       <excludes>
+        <exclude>Rakefile</exclude>
+        <exclude>*.gemspec</exclude>
         <exclude>.git/**</exclude>
+        <exclude>**/.gitignore</exclude>
+        <exclude>**/*.swp</exclude>
         <exclude>pkg/**</exclude>
       </excludes>
     </fileSet>
