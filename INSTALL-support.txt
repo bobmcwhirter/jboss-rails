@@ -1,0 +1,6 @@
+This unzipped directory should be located under your application's 
+RAILS_ROOT/vendor/plugins/ directory.
+
+For more information, please see:
+
+http://oddthesis.org/theses/jboss-rails/projects/jboss-rails-support/pages/installation

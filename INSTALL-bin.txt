@@ -1,0 +1,14 @@
+To install...
+
+Copy the deployer.jar into your server's deploy/ directory.
+
+Unzip the jboss-rails-support.zip in your applications's RAILS_ROOT/vendor/plugins/ directory.
+
+More information about installing the deployer:
+
+http://oddthesis.org/theses/jboss-rails/projects/jboss-rails/pages/enable-rails-in-jboss-as5
+
+More information about using the support plugin in your application:
+
+http://oddthesis.org/theses/jboss-rails/projects/jboss-rails-support/pages/installation
+
