@@ -38,7 +38,8 @@ module JBoss
         env['rack.input']        = input
         env['rack.errors']       = errors
         servlet_request.getHeaderNames().each do |name|
-          env["HTTP_#{name.upcase}"] = servlet_request.getHeader( name )
+          env_name = name.upcase.gsub( /-/, '_' )
+          env["HTTP_#{env_name}"] = servlet_request.getHeader( name )
         end
         env['servlet_request'] = servlet_request
         env
