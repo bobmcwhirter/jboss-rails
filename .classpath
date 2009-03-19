@@ -196,4 +196,5 @@
   <classpathentry kind="var" path="M2_REPO/xml-resolver/xml-resolver/1.2/xml-resolver-1.2.jar" sourcepath="M2_REPO/xml-resolver/xml-resolver/1.2/xml-resolver-1.2-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/ws/commons/schema/XmlSchema/1.4.2/XmlSchema-1.4.2.jar" sourcepath="M2_REPO/org/apache/ws/commons/schema/XmlSchema/1.4.2/XmlSchema-1.4.2-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/santuario/xmlsec/1.4.0/xmlsec-1.4.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/mobicents/servlet/sip/sip-servlets-jboss5/0.9-SNAPSHOT/sip-servlets-jboss5-0.9-SNAPSHOT.jar"/>
 </classpath>
