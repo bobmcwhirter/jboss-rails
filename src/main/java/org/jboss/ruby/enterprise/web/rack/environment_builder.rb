@@ -21,7 +21,8 @@
 module JBoss
   module Rack
     class EnvironmentBuilder
-      def self.build(servlet_request, input, errors)
+      def self.build(servlet_context, servlet_request, input, errors)
+        ($servlet_context=servlet_context) unless defined?( $servlet_context ) 
         env = {}
         env['REQUEST_METHOD']    = servlet_request.getMethod()
         env['SCRIPT_NAME']       = "#{servlet_request.getContextPath()}#{servlet_request.getServletPath()}"

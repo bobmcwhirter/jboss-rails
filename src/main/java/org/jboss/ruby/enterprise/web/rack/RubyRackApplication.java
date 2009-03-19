@@ -21,6 +21,7 @@
  */
 package org.jboss.ruby.enterprise.web.rack;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jboss.logging.Logger;
@@ -47,7 +48,7 @@ public class RubyRackApplication implements RackApplication {
 		rubyApp = this.ruby.evalScriptlet(fullScript);
 	}
 
-	public Object createEnvironment(HttpServletRequest request) throws Exception {
+	public Object createEnvironment(ServletContext context, HttpServletRequest request) throws Exception {
 		Ruby ruby = rubyApp.getRuntime();
 
 		RubyIO input = new RubyIO(ruby, request.getInputStream());
@@ -57,7 +58,7 @@ public class RubyRackApplication implements RackApplication {
 
 		RubyModule envBuilder = ruby.getClassFromPath("JBoss::Rack::EnvironmentBuilder");
 
-		return JavaEmbedUtils.invokeMethod(ruby, envBuilder, "build", new Object[] { request, input, errors }, Object.class);
+		return JavaEmbedUtils.invokeMethod(ruby, envBuilder, "build", new Object[] { context, request, input, errors }, Object.class);
 	}
 
 	public RackResponse call(Object env) {

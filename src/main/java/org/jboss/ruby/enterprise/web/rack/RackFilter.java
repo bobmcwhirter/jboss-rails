@@ -26,6 +26,7 @@ import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -48,6 +49,8 @@ public class RackFilter implements Filter {
 
 	private RackApplicationPool rackAppFactory;
 
+	private ServletContext servletContext;
+
 	@SuppressWarnings("deprecation")
 	public void init(FilterConfig filterConfig) throws ServletException {
 		Kernel kernel = (Kernel) filterConfig.getServletContext().getAttribute(KERNEL_NAME);
@@ -56,6 +59,8 @@ public class RackFilter implements Filter {
 		if (entry != null) {
 			this.rackAppFactory = (RackApplicationPool) entry.getTarget();
 		}
+		
+		this.servletContext = filterConfig.getServletContext();
 	}
 
 	public void destroy() {
@@ -87,7 +92,7 @@ public class RackFilter implements Filter {
 
 		try {
 			rackApp = borrowRackApplication();
-			Object rackEnv = rackApp.createEnvironment(request);
+			Object rackEnv = rackApp.createEnvironment(servletContext, request);
 			rackApp.call(rackEnv).respond(response);
 		} catch (Exception e) {
 			e.printStackTrace();
