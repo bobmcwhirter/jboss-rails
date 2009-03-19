@@ -39,6 +39,7 @@ import org.jboss.deployers.vfs.spi.deployer.AbstractVFSParsingDeployer;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.logging.Logger;
 import org.jboss.rails.core.metadata.RailsApplicationMetaData;
+import org.jboss.ruby.enterprise.sip.metadata.SipApplicationMetaData;
 import org.jboss.ruby.enterprise.web.rack.metadata.RackWebApplicationMetaData;
 import org.jboss.virtual.VFS;
 import org.jboss.virtual.VirtualFile;
@@ -51,6 +52,7 @@ public class AppRailsYamlParsingDeployer extends AbstractVFSParsingDeployer<Rail
 	public AppRailsYamlParsingDeployer() {
 		super(RailsApplicationMetaData.class);
 		addOutput(RackWebApplicationMetaData.class);
+		addOutput(SipApplicationMetaData.class);
 		setSuffix("-rails.yml");
 		setStage(DeploymentStages.REAL);
 		setTopLevelOnly(true);
@@ -103,7 +105,7 @@ public class AppRailsYamlParsingDeployer extends AbstractVFSParsingDeployer<Rail
 		unit.addAttachment("jboss.rails.root.deployer", deployer);
 	}
 
-	private Deployment createDeployment(RailsApplicationMetaData railsMetaData, RackWebApplicationMetaData webMetaData) throws MalformedURLException, IOException {
+	private Deployment createDeployment(RailsApplicationMetaData railsMetaData, RackWebApplicationMetaData webMetaData, SipApplicationMetaData sipMetaData) throws MalformedURLException, IOException {
 		AbstractVFSDeployment deployment = new AbstractVFSDeployment(railsMetaData.getRailsRoot());
 
 		MutableAttachments attachments = ((MutableAttachments) deployment.getPredeterminedManagedObjects());
@@ -112,6 +114,10 @@ public class AppRailsYamlParsingDeployer extends AbstractVFSParsingDeployer<Rail
 
 		if (webMetaData != null) {
 			attachments.addAttachment(RackWebApplicationMetaData.class, webMetaData);
+		}
+		
+		if (sipMetaData != null) {
+			attachments.addAttachment(SipApplicationMetaData.class, sipMetaData);
 		}
 
 		return deployment;
@@ -124,6 +130,7 @@ public class AppRailsYamlParsingDeployer extends AbstractVFSParsingDeployer<Rail
 
 			Map<String, Object> application = (Map<String, Object>) results.get("application");
 			Map<String, Object> web = (Map<String, Object>) results.get("web");
+			Map<String, Object> sip = (Map<String, Object>) results.get("sip");
 
 			RailsApplicationMetaData railsMetaData = new RailsApplicationMetaData();
 
@@ -146,7 +153,18 @@ public class AppRailsYamlParsingDeployer extends AbstractVFSParsingDeployer<Rail
 				webMetaData.setContext(context);
 			}
 
-			return createDeployment(railsMetaData, webMetaData);
+			SipApplicationMetaData sipMetaData = null;
+			
+			if (sip != null) {
+				String applicationName = (String) sip.get("appname");
+				String mainServlet = (String) sip.get("mainservlet");
+				sipMetaData = new SipApplicationMetaData();
+				sipMetaData.setApplicationName(applicationName);
+				sipMetaData.setMainServlet(mainServlet);
+			}
+
+			
+			return createDeployment(railsMetaData, webMetaData, sipMetaData);
 
 		} finally {
 			file.closeStreams();

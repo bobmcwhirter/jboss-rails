@@ -26,7 +26,7 @@ task :build_gems=>[ :prepare_target ] do
   gem_dir = gems_dir + "/activerecord-jdbc-adapter"
 
   Dir.chdir( gem_dir ) do 
-    `rake all:package`
+    'rake all:package'
   end
 end
 
@@ -35,7 +35,7 @@ task :install_gems do
 
   Dir.chdir( gem_dir ) do 
     gems = Dir[ "pkg/*.gem" ] + Dir[ "drivers/*/pkg/*.gem" ] + Dir[ "adapters/*/pkg/*.gem" ] 
-    puts `GEM_PATH=#{target_gems_dir} gem install -f -i #{target_gems_dir} --local --no-ri --no-rdoc #{gems.join(' ' )}`
+    puts 'GEM_PATH=#{target_gems_dir} gem install -f -i #{target_gems_dir} --local --no-ri --no-rdoc #{gems.join(' ' )}'
   end
 end
 
@@ -44,7 +44,7 @@ task :prepare_target do
 end
 
 task :clean do
-  Dir.chdir( gems_dir + '/activerecord-jdbc-adapter' ) { `rake all:clean` }
+  Dir.chdir( gems_dir + '/activerecord-jdbc-adapter' ) { 'rake all:clean' }
 end
 
 task :prepare_gems=>[ :activerecord_jdbc_adapter ] do

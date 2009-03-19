@@ -19,6 +19,10 @@
   <bean name="RubyRackApplicationFactoryDeployer"   class="org.jboss.ruby.enterprise.web.rack.deployers.RubyRackApplicationFactoryDeployer"/>
   <bean name="RackWebApplicationDeployer"           class="org.jboss.ruby.enterprise.web.rack.deployers.RackWebApplicationDeployer"/>
 
+  <!-- SIP Servlets -->
+  <bean name="SipYamlParsingDeployer"               class="org.jboss.ruby.enterprise.sip.deployers.SipYamlParsingDeployer"/>
+  <bean name="ConvergedSipRackWebApplicationDeployer"           class="org.jboss.ruby.enterprise.sip.deployers.ConvergedSipRackWebApplicationDeployer"/>
+
   <!-- Runtime factories -->
 
   <bean name="RubyRuntimeFactoryDeployer"           class="org.jboss.ruby.runtime.deployers.RubyRuntimeFactoryDeployer">
