@@ -40,6 +40,7 @@ public class RubyServiceConfiguration extends DefaultServiceConfiguration {
 		return this.portName;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Class getRequestWrapper(Method selected) {
 		return StAXSource.class;
@@ -50,6 +51,7 @@ public class RubyServiceConfiguration extends DefaultServiceConfiguration {
 		return StAXSource.class.getName();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Class getResponseWrapper(Method selected) {
 		return StAXSource.class;

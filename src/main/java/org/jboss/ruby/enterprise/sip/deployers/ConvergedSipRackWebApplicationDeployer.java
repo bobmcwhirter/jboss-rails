@@ -21,30 +21,17 @@
  */
 package org.jboss.ruby.enterprise.sip.deployers;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.vfs.spi.deployer.AbstractSimpleVFSRealDeployer;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.deployment.ConvergedSipAnnotationMetaDataDeployer;
 import org.jboss.logging.Logger;
-import org.jboss.metadata.javaee.spec.ParamValueMetaData;
 import org.jboss.metadata.sip.jboss.JBossConvergedSipMetaData;
 import org.jboss.metadata.sip.spec.ServletSelectionMetaData;
 import org.jboss.metadata.sip.spec.Sip11MetaData;
-import org.jboss.metadata.web.jboss.JBossServletMetaData;
-import org.jboss.metadata.web.jboss.JBossServletsMetaData;
 import org.jboss.metadata.web.jboss.JBossWebMetaData;
-import org.jboss.metadata.web.spec.FilterMappingMetaData;
-import org.jboss.metadata.web.spec.FilterMetaData;
-import org.jboss.metadata.web.spec.FiltersMetaData;
-import org.jboss.metadata.web.spec.ServletMappingMetaData;
 import org.jboss.ruby.enterprise.sip.metadata.SipApplicationMetaData;
-import org.jboss.ruby.enterprise.web.StaticResourceServlet;
-import org.jboss.ruby.enterprise.web.rack.RackFilter;
 
 /**
  * @author jean.deruelle@gmail.com

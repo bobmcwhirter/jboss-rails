@@ -21,8 +21,6 @@
  */
 package org.jboss.ruby.enterprise.jobs;
 
-import java.util.Date;
-
 import org.jboss.logging.Logger;
 import org.jboss.ruby.runtime.RubyRuntimePool;
 import org.jboss.ruby.util.StringUtils;

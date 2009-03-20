@@ -27,7 +27,6 @@ import org.ho.yaml.Yaml;
 import org.jboss.deployers.vfs.spi.deployer.AbstractVFSParsingDeployer;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.ruby.enterprise.sip.metadata.SipApplicationMetaData;
-import org.jboss.ruby.enterprise.web.rack.metadata.RackWebApplicationMetaData;
 import org.jboss.virtual.VirtualFile;
 
 /**
@@ -48,6 +47,7 @@ public class SipYamlParsingDeployer extends
 	/* (non-Javadoc)
 	 * @see org.jboss.deployers.vfs.spi.deployer.AbstractVFSParsingDeployer#parse(org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit, org.jboss.virtual.VirtualFile, java.lang.Object)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	protected SipApplicationMetaData parse(VFSDeploymentUnit unit,
 			VirtualFile file, SipApplicationMetaData arg2) throws Exception {

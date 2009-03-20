@@ -33,7 +33,6 @@ import javax.xml.validation.Schema;
 import org.apache.cxf.databinding.DataReader;
 import org.apache.cxf.message.Attachment;
 import org.apache.cxf.service.model.MessagePartInfo;
-import org.jboss.logging.Logger;
 import org.jboss.ruby.enterprise.endpoints.databinding.RubyType;
 import org.jboss.ruby.enterprise.endpoints.databinding.RubyTypeSpace;
 import org.jboss.ruby.enterprise.endpoints.databinding.RubyXMLStreamDataReader;
@@ -43,22 +42,22 @@ import org.jruby.runtime.builtin.IRubyObject;
 
 public class RubyDataReader<T> implements DataReader<T> {
 
-	private static final Logger log = Logger.getLogger(RubyDataReader.class);
-
+	@SuppressWarnings("unused")
 	private Collection<Attachment> attachments;
-	private Map<String, Object> properties = new HashMap<String, Object>();
+	@SuppressWarnings("unused")
 	private Schema schema;
 
+	
+	private Map<String, Object> properties = new HashMap<String, Object>();
+	
 	private RubyTypeSpace typeSpace;
 	private RubyRuntimePool runtimePool;
-	private String name;
 	
 	private RubyXMLStreamDataReader reader;
 
-	public RubyDataReader(RubyTypeSpace typeSpace, RubyRuntimePool runtimePool, String name) {
+	public RubyDataReader(RubyTypeSpace typeSpace, RubyRuntimePool runtimePool) {
 		this.typeSpace = typeSpace;
 		this.runtimePool = runtimePool;
-		this.name = name;
 		this.reader = new RubyXMLStreamDataReader();
 	}
 

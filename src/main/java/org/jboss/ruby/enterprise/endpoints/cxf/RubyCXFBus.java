@@ -26,12 +26,8 @@ import org.apache.cxf.bus.extension.ExtensionManagerBus;
 import org.apache.cxf.transport.DestinationFactory;
 import org.apache.cxf.transport.DestinationFactoryManager;
 import org.apache.cxf.transport.servlet.ServletTransportFactory;
-import org.apache.cxf.wsdl.WSDLManager;
-import org.jboss.logging.Logger;
 
 public class RubyCXFBus extends ExtensionManagerBus {
-	
-	private static Logger log = Logger.getLogger( RubyCXFBus.class );
 	
 	public RubyCXFBus() {
 		
@@ -43,11 +39,6 @@ public class RubyCXFBus extends ExtensionManagerBus {
         for ( String transportId : destinationFactory.getTransportIds() ) {
         	dfm.registerDestinationFactory( transportId,  destinationFactory );
         }
-        
-        WSDLManager manager = getExtension(WSDLManager.class);
-        //Definition def = manager.getDefinition( "" );
-        //def.get
-        
 	}
 
 }

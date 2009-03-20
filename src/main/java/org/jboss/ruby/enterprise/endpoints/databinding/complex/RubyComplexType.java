@@ -34,13 +34,10 @@ import org.apache.ws.commons.schema.XmlSchemaComplexType;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.apache.ws.commons.schema.XmlSchemaGroupBase;
 import org.apache.ws.commons.schema.XmlSchemaParticle;
-import org.jboss.logging.Logger;
 import org.jboss.ruby.enterprise.endpoints.databinding.RubyType;
 import org.jboss.ruby.enterprise.endpoints.databinding.RubyTypeSpace;
 
 public class RubyComplexType extends RubyType {
-
-	private static final Logger log = Logger.getLogger(RubyComplexType.class);
 
 	private XmlSchemaComplexType xsdType;
 	private List<RubyAttribute> attributes = new ArrayList<RubyAttribute>();

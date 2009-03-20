@@ -28,24 +28,20 @@ import org.apache.cxf.databinding.AbstractDataBinding;
 import org.apache.cxf.databinding.DataReader;
 import org.apache.cxf.databinding.DataWriter;
 import org.apache.cxf.service.Service;
-import org.jboss.logging.Logger;
 import org.jboss.ruby.enterprise.endpoints.databinding.RubyTypeSpace;
 import org.jboss.ruby.runtime.RubyRuntimePool;
 import org.w3c.dom.Node;
 
 public class RubyDataBinding extends AbstractDataBinding {
 
-	private static final Logger log = Logger.getLogger(RubyDataBinding.class);
 	private static final Class<?>[] SUPPORTED_READER_FORMATS = new Class[] { Node.class };
 	private static final Class<?>[] SUPPORTED_WRITER_FORMATS = new Class[] { Node.class };
 	
-	private String name;
 	private RubyRuntimePool runtimePool;
 	private RubyTypeSpace typeSpace;
 	
-	public RubyDataBinding(RubyRuntimePool runtimePool, String name) {
+	public RubyDataBinding(RubyRuntimePool runtimePool) {
 		this.runtimePool = runtimePool;
-		this.name = name;
 	}
 	
 	public void setRubyTypeSpace(RubyTypeSpace typeSpace) {
@@ -58,10 +54,10 @@ public class RubyDataBinding extends AbstractDataBinding {
 
 	public <T> DataReader<T> createReader(Class<T> type) {
 		if ( type == XMLStreamReader.class ) {
-			return new RubyDataReader<T>( this.typeSpace, this.runtimePool, name );
+			return new RubyDataReader<T>( this.typeSpace, this.runtimePool );
 		}
 		if ( type == Node.class ) {
-			return new RubyDataReader<T>( this.typeSpace, this.runtimePool, name );
+			return new RubyDataReader<T>( this.typeSpace, this.runtimePool );
 		}
 		return null;
 	}

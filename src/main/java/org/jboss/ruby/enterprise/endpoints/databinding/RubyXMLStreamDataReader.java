@@ -26,7 +26,6 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.jboss.logging.Logger;
 import org.jboss.ruby.enterprise.endpoints.databinding.complex.RubyAttribute;
 import org.jboss.ruby.enterprise.endpoints.databinding.complex.RubyComplexType;
 import org.jboss.ruby.enterprise.endpoints.databinding.simple.RubySimpleType;
@@ -35,8 +34,6 @@ import org.jruby.javasupport.JavaEmbedUtils;
 import org.jruby.runtime.builtin.IRubyObject;
 
 public class RubyXMLStreamDataReader {
-	private static final Logger log = Logger.getLogger(RubyXMLStreamDataReader.class);
-
 	public RubyXMLStreamDataReader() {
 	}
 
@@ -79,7 +76,7 @@ public class RubyXMLStreamDataReader {
 	}
 
 	public Object readComplex(Ruby runtime, XMLStreamReader input, RubyComplexType type) throws XMLStreamException {
-		QName name = input.getName();
+		//QName name = input.getName();
 
 		readXMLAttributesAndNamespaces(input);
 

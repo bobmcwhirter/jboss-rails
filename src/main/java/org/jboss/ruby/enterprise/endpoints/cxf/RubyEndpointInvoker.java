@@ -33,12 +33,10 @@ import org.apache.cxf.message.MessageContentsList;
 import org.apache.cxf.service.invoker.Invoker;
 import org.apache.cxf.service.model.BindingOperationInfo;
 import org.apache.cxf.service.model.MessagePartInfo;
-import org.jboss.logging.Logger;
 import org.jboss.ruby.enterprise.endpoints.RubyEndpointHandler;
 
 public class RubyEndpointInvoker implements Invoker {
 
-	private static final Logger log = Logger.getLogger(RubyEndpointInvoker.class);
 	private RubyEndpointHandler handler;
 
 	public RubyEndpointInvoker(RubyEndpointHandler handler) {

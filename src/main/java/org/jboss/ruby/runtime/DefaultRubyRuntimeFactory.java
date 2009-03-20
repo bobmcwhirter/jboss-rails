@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.jboss.kernel.Kernel;
-import org.jboss.logging.Logger;
 import org.jruby.Ruby;
 import org.jruby.RubyClass;
 import org.jruby.RubyInstanceConfig;
@@ -37,13 +36,11 @@ import org.jruby.util.ClassCache;
 
 public class DefaultRubyRuntimeFactory implements RubyRuntimeFactory {
 
-	private static final Logger log = Logger.getLogger(DefaultRubyRuntimeFactory.class);
-
 	private Kernel kernel;
 	private RuntimeInitializer initializer;
 
 	private RubyDynamicClassLoader classLoader;
-	private ClassCache classCache;
+	private ClassCache<?> classCache;
 
 	public DefaultRubyRuntimeFactory() {
 		this(null);
@@ -76,7 +73,7 @@ public class DefaultRubyRuntimeFactory implements RubyRuntimeFactory {
 		config.setLoader(childLoader);
 		
 		if ( this.classCache == null ) {
-			this.classCache = new ClassCache( this.classLoader );
+			this.classCache = new ClassCache<Object>( this.classLoader );
 		}
 		config.setClassCache( classCache );
 

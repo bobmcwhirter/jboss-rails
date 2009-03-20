@@ -908,7 +908,8 @@ public final class StaxUtils {
     }
     
     
-    private static void writeStartElementEvent(XMLEvent event, XMLStreamWriter writer) 
+    @SuppressWarnings("unchecked")
+	private static void writeStartElementEvent(XMLEvent event, XMLStreamWriter writer) 
         throws XMLStreamException {
         StartElement start = event.asStartElement();
         QName name = start.getName();
@@ -923,9 +924,9 @@ public final class StaxUtils {
         } else {
             writer.writeStartElement(localName);
         }
-        Iterator it = start.getNamespaces();
+        Iterator<XMLEvent> it = start.getNamespaces();
         while (it != null && it.hasNext()) {
-            writeEvent((XMLEvent)it.next(), writer);
+            writeEvent(it.next(), writer);
         }
         
         it = start.getAttributes();

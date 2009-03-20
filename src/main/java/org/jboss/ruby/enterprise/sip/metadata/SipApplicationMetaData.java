@@ -21,7 +21,6 @@
  */
 package org.jboss.ruby.enterprise.sip.metadata;
 
-import org.jboss.logging.Logger;
 
 /**
  * @author jean.deruelle@gmail.com
@@ -31,7 +30,7 @@ public class SipApplicationMetaData {
 	private String applicationName;
 	private String mainServlet;
 	
-	private Logger log = Logger.getLogger(SipApplicationMetaData.class);
+	//private Logger log = Logger.getLogger(SipApplicationMetaData.class);
 	
 	public void setApplicationName(String applicationName) {
 		this.applicationName = applicationName;

@@ -21,7 +21,6 @@
  */
 package org.jboss.ruby.enterprise.jobs.deployers;
 
-import java.util.Properties;
 import java.util.Set;
 
 import org.jboss.beans.metadata.spi.BeanMetaData;
@@ -35,9 +34,6 @@ import org.jboss.ruby.enterprise.jobs.RubyJob;
 import org.jboss.ruby.enterprise.jobs.RubyScheduler;
 import org.jboss.ruby.enterprise.jobs.metadata.RubyJobMetaData;
 import org.jboss.ruby.runtime.deployers.RubyRuntimePoolDeployer;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.impl.StdSchedulerFactory;
 
 public class RubyJobDeployer extends AbstractDeployer {
 

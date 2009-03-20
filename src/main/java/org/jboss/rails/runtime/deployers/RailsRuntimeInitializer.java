@@ -29,10 +29,10 @@ import org.jboss.ruby.runtime.RubyDynamicClassLoader;
 import org.jboss.ruby.runtime.RuntimeInitializer;
 import org.jruby.Ruby;
 import org.jruby.RubyArray;
+import org.jruby.javasupport.JavaEmbedUtils;
+import org.jruby.runtime.builtin.IRubyObject;
 
 public class RailsRuntimeInitializer implements RuntimeInitializer {
-	
-	private static final Logger log = Logger.getLogger(RailsRuntimeInitializer.class );
 	
 	private String railsRoot;
 	private String railsEnv;
@@ -43,6 +43,9 @@ public class RailsRuntimeInitializer implements RuntimeInitializer {
 	}
 
 	public void initialize(RubyDynamicClassLoader cl, Ruby ruby) throws Exception {
+		Logger logger = Logger.getLogger( railsRoot );
+		IRubyObject rubyLogger = JavaEmbedUtils.javaToRuby( ruby,  logger );
+		ruby.getGlobalVariables().set( "$JBOSS_RAILS_LOGGER", rubyLogger );
 		ruby.evalScriptlet( createProlog() );
 		
 		RubyArray rubyLoadPath = (RubyArray) ruby.getGlobalVariables().get( "$LOAD_PATH" );

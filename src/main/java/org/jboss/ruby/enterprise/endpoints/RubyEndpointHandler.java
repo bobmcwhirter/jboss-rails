@@ -27,7 +27,6 @@ import javax.xml.namespace.QName;
 
 import org.apache.cxf.interceptor.Fault;
 import org.jboss.logging.Logger;
-import org.jboss.ruby.enterprise.endpoints.cxf.RubyDataBinding;
 import org.jboss.ruby.enterprise.endpoints.databinding.RubyType;
 import org.jboss.ruby.enterprise.endpoints.databinding.RubyTypeSpace;
 import org.jboss.ruby.runtime.RubyRuntimePool;

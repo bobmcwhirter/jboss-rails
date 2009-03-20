@@ -30,14 +30,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.jboss.logging.Logger;
 import org.jboss.virtual.MemoryFileFactory;
 import org.jboss.virtual.VirtualFile;
 import org.jboss.virtual.plugins.context.memory.MemoryContextFactory;
 
 public class RubyDynamicClassLoader extends URLClassLoader {
-
-	private static final Logger log = Logger.getLogger(RubyDynamicClassLoader.class);
 
 	private static final URL[] EMPTY_URL_ARRAY = new URL[]{};
 

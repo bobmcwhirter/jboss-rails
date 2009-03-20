@@ -41,9 +41,12 @@ public class RubyDataWriter<T> implements DataWriter<T> {
 
 	private static final Logger log = Logger.getLogger(RubyDataWriter.class);
 
+	@SuppressWarnings("unused")
 	private Collection<Attachment> attachments;
-	private Map<String, Object> properties = new HashMap<String, Object>();
+	@SuppressWarnings("unused")
 	private Schema schema;
+	
+	private Map<String, Object> properties = new HashMap<String, Object>();
 
 	private RubyXMLStreamDataWriter streamWriter;
 

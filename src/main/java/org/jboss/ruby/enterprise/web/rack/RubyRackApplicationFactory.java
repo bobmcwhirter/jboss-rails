@@ -21,14 +21,11 @@
  */
 package org.jboss.ruby.enterprise.web.rack;
 
-import org.jboss.logging.Logger;
 import org.jboss.ruby.runtime.RubyRuntimeFactory;
 import org.jruby.Ruby;
 
 public class RubyRackApplicationFactory implements RackApplicationFactory {
 	
-	private static final Logger log = Logger.getLogger( RubyRackApplicationFactory.class );
-
 	private RubyRuntimeFactory runtimeFactory;
 	private String rackUpScript;
 

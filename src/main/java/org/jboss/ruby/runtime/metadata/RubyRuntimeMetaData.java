@@ -25,7 +25,6 @@ import org.jboss.ruby.runtime.RuntimeInitializer;
 
 public class RubyRuntimeMetaData {
 	
-	private LoadPathMetaData loadPath;
 	private RuntimeInitializer initializer;
 
 	public RubyRuntimeMetaData() {

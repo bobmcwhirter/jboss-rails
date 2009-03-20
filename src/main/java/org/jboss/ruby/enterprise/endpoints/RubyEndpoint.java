@@ -204,7 +204,7 @@ public class RubyEndpoint {
 		serverFactory.setBus(bus);
 		serverFactory.setServiceFactory(serviceFactory);
 
-		RubyDataBinding dataBinding = new RubyDataBinding(this.runtimePool, this.name);
+		RubyDataBinding dataBinding = new RubyDataBinding(this.runtimePool);
 		dataBinding.setRubyTypeSpace(this.typeSpace);
 
 		serviceFactory.setDataBinding(dataBinding);

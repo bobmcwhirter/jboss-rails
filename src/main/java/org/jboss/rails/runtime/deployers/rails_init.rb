@@ -18,6 +18,7 @@
 # Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 # 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  
+require %q(org/jboss/rails/runtime/deployers/as_logger)
 require %q(vendor/rails/railties/lib/initializer)
 
 module Rails
@@ -50,6 +51,10 @@ module Rails
         $LOAD_PATH.unshift(dir)
     	end
     	$LOAD_PATH.uniq!
+  	end
+  	def initialize_logger
+  	  logger = ActiveSupport::BufferedLogger.new( JBoss::Rails::ASLogger.new( $JBOSS_RAILS_LOGGER ) )
+      silence_warnings { Object.const_set "RAILS_DEFAULT_LOGGER", logger }
   	end
 	end
   

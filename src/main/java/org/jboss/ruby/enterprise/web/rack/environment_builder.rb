@@ -42,7 +42,9 @@ module JBoss
           env_name = name.upcase.gsub( /-/, '_' )
           env["HTTP_#{env_name}"] = servlet_request.getHeader( name )
         end
-        env['servlet_request'] = servlet_request
+        env['servlet_request']      = servlet_request
+        # and again, for jruby-rack compatibility
+        env['java.servlet_request'] = servlet_request
         env
       end
     end
