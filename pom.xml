@@ -36,7 +36,7 @@
     <dependency>
       <groupId>org.jruby</groupId>
       <artifactId>jruby-complete</artifactId>
-      <version>1.2RC1</version>
+      <version>${jruby.version}</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -400,6 +400,7 @@
         <jboss.as.version>5.0.1.GA</jboss.as.version>
         <cxf.version>2.1.3</cxf.version>
         <mobicents.sip.version>0.9-SNAPSHOT</mobicents.sip.version>  			
+        <jruby.version>1.2.0</jruby.version>
     </properties>
 
 </project>

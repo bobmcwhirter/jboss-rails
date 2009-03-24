@@ -30,6 +30,7 @@ module JBoss
         env['QUERY_STRING']      = servlet_request.getQueryString()
         env['SERVER_NAME']       = servlet_request.getServerName()
         env['SERVER_PORT']       = servlet_request.getServerPort()
+        env['CONTENT_TYPE']      = servlet_request.getContentType()
         env['CONTENT_LENGTH']    = servlet_request.getContentLength()
         env['REQUEST_URI']       = servlet_request.getRequestURI() 
         env['rack.version']      = [ 0, 1 ]

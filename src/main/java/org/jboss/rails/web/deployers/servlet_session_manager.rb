@@ -18,6 +18,8 @@
 # Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 # 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 
+require 'org/jboss/rails/web/deployers/servlet_session'
+
 module JBoss
   module Rails
     class ServletSessionManager
@@ -25,14 +27,24 @@ module JBoss
       
       def initialize(session, option) 
         @servlet_request = option['servlet_request']
-        @session_data = {}
         @digest = 'SHA1'
+        java_session = @servlet_request.getSession()
+        if ( java_session )
+            @session_id   = java_session.getId()
+        end
+        @session_data = {}
+      end
+      
+      def session_id
+        @session_id 
       end
       
       def restore
         @session_data = {}
-        java_session = @servlet_request.getSession(false)
+        @session_id   = nil
+        java_session = @servlet_request.getSession()
         if java_session
+          @session_id = java_session.getId()
           java_session.getAttributeNames.each do |k|
             if k == RAILS_SESSION_KEY
               marshalled_bytes = java_session.getAttribute(RAILS_SESSION_KEY)

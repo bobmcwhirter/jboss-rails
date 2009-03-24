@@ -18,23 +18,16 @@
 # Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 # 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 
-require 'org/jboss/rails/web/deployers/servlet_rack_request'
+require 'cgi/session'
 
 module JBoss
   module Rails
-    module Rack
-      class Dispatcher < ActionController::Dispatcher
-        def initialize(relative_url_root)
-          @relative_url_root = relative_url_root
-          puts "FORGERY #{ActionController::Base.request_forgery_protection_options.inspect}"
-        end
-        def call(env)
-          ActionController::Base.relative_url_root = @relative_url_root
-          @request  = JBoss::Rails::Rack::ServletRackRequest.new(env)
-          @response = ActionController::RackResponse.new(@request)
-          dispatch
-        end
+    class ServletSession < CGI::Session
+      
+      def session_id
+        @dbman.session_id
       end
+      
     end
   end
 end
