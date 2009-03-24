@@ -313,9 +313,6 @@
                 <exec executable="rake" dir="${basedir}/gems/">
                   <arg value="clean"/>
                 </exec>
-                <exec executable="rake" dir="${basedir}/jboss-rails-support/">
-                  <arg value="clean"/>
-                </exec>
               </tasks>
             </configuration>
             <goals>
@@ -339,7 +336,6 @@
             <phase>package</phase>
             <configuration>
               <tasks>
-                <exec executable="rake" dir="${basedir}/jboss-rails-support/" />
                 <exec executable="rm" dir="${basedir}/target">
                   <arg value="-f"/>
                   <arg value="${artifactId}.deployer"/>
