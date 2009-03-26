@@ -33,6 +33,7 @@ module JBoss
             @session_id   = java_session.getId()
         end
         @session_data = {}
+        @session_data['jboss.rails.initialized']=true
       end
       
       def session_id
