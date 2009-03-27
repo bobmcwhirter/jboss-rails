@@ -11,6 +11,7 @@ import org.jboss.ruby.enterprise.queues.metadata.RubyTaskQueueMetaData;
 import org.jboss.ruby.enterprise.queues.metadata.RubyTaskQueuesMetaData;
 import org.jboss.system.metadata.ServiceAttributeMetaData;
 import org.jboss.system.metadata.ServiceConstructorMetaData;
+import org.jboss.system.metadata.ServiceDependencyMetaData;
 import org.jboss.system.metadata.ServiceMetaData;
 import org.jboss.system.metadata.ServiceTextValueMetaData;
 import org.jboss.system.metadata.ServiceValueMetaData;
@@ -25,20 +26,20 @@ public class RubyTaskQueuesDeployer extends AbstractSimpleVFSRealDeployer<RubyTa
 	}
 
 	public void deploy(VFSDeploymentUnit unit, RubyTaskQueuesMetaData queuesMetaData) throws DeploymentException {
-		for ( RubyTaskQueueMetaData queueMetaData : queuesMetaData.getQueues() ) {
-			deploy( unit, queueMetaData );
+		for (RubyTaskQueueMetaData queueMetaData : queuesMetaData.getQueues()) {
+			deploy(unit, queueMetaData);
 		}
 	}
-	
+
 	public void deploy(VFSDeploymentUnit unit, RubyTaskQueueMetaData queueMetaData) throws DeploymentException {
-	
+
 		ServiceMetaData metaData = new ServiceMetaData();
 
 		metaData.setCode(QueueService.class.getName());
 
 		String simpleQueueName = queueMetaData.getQueueClassName();
-		simpleQueueName = simpleQueueName.replaceAll( "::", "." );
-		
+		simpleQueueName = simpleQueueName.replaceAll("::", ".");
+
 		String queueName = "jboss.messaging.destination:service=Queue,name=" + unit.getSimpleName() + "." + simpleQueueName;
 
 		try {
@@ -54,15 +55,23 @@ public class RubyTaskQueuesDeployer extends AbstractSimpleVFSRealDeployer<RubyTa
 		constructorMetaData.setParameters(new Object[] { Boolean.TRUE });
 		metaData.setConstructor(constructorMetaData);
 
-		//ServiceValueMetaData serverPeerVal = new ServiceInjectionValueMetaData(SERVER_PEER_NAME);
-		ServiceValueMetaData serverPeerVal = new ServiceTextValueMetaData( SERVER_PEER_NAME );
-		
+		// ServiceValueMetaData serverPeerVal = new
+		// ServiceInjectionValueMetaData(SERVER_PEER_NAME);
+		ServiceValueMetaData serverPeerVal = new ServiceTextValueMetaData(SERVER_PEER_NAME);
 
 		ServiceAttributeMetaData serverPeerAttr = new ServiceAttributeMetaData();
 		serverPeerAttr.setName("ServerPeer");
 		serverPeerAttr.setValue(serverPeerVal);
 
 		metaData.addAttribute(serverPeerAttr);
+
+		try {
+			ServiceDependencyMetaData serverPeerDep = new ServiceDependencyMetaData();
+			serverPeerDep.setIDependOnObjectName(new ObjectName(SERVER_PEER_NAME));
+			metaData.addDependency(serverPeerDep);
+		} catch (MalformedObjectNameException e) {
+			throw new DeploymentException(e);
+		}
 
 		unit.addAttachment(ServiceMetaData.class.getName() + "$queue." + queueName, metaData, ServiceMetaData.class);
 	}
