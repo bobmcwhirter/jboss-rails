@@ -64,6 +64,13 @@ public class RubyTaskQueuesDeployer extends AbstractSimpleVFSRealDeployer<RubyTa
 		serverPeerAttr.setValue(serverPeerVal);
 
 		metaData.addAttribute(serverPeerAttr);
+		
+		ServiceValueMetaData clusteredVal = new ServiceTextValueMetaData( "true" );
+		ServiceAttributeMetaData clusteredAttr = new ServiceAttributeMetaData();
+		clusteredAttr.setName( "Clustered" );
+		clusteredAttr.setValue( clusteredVal );
+		
+		metaData.addAttribute(clusteredAttr);
 
 		try {
 			ServiceDependencyMetaData serverPeerDep = new ServiceDependencyMetaData();
