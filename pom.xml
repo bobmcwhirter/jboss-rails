@@ -61,6 +61,15 @@
       <version>${mobicents.sip.version}</version>
       <scope>compile</scope>
     </dependency>
+
+    <!-- Messaging -->
+
+    <dependency>
+      <groupId>jboss.messaging</groupId>
+      <artifactId>jboss-messaging</artifactId>
+      <version>${jboss.messaging.version}</version>
+      <scope>provided</scope>
+    </dependency>
 	
     <!-- Microcontainer, VFS and Deployers -->
     <dependency>
@@ -394,9 +403,10 @@
         <jboss.mc.version>2.0.4.GA</jboss.mc.version>
         <jboss.vfs.version>2.1.0.GA</jboss.vfs.version>
         <jboss.as.version>5.0.1.GA</jboss.as.version>
+        <jruby.version>1.2.0</jruby.version>
         <cxf.version>2.1.3</cxf.version>
         <mobicents.sip.version>0.9-SNAPSHOT</mobicents.sip.version>  			
-        <jruby.version>1.2.0</jruby.version>
+        <jboss.messaging.version>1.4.3.GA</jboss.messaging.version>
     </properties>
 
 </project>

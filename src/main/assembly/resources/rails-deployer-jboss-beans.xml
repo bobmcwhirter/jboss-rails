@@ -10,46 +10,51 @@
 
   <!-- Crypto -->
 
-  <bean name="CryptoYamlParsingDeployer"            class="org.jboss.ruby.enterprise.crypto.deployers.CryptoYamlParsingDeployer" />
-
+  <bean name="CryptoYamlParsingDeployer"              class="org.jboss.ruby.enterprise.crypto.deployers.CryptoYamlParsingDeployer" />
+  
   <!-- Rack and Web --> 
 
-  <bean name="WebYamlParsingDeployer"               class="org.jboss.ruby.enterprise.web.rack.deployers.WebYamlParsingDeployer"/>
+  <bean name="WebYamlParsingDeployer"                 class="org.jboss.ruby.enterprise.web.rack.deployers.WebYamlParsingDeployer"/>
 
-  <bean name="RubyRackApplicationFactoryDeployer"   class="org.jboss.ruby.enterprise.web.rack.deployers.RubyRackApplicationFactoryDeployer"/>
-  <bean name="RackWebApplicationDeployer"           class="org.jboss.ruby.enterprise.web.rack.deployers.RackWebApplicationDeployer"/>
+  <bean name="RubyRackApplicationFactoryDeployer"     class="org.jboss.ruby.enterprise.web.rack.deployers.RubyRackApplicationFactoryDeployer"/>
+  <bean name="RackWebApplicationDeployer"             class="org.jboss.ruby.enterprise.web.rack.deployers.RackWebApplicationDeployer"/>
 
   <!-- SIP Servlets -->
-  <bean name="SipYamlParsingDeployer"               class="org.jboss.ruby.enterprise.sip.deployers.SipYamlParsingDeployer"/>
-  <bean name="ConvergedSipRackWebApplicationDeployer"           class="org.jboss.ruby.enterprise.sip.deployers.ConvergedSipRackWebApplicationDeployer"/>
+  <bean name="SipYamlParsingDeployer"                 class="org.jboss.ruby.enterprise.sip.deployers.SipYamlParsingDeployer"/>
+  <bean name="ConvergedSipRackWebApplicationDeployer" class="org.jboss.ruby.enterprise.sip.deployers.ConvergedSipRackWebApplicationDeployer"/>
 
   <!-- Runtime factories -->
 
-  <bean name="RubyRuntimeFactoryDeployer"           class="org.jboss.ruby.runtime.deployers.RubyRuntimeFactoryDeployer">
+  <bean name="RubyRuntimeFactoryDeployer"             class="org.jboss.ruby.runtime.deployers.RubyRuntimeFactoryDeployer">
     <property name="kernel"><inject bean="jboss.kernel:service=Kernel"/></property>
   </bean>
-  <bean name="RubyRuntimeFactoryPublishingDeployer" class="org.jboss.ruby.runtime.deployers.RubyRuntimeFactoryPublishingDeployer"/>
-  <bean name="RubyRuntimePoolDeployer"              class="org.jboss.ruby.runtime.deployers.RubyRuntimePoolDeployer"/>
+  <bean name="RubyRuntimeFactoryPublishingDeployer"   class="org.jboss.ruby.runtime.deployers.RubyRuntimeFactoryPublishingDeployer"/>
+  <bean name="RubyRuntimePoolDeployer"                class="org.jboss.ruby.runtime.deployers.RubyRuntimePoolDeployer"/>
 
   <!-- Job Scheduling -->
 
-  <bean name="JobsYamlParsingDeployer"              class="org.jboss.ruby.enterprise.jobs.deployers.JobsYamlParsingDeployer"/>
-  <bean name="RubySchedulerDeployer"                class="org.jboss.ruby.enterprise.jobs.deployers.RubySchedulerDeployer"/>
-  <bean name="RubyJobDeployer"                      class="org.jboss.ruby.enterprise.jobs.deployers.RubyJobDeployer"/>
+  <bean name="JobsYamlParsingDeployer"                class="org.jboss.ruby.enterprise.jobs.deployers.JobsYamlParsingDeployer"/>
+  <bean name="RubySchedulerDeployer"                  class="org.jboss.ruby.enterprise.jobs.deployers.RubySchedulerDeployer"/>
+  <bean name="RubyJobDeployer"                        class="org.jboss.ruby.enterprise.jobs.deployers.RubyJobDeployer"/>
 
-  <!-- Endpoint Infrastructure) -->
+  <!-- Task Queues -->
 
-  <bean name="CXFBusDeployer"                       class="org.jboss.ruby.enterprise.endpoints.cxf.deployers.CXFBusDeployer"/>
-  <bean name="CXFServletDeployer"                   class="org.jboss.ruby.enterprise.endpoints.cxf.deployers.CXFServletDeployer"/>
+  <bean name="QueuesYamlParsingDeployer"              class="org.jboss.ruby.enterprise.queues.deployers.QueuesYamlParsingDeployer"/>
+  <bean name="RubyTaskQueuesDeployer"                 class="org.jboss.ruby.enterprise.queues.deployers.RubyTaskQueuesDeployer"/>
+
+  <!-- Endpoint Infrastructure -->
+
+  <bean name="CXFBusDeployer"                         class="org.jboss.ruby.enterprise.endpoints.cxf.deployers.CXFBusDeployer"/>
+  <bean name="CXFServletDeployer"                     class="org.jboss.ruby.enterprise.endpoints.cxf.deployers.CXFServletDeployer"/>
 
   <!-- Endpoint Databinding -->
 
-  <bean name="RubyTypeSpaceDeployer"                class="org.jboss.ruby.enterprise.endpoints.deployers.RubyTypeSpaceDeployer"/>
+  <bean name="RubyTypeSpaceDeployer"                  class="org.jboss.ruby.enterprise.endpoints.deployers.RubyTypeSpaceDeployer"/>
 
   <!-- Endpoint Services -->
 
-  <bean name="RubyEndpointIntrospectionDeployer"    class="org.jboss.ruby.enterprise.endpoints.deployers.RubyEndpointIntrospectionDeployer"/>
-  <bean name="RubyEndpointDeployer"                 class="org.jboss.ruby.enterprise.endpoints.deployers.RubyEndpointDeployer"/>
+  <bean name="RubyEndpointIntrospectionDeployer"      class="org.jboss.ruby.enterprise.endpoints.deployers.RubyEndpointIntrospectionDeployer"/>
+  <bean name="RubyEndpointDeployer"                   class="org.jboss.ruby.enterprise.endpoints.deployers.RubyEndpointDeployer"/>
 
   <!-- 
      |
