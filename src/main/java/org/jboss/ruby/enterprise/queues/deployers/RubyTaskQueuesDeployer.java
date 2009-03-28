@@ -4,6 +4,7 @@ import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 
 import org.jboss.deployers.spi.DeploymentException;
+import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.deployers.vfs.spi.deployer.AbstractSimpleVFSRealDeployer;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.jms.server.destination.QueueService;
@@ -40,10 +41,10 @@ public class RubyTaskQueuesDeployer extends AbstractSimpleVFSRealDeployer<RubyTa
 		String simpleQueueName = queueMetaData.getQueueClassName();
 		simpleQueueName = simpleQueueName.replaceAll("::", ".");
 
-		String queueName = "jboss.messaging.destination:service=Queue,name=" + unit.getSimpleName() + "." + simpleQueueName;
+		String queueObjectName = getObjectName(unit, queueMetaData.getQueueClassName() );
 
 		try {
-			metaData.setObjectName(new ObjectName(queueName));
+			metaData.setObjectName(new ObjectName(queueObjectName));
 		} catch (MalformedObjectNameException e) {
 			throw new DeploymentException(e);
 		}
@@ -80,7 +81,18 @@ public class RubyTaskQueuesDeployer extends AbstractSimpleVFSRealDeployer<RubyTa
 			throw new DeploymentException(e);
 		}
 
-		unit.addAttachment(ServiceMetaData.class.getName() + "$queue." + queueName, metaData, ServiceMetaData.class);
+		unit.addAttachment(ServiceMetaData.class.getName() + "$queue." + queueObjectName, metaData, ServiceMetaData.class);
+	}
+	
+	public static String getObjectName(DeploymentUnit unit, String queueClassName) {
+		String objectName = "jboss.messaging.destination:service=Queue,name=" + getQueueName( unit, queueClassName );
+		return objectName;
+		
+	}
+	public static String getQueueName(DeploymentUnit unit, String queueClassName) {
+		String simpleQueueName = queueClassName;
+		simpleQueueName = simpleQueueName.replaceAll("::", ".");
+		return unit.getSimpleName() + "." + simpleQueueName;
 	}
 
 }

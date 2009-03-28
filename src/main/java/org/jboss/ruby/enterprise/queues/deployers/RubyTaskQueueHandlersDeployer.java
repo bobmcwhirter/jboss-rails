@@ -1,0 +1,40 @@
+package org.jboss.ruby.enterprise.queues.deployers;
+
+import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
+import org.jboss.deployers.spi.DeploymentException;
+import org.jboss.deployers.vfs.spi.deployer.AbstractSimpleVFSRealDeployer;
+import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
+import org.jboss.ruby.enterprise.queues.RubyTaskQueueHandler;
+import org.jboss.ruby.enterprise.queues.metadata.RubyTaskQueueMetaData;
+import org.jboss.ruby.enterprise.queues.metadata.RubyTaskQueuesMetaData;
+
+public class RubyTaskQueueHandlersDeployer extends AbstractSimpleVFSRealDeployer<RubyTaskQueuesMetaData> {
+
+	public RubyTaskQueueHandlersDeployer() {
+		super(RubyTaskQueuesMetaData.class);
+		addOutput(BeanMetaData.class);
+	}
+
+	public void deploy(VFSDeploymentUnit unit, RubyTaskQueuesMetaData queuesMetaData) throws DeploymentException {
+		for (RubyTaskQueueMetaData queueMetaData : queuesMetaData.getQueues()) {
+			deploy(unit, queueMetaData);
+		}
+	}
+
+	public void deploy(VFSDeploymentUnit unit, RubyTaskQueueMetaData queueMetaData) throws DeploymentException {
+		
+		String beanName = "jboss.ruby.queue-handler." + unit.getSimpleName() + "." + queueMetaData.getQueueClassName();
+		
+		BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder( beanName, RubyTaskQueueHandler.class.getName() );
+		
+		String queueName = RubyTaskQueuesDeployer.getQueueName( unit, queueMetaData.getQueueClassName() );
+		
+		builder.addPropertyMetaData( "queueName", queueName );
+		builder.addDependency( RubyTaskQueuesDeployer.getObjectName( unit, queueMetaData.getQueueClassName() ) );
+		
+		unit.addAttachment( BeanMetaData.class.getName() + "$" + beanName, builder.getBeanMetaData(), BeanMetaData.class );
+
+	}
+
+}

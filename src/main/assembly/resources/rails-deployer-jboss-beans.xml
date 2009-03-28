@@ -41,6 +41,7 @@
 
   <bean name="QueuesYamlParsingDeployer"              class="org.jboss.ruby.enterprise.queues.deployers.QueuesYamlParsingDeployer"/>
   <bean name="RubyTaskQueuesDeployer"                 class="org.jboss.ruby.enterprise.queues.deployers.RubyTaskQueuesDeployer"/>
+  <bean name="RubyTaskQueueHandlersDeployer"          class="org.jboss.ruby.enterprise.queues.deployers.RubyTaskQueueHandlersDeployer"/>
 
   <!-- Endpoint Infrastructure -->
 
