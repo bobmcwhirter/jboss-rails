@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.jboss.deployers.spi.DeploymentException;
+import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.spi.deployer.helpers.AbstractDeployer;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
@@ -19,6 +20,12 @@ public class RailsQueuesDeployer extends AbstractDeployer {
 
 	private static final String APP_QUEUES = "app/queues/";
 	private static final VirtualFileFilter QUEUE_FILTER = new SuffixMatchFilter("_queue.rb", VisitorAttributes.DEFAULT);
+	
+	public RailsQueuesDeployer() {
+		addInput( RubyTaskQueuesMetaData.class );
+		addOutput( RubyTaskQueuesMetaData.class );
+		setStage( DeploymentStages.POST_PARSE );
+	}
 
 	public void deploy(DeploymentUnit unit) throws DeploymentException {
 		if (unit instanceof VFSDeploymentUnit) {
