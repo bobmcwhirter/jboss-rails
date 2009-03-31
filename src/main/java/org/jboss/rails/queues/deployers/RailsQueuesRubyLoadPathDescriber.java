@@ -42,13 +42,13 @@ public class RailsQueuesRubyLoadPathDescriber extends AbstractSimpleVFSRealDeplo
 
 	@Override
 	public void deploy(VFSDeploymentUnit unit, RailsApplicationMetaData root) throws DeploymentException {
-		VirtualFile jobsDir;
+		VirtualFile queuesDir;
 		try {
-			jobsDir = unit.getRoot().getChild("app/queues");
-			if (jobsDir != null) {
-				log.debug( "adding jobsDir [" + jobsDir.toURL() + "]" );
+			queuesDir = unit.getRoot().getChild("app/queues");
+			if (queuesDir != null) {
+				log.debug( "adding queuesDir [" + queuesDir.toURL() + "]" );
 				RubyLoadPathMetaData loadPathMetaData = new RubyLoadPathMetaData();
-				loadPathMetaData.setURL( jobsDir.toURL() );
+				loadPathMetaData.setURL( queuesDir.toURL() );
 				unit.addAttachment( RubyLoadPathMetaData.class.getName() + "$queues", loadPathMetaData, RubyLoadPathMetaData.class );
 			}
 

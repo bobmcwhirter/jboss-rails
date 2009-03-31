@@ -91,6 +91,7 @@
 
   <!-- Task Queue Deployment  -->
 
+  <bean name="RailsQueuesDeployer"                  class="org.jboss.rails.queues.deployers.RailsQueuesDeployer"/>
   <bean name="RailsQueuesRubyLoadPathDescriber"     class="org.jboss.rails.queues.deployers.RailsQueuesRubyLoadPathDescriber"/>
 
 </deployment>
