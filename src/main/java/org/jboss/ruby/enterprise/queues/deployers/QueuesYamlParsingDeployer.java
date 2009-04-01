@@ -36,38 +36,43 @@ public class QueuesYamlParsingDeployer extends AbstractParsingDeployer {
 
 	@SuppressWarnings("unchecked")
 	protected void parse(VFSDeploymentUnit unit, VirtualFile file) throws DeploymentException {
-		log.info( "parsing " + file );
-		RubyTaskQueuesMetaData queues = unit.getAttachment( RubyTaskQueuesMetaData.class );
-		
-		if ( queues == null ) {
+		log.info("parsing " + file);
+		RubyTaskQueuesMetaData queues = unit.getAttachment(RubyTaskQueuesMetaData.class);
+
+		if (queues == null) {
 			queues = new RubyTaskQueuesMetaData();
 		}
-		
+
 		try {
-			Map<ByteList, Map<ByteList,ByteList>> results = (Map<ByteList, Map<ByteList,ByteList>>) YAML.load(file.openStream());
+			Map<ByteList, Map<ByteList, Object>> results = (Map<ByteList, Map<ByteList, Object>>) YAML.load(file.openStream());
 			for (ByteList queueClassNameBytes : results.keySet()) {
 				String queueClassName = queueClassNameBytes.toString();
 				RubyTaskQueueMetaData queue = queues.getQueueByClassName(queueClassName);
-				if ( queue == null ) {
+				if (queue == null) {
 					queue = new RubyTaskQueueMetaData();
-					queue.setQueueClassName( queueClassName );
-					queues.addQueue( queue );
+					queue.setQueueClassName(queueClassName);
+					queues.addQueue(queue);
 				}
-				
-				log.info( "added queue: " + queue );
-				
-				Map<ByteList, ByteList> details = results.get( queueClassNameBytes );
-				
-				if ( details != null ) {
-					// process details
+
+				log.info("added queue: " + queue);
+
+				Map<ByteList, Object> details = results.get(queueClassNameBytes);
+
+				log.info("details: " + details);
+				if (details != null) {
+					ByteList enabledKey = ByteList.create("enabled");
+					Boolean enabled = (Boolean) details.get(enabledKey);
+					if (enabled != null) {
+						queue.setEnabled(enabled.booleanValue());
+					}
 				}
 			}
 		} catch (IOException e) {
 			throw new DeploymentException(e);
 		}
-		
-		if ( queues != null && ! queues.empty() ) {
-			unit.addAttachment( RubyTaskQueuesMetaData.class, queues);
+
+		if (queues != null && !queues.empty()) {
+			unit.addAttachment(RubyTaskQueuesMetaData.class, queues);
 		}
 
 	}

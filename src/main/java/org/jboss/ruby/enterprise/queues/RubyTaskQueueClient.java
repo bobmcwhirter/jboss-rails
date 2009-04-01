@@ -1,12 +1,11 @@
 package org.jboss.ruby.enterprise.queues;
 
-import javax.jms.BytesMessage;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 import javax.jms.JMSException;
-import javax.jms.Message;
 import javax.jms.MessageProducer;
+import javax.jms.ObjectMessage;
 import javax.jms.Session;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -27,7 +26,7 @@ public class RubyTaskQueueClient {
 		this.destinationName = destinationName;
 	}
 	
-	public void enqueue(Object payload) throws NamingException, JMSException {
+	public void enqueue(String taskName, Object payload) throws NamingException, JMSException {
 		InitialContext jndiContext = new InitialContext();
 		ConnectionFactory connectionFactory = (ConnectionFactory) jndiContext.lookup("java:/ConnectionFactory" );
 		Destination destination = (Destination) jndiContext.lookup("queue/" + destinationName);
@@ -41,7 +40,8 @@ public class RubyTaskQueueClient {
         
         MessageProducer producer = session.createProducer( destination );
         
-        Message message = session.createBytesMessage();
+        ObjectMessage message = session.createObjectMessage();
+        message.setStringProperty( "TaskName", taskName );
         
         log.info( "sending payload: " + payload );
         log.info( "sending message: " + message );

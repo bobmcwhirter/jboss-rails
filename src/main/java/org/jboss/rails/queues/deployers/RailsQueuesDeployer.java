@@ -66,6 +66,8 @@ public class RailsQueuesDeployer extends AbstractDeployer {
 							queueMetaData.setQueueClassName( rubyClassName );
 							metaData.addQueue( queueMetaData );
 						}
+						
+						queueMetaData.setQueueClassLocation(simplePath);
 					}
 				}
 			}
