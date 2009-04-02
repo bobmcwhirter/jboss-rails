@@ -57,8 +57,14 @@
     <!-- Mobicents Sip Servlets -->
     <dependency>
       <groupId>org.mobicents.servlet.sip</groupId>
-      <artifactId>sip-servlets-jboss5</artifactId>
+      <artifactId>sip-servlets-jboss5-metadata</artifactId>
       <version>${mobicents.sip.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mobicents.servlet.sip</groupId>
+      <artifactId>sip-servlets-spec</artifactId>
+      <version>${mobicents.spec.version}</version>
       <scope>compile</scope>
     </dependency>
 
@@ -406,6 +412,7 @@
         <jruby.version>1.2.0</jruby.version>
         <cxf.version>2.1.3</cxf.version>
         <mobicents.sip.version>0.9-SNAPSHOT</mobicents.sip.version>  			
+        <mobicents.spec.version>1.1.9-SNAPSHOT</mobicents.spec.version>
         <jboss.messaging.version>1.4.3.GA</jboss.messaging.version>
     </properties>
 

@@ -54,7 +54,8 @@ public class SipYamlParsingDeployer extends
 		Map<String, String> sip = (Map<String, String>) Yaml.load(file.openStream());
 		
 		String applicationName = sip.get("appname");
-		String mainServlet = sip.get("mainservlet");
+		String mainServlet = sip.get("mainservlet");	
+		String rubyController = sip.get("rubycontroller");
 		
 		SipApplicationMetaData sipMetaData = unit.getAttachment(SipApplicationMetaData.class);
 
@@ -69,6 +70,10 @@ public class SipYamlParsingDeployer extends
 		
 		if ( sipMetaData.getMainServlet() == null ) {
 			sipMetaData.setMainServlet(mainServlet);
+		}
+		
+		if ( sipMetaData.getRubyController() == null ) {
+			sipMetaData.setRubyController(rubyController);
 		}
 		
 		return sipMetaData;

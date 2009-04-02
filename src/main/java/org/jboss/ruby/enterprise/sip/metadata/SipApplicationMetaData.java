@@ -29,6 +29,7 @@ package org.jboss.ruby.enterprise.sip.metadata;
 public class SipApplicationMetaData {
 	private String applicationName;
 	private String mainServlet;
+	private String rubyController;
 	
 	//private Logger log = Logger.getLogger(SipApplicationMetaData.class);
 	
@@ -43,6 +44,18 @@ public class SipApplicationMetaData {
 	}
 	public String getMainServlet() {
 		return mainServlet;
+	}
+	/**
+	 * @param rubyController the rubyController to set
+	 */
+	public void setRubyController(String rubyController) {
+		this.rubyController = rubyController;
+	}
+	/**
+	 * @return the rubyController
+	 */
+	public String getRubyController() {
+		return rubyController;
 	}
 }
 
