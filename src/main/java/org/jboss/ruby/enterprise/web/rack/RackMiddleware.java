@@ -21,6 +21,12 @@
  */
 package org.jboss.ruby.enterprise.web.rack;
 
+import javax.servlet.sip.SipServletRequest;
+import javax.servlet.sip.SipServletResponse;
+
+
 public interface RackMiddleware {
 	RackResponse call(Object env);
+	void dispatchSipRequest(SipServletRequest request, String handler);
+	void dispatchSipResponse(SipServletResponse response, String handler);
 }

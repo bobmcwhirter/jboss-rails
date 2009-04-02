@@ -88,6 +88,8 @@
   <bean name="RailsEndpointsParsingDeployer"        class="org.jboss.rails.endpoints.deployers.RailsEndpointsParsingDeployer"/>
 
   <bean name="RailsJobsRubyLoadPathDescriber"       class="org.jboss.rails.jobs.deployers.RailsJobsRubyLoadPathDescriber"/>
+  
+  <bean name="RailsSipRubyLoadPathDescriber"       class="org.jboss.rails.sip.deployers.RailsSipRubyLoadPathDescriber"/>
 
   <!-- Task Queue Deployment  -->
 

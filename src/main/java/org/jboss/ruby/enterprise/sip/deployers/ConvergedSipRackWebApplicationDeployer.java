@@ -78,6 +78,10 @@ public class ConvergedSipRackWebApplicationDeployer extends AbstractSimpleVFSRea
 			ServletSelectionMetaData servletSelectionMetaData = new ServletSelectionMetaData();
 			servletSelectionMetaData.setMainServlet(metaData.getMainServlet());
 			convergedMetaData.setServletSelection(servletSelectionMetaData);
+		} else if(metaData.getRubyController() != null) {
+			ServletSelectionMetaData servletSelectionMetaData = new ServletSelectionMetaData();
+			servletSelectionMetaData.setRubyController(metaData.getRubyController());
+			convergedMetaData.setServletSelection(servletSelectionMetaData);
 		}
 		
 		unit.addAttachment(JBossConvergedSipMetaData.class, convergedMetaData);

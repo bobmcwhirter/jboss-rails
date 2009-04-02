@@ -158,9 +158,11 @@ public class AppRailsYamlParsingDeployer extends AbstractVFSParsingDeployer<Rail
 			if (sip != null) {
 				String applicationName = (String) sip.get("appname");
 				String mainServlet = (String) sip.get("mainservlet");
+				String rubyController = (String) sip.get("rubycontroller");
 				sipMetaData = new SipApplicationMetaData();
 				sipMetaData.setApplicationName(applicationName);
 				sipMetaData.setMainServlet(mainServlet);
+				sipMetaData.setRubyController(rubyController);
 			}
 
 			
