@@ -62,6 +62,7 @@ public class RubyRuntimeFactoryDeployer extends AbstractSimpleVFSRealDeployer<Ru
 
 		DefaultRubyRuntimeFactory factory = new DefaultRubyRuntimeFactory(metaData.getRuntimeInitializer() );
 		factory.setKernel(this.kernel);
+		factory.setApplicationName( unit.getSimpleName() );
 
 		try {
 			RubyDynamicClassLoader classLoader = createClassLoader(unit);

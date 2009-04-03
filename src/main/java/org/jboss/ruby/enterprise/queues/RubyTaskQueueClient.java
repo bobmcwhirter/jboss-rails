@@ -1,6 +1,7 @@
 package org.jboss.ruby.enterprise.queues;
 
 import java.io.Serializable;
+import java.net.InetSocketAddress;
 import java.util.Hashtable;
 
 import javax.jms.Connection;
@@ -15,6 +16,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.jboss.logging.Logger;
+import org.jboss.ruby.enterprise.client.RubyClient;
 import org.jruby.Ruby;
 import org.jruby.RubyModule;
 import org.jruby.javasupport.JavaEmbedUtils;
@@ -26,8 +28,21 @@ public class RubyTaskQueueClient {
 
 	private String destinationName;
 
+	private InetSocketAddress namingAddress;
+	
 	public RubyTaskQueueClient() {
-
+		RubyClient currentClient = RubyClient.getClientForCurrentThread();
+		if ( currentClient != null ) {
+			this.namingAddress = currentClient.getNamingAddress();
+		}
+	}
+	
+	public RubyTaskQueueClient(String namingHost) {
+		this( namingHost, 1099 );
+	}
+	
+	public RubyTaskQueueClient(String namingHost, int namingPort) {
+		this.namingAddress = new InetSocketAddress( namingHost, namingPort );
 	}
 
 	public void setDestinationName(String destinationName) {
@@ -36,10 +51,16 @@ public class RubyTaskQueueClient {
 
 	public void enqueue(String taskName, Object payload) throws NamingException, JMSException {
 		Hashtable<String, String> env = new Hashtable<String, String>();
-		env.put(Context.INITIAL_CONTEXT_FACTORY, "org.jnp.interfaces.NamingContextFactory");
-		env.put(Context.PROVIDER_URL, "jnp://localhost:1099");
-		env.put("java.naming.factory.url.pkgs", "org.jboss.naming:org.jnp.interfaces");
+		
+		if ( this.namingAddress != null ) {
+			env.put(Context.INITIAL_CONTEXT_FACTORY, "org.jnp.interfaces.NamingContextFactory");
+			String namingUrl = "jnp://" + this.namingAddress.getHostName() + ":" + this.namingAddress.getPort();
+			env.put(Context.PROVIDER_URL, namingUrl );
+			env.put("java.naming.factory.url.pkgs", "org.jboss.naming:org.jnp.interfaces");
+		}
+		
 		InitialContext jndiContext = new InitialContext(env);
+		
 		ConnectionFactory connectionFactory = (ConnectionFactory) jndiContext.lookup("java:/ConnectionFactory");
 		Destination destination = (Destination) jndiContext.lookup("queue/" + destinationName);
 
