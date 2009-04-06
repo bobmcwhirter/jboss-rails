@@ -31,7 +31,7 @@ module JBoss
         servlet_response.setStatus( status_code.to_i )
         headers.each{|key,value|
           for v in value
-            servlet_response.setHeader( key, v )
+            servlet_response.addHeader( key, v )
           end
         }
         out = servlet_response.getWriter()
