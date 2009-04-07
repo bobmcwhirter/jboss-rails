@@ -5,7 +5,7 @@
   <groupId>org.jboss.rails</groupId>
   <artifactId>jboss-rails</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.0.Beta6-SNAPSHOT</version>
+  <version>1.0.0.Beta7-SNAPSHOT</version>
   <name>JBossAS 5.0 Rails Deployer</name>
   <description></description>
 
@@ -80,6 +80,13 @@
       <groupId>jboss.messaging</groupId>
       <artifactId>jboss-messaging</artifactId>
       <version>${jboss.messaging.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.jms</groupId>
+      <artifactId>jms</artifactId>
+      <version>${jboss.messaging.jms.version}</version>
       <scope>provided</scope>
     </dependency>
 	
@@ -420,6 +427,7 @@
         <mobicents.sip.version>0.9-SNAPSHOT</mobicents.sip.version>  			
         <mobicents.spec.version>1.1.9-SNAPSHOT</mobicents.spec.version>
         <jboss.messaging.version>1.4.3.GA</jboss.messaging.version>
+        <jboss.messaging.jms.version>1.1</jboss.messaging.jms.version>
     </properties>
 
 </project>

@@ -34,6 +34,7 @@ module JBoss
         end
         @session_data = {}
         @session_data['jboss.rails.initialized']=true
+        update
       end
       
       def session_id

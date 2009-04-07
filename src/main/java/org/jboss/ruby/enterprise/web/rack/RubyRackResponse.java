@@ -23,13 +23,13 @@ package org.jboss.ruby.enterprise.web.rack;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.jboss.logging.Logger;
 import org.jruby.Ruby;
 import org.jruby.RubyClass;
 import org.jruby.javasupport.JavaEmbedUtils;
 import org.jruby.runtime.builtin.IRubyObject;
 
 public class RubyRackResponse implements RackResponse {
-	
 	private IRubyObject rackResponse;
 
 	public RubyRackResponse(IRubyObject rackResponse) {

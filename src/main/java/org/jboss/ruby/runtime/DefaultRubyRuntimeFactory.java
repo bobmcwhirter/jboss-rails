@@ -27,10 +27,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.jboss.Version;
 import org.jboss.kernel.Kernel;
 import org.jruby.Ruby;
 import org.jruby.RubyClass;
 import org.jruby.RubyInstanceConfig;
+import org.jruby.RubyModule;
 import org.jruby.javasupport.JavaEmbedUtils;
 import org.jruby.util.ClassCache;
 
@@ -41,6 +43,7 @@ public class DefaultRubyRuntimeFactory implements RubyRuntimeFactory {
 
 	private RubyDynamicClassLoader classLoader;
 	private ClassCache<?> classCache;
+	private String applicationName;
 
 	public DefaultRubyRuntimeFactory() {
 		this(null);
@@ -48,6 +51,14 @@ public class DefaultRubyRuntimeFactory implements RubyRuntimeFactory {
 
 	public DefaultRubyRuntimeFactory(RuntimeInitializer initializer) {
 		this.initializer = initializer;
+	}
+	
+	public void setApplicationName(String applicationName) {
+		this.applicationName = applicationName;
+	}
+	
+	public String getApplicationName() {
+		return this.applicationName;
 	}
 
 	public void setKernel(Kernel kernel) {
@@ -97,7 +108,14 @@ public class DefaultRubyRuntimeFactory implements RubyRuntimeFactory {
 			this.initializer.initialize(childLoader, runtime);
 		}
 		injectKernel(runtime);
+		setUpConstants(runtime, this.applicationName );
 		return runtime;
+	}
+
+	private void setUpConstants(Ruby runtime, String applicationName) {
+		runtime.evalScriptlet( "require %q(org/jboss/ruby/runtime/runtime_constants)\n" );
+		RubyModule jbossModule = runtime.getClassFromPath("JBoss");
+		JavaEmbedUtils.invokeMethod(runtime, jbossModule, "setup_constants", new Object[] { Version.getInstance(), applicationName }, void.class );
 	}
 
 	private void injectKernel(Ruby runtime) {

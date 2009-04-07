@@ -24,6 +24,9 @@ module JBoss
   module Rails
     class ServletSession < CGI::Session
       
+      def initialize(request, option={})
+        super( request, option)
+      end
       def session_id
         @dbman.session_id
       end
