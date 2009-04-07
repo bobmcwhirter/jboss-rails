@@ -21,7 +21,10 @@
 
   <!-- SIP Servlets -->
   <bean name="SipYamlParsingDeployer"                 class="org.jboss.ruby.enterprise.sip.deployers.SipYamlParsingDeployer"/>
-  <bean name="ConvergedSipRackWebApplicationDeployer" class="org.jboss.ruby.enterprise.sip.deployers.ConvergedSipRackWebApplicationDeployer"/>
+  <bean name="SipRubyControllerDeployer" 			  class="org.jboss.ruby.enterprise.sip.deployers.SipRubyControllerDeployer"/>
+  <bean name="ConvergedSipRackWebApplicationDeployer" class="org.jboss.ruby.enterprise.sip.deployers.ConvergedSipRackWebApplicationDeployer">
+  	<property name="kernel"><inject bean="jboss.kernel:service=Kernel"/></property>
+  </bean>
 
   <!-- Runtime factories -->
 

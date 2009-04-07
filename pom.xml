@@ -63,6 +63,12 @@
     </dependency>
     <dependency>
       <groupId>org.mobicents.servlet.sip</groupId>
+      <artifactId>sip-servlets-impl</artifactId>
+      <version>${mobicents.sip.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mobicents.servlet.sip</groupId>
       <artifactId>sip-servlets-spec</artifactId>
       <version>${mobicents.spec.version}</version>
       <scope>compile</scope>

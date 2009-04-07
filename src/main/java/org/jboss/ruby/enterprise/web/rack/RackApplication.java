@@ -23,8 +23,6 @@ package org.jboss.ruby.enterprise.web.rack;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.sip.SipServletRequest;
-import javax.servlet.sip.SipServletResponse;
 
 public interface RackApplication extends RackMiddleware {
 	Object createEnvironment(ServletContext servletContext, HttpServletRequest request) throws Exception;	

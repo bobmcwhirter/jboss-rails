@@ -21,17 +21,27 @@
  */
 package org.jboss.ruby.enterprise.sip.deployers;
 
+import java.util.Iterator;
+
+import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.vfs.spi.deployer.AbstractSimpleVFSRealDeployer;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.deployment.ConvergedSipAnnotationMetaDataDeployer;
+import org.jboss.kernel.Kernel;
 import org.jboss.logging.Logger;
+import org.jboss.metadata.javaee.spec.ParamValueMetaData;
 import org.jboss.metadata.sip.jboss.JBossConvergedSipMetaData;
 import org.jboss.metadata.sip.spec.ServletSelectionMetaData;
 import org.jboss.metadata.sip.spec.Sip11MetaData;
 import org.jboss.metadata.web.jboss.JBossWebMetaData;
+import org.jboss.metadata.web.spec.FilterMetaData;
+import org.jboss.metadata.web.spec.FiltersMetaData;
+import org.jboss.ruby.enterprise.sip.StandardSipRubyController;
 import org.jboss.ruby.enterprise.sip.metadata.SipApplicationMetaData;
+import org.jboss.ruby.enterprise.sip.metadata.SipRubyControllerMetaData;
+import org.jboss.ruby.enterprise.web.rack.RackApplicationPool;
 
 /**
  * @author jean.deruelle@gmail.com
@@ -41,12 +51,14 @@ public class ConvergedSipRackWebApplicationDeployer extends AbstractSimpleVFSRea
 
 	private static final Logger log = Logger.getLogger(ConvergedSipRackWebApplicationDeployer.class);
 	
+	private Kernel kernel;
 	/**
 	 * 
 	 */
 	public ConvergedSipRackWebApplicationDeployer() {
 		super(SipApplicationMetaData.class);
 		addInput(JBossConvergedSipMetaData.class);
+		addInput(SipRubyControllerMetaData.class);
 		addOutput(JBossConvergedSipMetaData.class);
 		setStage(DeploymentStages.PRE_REAL);
 		setRelativeOrder(1001);
@@ -58,7 +70,7 @@ public class ConvergedSipRackWebApplicationDeployer extends AbstractSimpleVFSRea
 		log.debug("deploying " + unit);
 		
 		JBossWebMetaData webMetaData = unit.getAttachment(JBossWebMetaData.class);
-
+		
 		JBossConvergedSipMetaData convergedMetaData = unit.getAttachment(JBossConvergedSipMetaData.class);
 		if (convergedMetaData == null) {
 			convergedMetaData = new JBossConvergedSipMetaData();
@@ -78,14 +90,35 @@ public class ConvergedSipRackWebApplicationDeployer extends AbstractSimpleVFSRea
 			ServletSelectionMetaData servletSelectionMetaData = new ServletSelectionMetaData();
 			servletSelectionMetaData.setMainServlet(metaData.getMainServlet());
 			convergedMetaData.setServletSelection(servletSelectionMetaData);
-		} else if(metaData.getRubyController() != null) {
+		} else if(metaData.getRubyController() != null) {			
 			ServletSelectionMetaData servletSelectionMetaData = new ServletSelectionMetaData();
-			servletSelectionMetaData.setRubyController(metaData.getRubyController());
+						
+			String rackAppFactoryName = null;
+			FiltersMetaData filterDefs = convergedMetaData.getFilters();
+			Iterator<FilterMetaData> it = filterDefs.iterator();
+			while(it.hasNext() && rackAppFactoryName == null) {
+				FilterMetaData filterDef = it.next();
+				rackAppFactoryName = ((ParamValueMetaData)filterDef.getInitParam().get(0)).getParamValue();
+			}						
+						
+			StandardSipRubyController sipRubyController = new StandardSipRubyController(
+					metaData.getRubyController(), rackAppFactoryName, kernel);
+			servletSelectionMetaData.setSipRubyController(sipRubyController);
 			convergedMetaData.setServletSelection(servletSelectionMetaData);
 		}
 		
 		unit.addAttachment(JBossConvergedSipMetaData.class, convergedMetaData);
 		
 	}
+
+	public void setKernel(Kernel kernel) {
+		this.kernel = kernel;
+	}
+
+	public Kernel getKernel() {
+		return kernel;
+	}
+	
+	
 
 }
