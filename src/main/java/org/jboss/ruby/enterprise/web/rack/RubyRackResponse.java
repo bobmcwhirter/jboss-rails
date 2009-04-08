@@ -23,7 +23,7 @@ package org.jboss.ruby.enterprise.web.rack;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.jboss.logging.Logger;
+import org.jboss.ruby.enterprise.web.rack.spi.RackResponse;
 import org.jruby.Ruby;
 import org.jruby.RubyClass;
 import org.jruby.javasupport.JavaEmbedUtils;

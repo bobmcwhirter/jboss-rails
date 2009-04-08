@@ -41,12 +41,10 @@ public class RailsRootRecognizingDeployer extends AbstractDeployer {
 	}
 
 	public void deploy(DeploymentUnit unit) throws DeploymentException {
-		log.debug( "checking: " + unit );
 		if ( unit.getAttachment( RailsApplicationMetaData.class ) != null ) {
 			return;
 		}
 		
-		log.debug( "deploying: " + unit );
 		if ( unit instanceof VFSDeploymentUnit ) {
 			deploy( (VFSDeploymentUnit) unit );
 		}

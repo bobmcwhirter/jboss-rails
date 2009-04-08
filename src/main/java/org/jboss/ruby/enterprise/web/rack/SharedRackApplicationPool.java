@@ -21,6 +21,10 @@
  */
 package org.jboss.ruby.enterprise.web.rack;
 
+import org.jboss.ruby.enterprise.web.rack.spi.RackApplication;
+import org.jboss.ruby.enterprise.web.rack.spi.RackApplicationFactory;
+import org.jboss.ruby.enterprise.web.rack.spi.RackApplicationPool;
+
 public class SharedRackApplicationPool implements RackApplicationPool {
 	
 	private RackApplication app;

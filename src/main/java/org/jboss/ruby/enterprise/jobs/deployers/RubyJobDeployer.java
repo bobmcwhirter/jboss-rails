@@ -30,10 +30,10 @@ import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.spi.deployer.helpers.AbstractDeployer;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
+import org.jboss.ruby.core.runtime.deployers.RubyRuntimePoolDeployer;
 import org.jboss.ruby.enterprise.jobs.RubyJob;
 import org.jboss.ruby.enterprise.jobs.RubyScheduler;
 import org.jboss.ruby.enterprise.jobs.metadata.RubyJobMetaData;
-import org.jboss.ruby.runtime.deployers.RubyRuntimePoolDeployer;
 
 public class RubyJobDeployer extends AbstractDeployer {
 

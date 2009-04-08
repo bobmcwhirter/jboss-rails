@@ -30,9 +30,9 @@ import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.spi.deployer.helpers.AbstractDeployer;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
+import org.jboss.ruby.core.RubyDynamicClassLoader;
 import org.jboss.ruby.enterprise.endpoints.databinding.RubyTypeSpace;
 import org.jboss.ruby.enterprise.endpoints.metadata.RubyEndpointMetaData;
-import org.jboss.ruby.runtime.RubyDynamicClassLoader;
 
 public class RubyTypeSpaceDeployer extends AbstractDeployer {
 

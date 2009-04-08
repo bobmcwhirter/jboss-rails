@@ -31,13 +31,13 @@ import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.spi.deployer.helpers.AbstractDeployer;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.logging.Logger;
+import org.jboss.ruby.core.runtime.deployers.RubyRuntimePoolDeployer;
 import org.jboss.ruby.enterprise.crypto.metadata.CryptoMetaData;
 import org.jboss.ruby.enterprise.crypto.metadata.CryptoStoreMetaData;
 import org.jboss.ruby.enterprise.endpoints.RubyEndpoint;
 import org.jboss.ruby.enterprise.endpoints.metadata.InboundSecurityMetaData;
 import org.jboss.ruby.enterprise.endpoints.metadata.RubyEndpointMetaData;
 import org.jboss.ruby.enterprise.endpoints.metadata.SecurityMetaData;
-import org.jboss.ruby.runtime.deployers.RubyRuntimePoolDeployer;
 
 /**
  * REAL stage deployer to deploy all <code>RubyEndpointMetaData</code> in a

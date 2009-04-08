@@ -39,12 +39,12 @@ import org.apache.cxf.service.invoker.Invoker;
 import org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor;
 import org.apache.ws.security.handler.WSHandlerConstants;
 import org.jboss.logging.Logger;
+import org.jboss.ruby.core.runtime.spi.RubyRuntimePool;
 import org.jboss.ruby.enterprise.endpoints.cxf.RubyDataBinding;
 import org.jboss.ruby.enterprise.endpoints.cxf.RubyEndpointInvoker;
 import org.jboss.ruby.enterprise.endpoints.cxf.RubyReflectionServiceFactoryBean;
 import org.jboss.ruby.enterprise.endpoints.cxf.RubyServiceConfiguration;
 import org.jboss.ruby.enterprise.endpoints.databinding.RubyTypeSpace;
-import org.jboss.ruby.runtime.RubyRuntimePool;
 
 /**
  * The bean within MC representing a deployed Ruby WebService.

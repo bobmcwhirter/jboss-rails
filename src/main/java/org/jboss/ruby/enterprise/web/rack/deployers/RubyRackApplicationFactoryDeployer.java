@@ -28,12 +28,12 @@ import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.vfs.spi.deployer.AbstractSimpleVFSRealDeployer;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.logging.Logger;
-import org.jboss.ruby.enterprise.web.rack.RackApplicationFactory;
-import org.jboss.ruby.enterprise.web.rack.RackApplicationPool;
+import org.jboss.ruby.core.runtime.spi.RubyRuntimeFactory;
 import org.jboss.ruby.enterprise.web.rack.RubyRackApplicationFactory;
 import org.jboss.ruby.enterprise.web.rack.SharedRackApplicationPool;
 import org.jboss.ruby.enterprise.web.rack.metadata.RubyRackApplicationMetaData;
-import org.jboss.ruby.runtime.RubyRuntimeFactory;
+import org.jboss.ruby.enterprise.web.rack.spi.RackApplicationFactory;
+import org.jboss.ruby.enterprise.web.rack.spi.RackApplicationPool;
 
 public class RubyRackApplicationFactoryDeployer extends AbstractSimpleVFSRealDeployer<RubyRackApplicationMetaData> {
 
@@ -58,8 +58,9 @@ public class RubyRackApplicationFactoryDeployer extends AbstractSimpleVFSRealDep
 
 		BeanMetaData beanMetaData = builder.getBeanMetaData();
 
-		unit
-				.addAttachment(BeanMetaData.class.getName() + "$" + RackApplicationFactory.class.getName() + "$" + unit.getName(), beanMetaData, BeanMetaData.class);
+		// TODO: break into a separate deployer
+		unit.addAttachment(BeanMetaData.class.getName() + "$" + RackApplicationFactory.class.getName() + "$" + unit.getName(),
+				beanMetaData, BeanMetaData.class);
 
 		builder = BeanMetaDataBuilder.createBuilder(beanName + ".pool", SharedRackApplicationPool.class.getName());
 		ValueMetaData appFactoryInjection = builder.createInject(beanName);
@@ -67,7 +68,8 @@ public class RubyRackApplicationFactoryDeployer extends AbstractSimpleVFSRealDep
 
 		beanMetaData = builder.getBeanMetaData();
 
-		unit.addAttachment(BeanMetaData.class.getName() + "$" + RackApplicationPool.class.getName() + "$" + unit.getName(), beanMetaData);
+		unit.addAttachment(BeanMetaData.class.getName() + "$" + RackApplicationPool.class.getName() + "$" + unit.getName(),
+				beanMetaData);
 	}
 
 }

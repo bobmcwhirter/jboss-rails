@@ -6,10 +6,10 @@ import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.vfs.spi.deployer.AbstractSimpleVFSRealDeployer;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
+import org.jboss.ruby.core.runtime.deployers.RubyRuntimePoolDeployer;
 import org.jboss.ruby.enterprise.queues.RubyTaskQueueHandler;
 import org.jboss.ruby.enterprise.queues.metadata.RubyTaskQueueMetaData;
 import org.jboss.ruby.enterprise.queues.metadata.RubyTaskQueuesMetaData;
-import org.jboss.ruby.runtime.deployers.RubyRuntimePoolDeployer;
 
 public class RubyTaskQueueHandlersDeployer extends AbstractSimpleVFSRealDeployer<RubyTaskQueuesMetaData> {
 

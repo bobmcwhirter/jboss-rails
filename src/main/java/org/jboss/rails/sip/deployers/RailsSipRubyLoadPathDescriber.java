@@ -29,7 +29,7 @@ import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.vfs.spi.deployer.AbstractSimpleVFSRealDeployer;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.rails.core.metadata.RailsApplicationMetaData;
-import org.jboss.ruby.runtime.metadata.RubyLoadPathMetaData;
+import org.jboss.ruby.core.runtime.metadata.RubyLoadPathMetaData;
 import org.jboss.virtual.VirtualFile;
 
 public class RailsSipRubyLoadPathDescriber extends AbstractSimpleVFSRealDeployer<RailsApplicationMetaData> {

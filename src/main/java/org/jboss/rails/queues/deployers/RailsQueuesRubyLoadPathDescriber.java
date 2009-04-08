@@ -21,44 +21,14 @@
  */
 package org.jboss.rails.queues.deployers;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-
-import org.jboss.deployers.spi.DeploymentException;
-import org.jboss.deployers.spi.deployer.DeploymentStages;
-import org.jboss.deployers.vfs.spi.deployer.AbstractSimpleVFSRealDeployer;
-import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.rails.core.metadata.RailsApplicationMetaData;
-import org.jboss.ruby.runtime.metadata.RubyLoadPathMetaData;
-import org.jboss.virtual.VirtualFile;
+import org.jboss.ruby.core.deployers.SimpleRubyLoadPathDescriber;
 
-public class RailsQueuesRubyLoadPathDescriber extends AbstractSimpleVFSRealDeployer<RailsApplicationMetaData> {
+public class RailsQueuesRubyLoadPathDescriber extends SimpleRubyLoadPathDescriber<RailsApplicationMetaData> {
 
 	public RailsQueuesRubyLoadPathDescriber() {
 		super(RailsApplicationMetaData.class);
-		addOutput(RubyLoadPathMetaData.class);
-		setStage(DeploymentStages.DESCRIBE);
-	}
-
-	@Override
-	public void deploy(VFSDeploymentUnit unit, RailsApplicationMetaData root) throws DeploymentException {
-		VirtualFile queuesDir;
-		try {
-			queuesDir = unit.getRoot().getChild("app/queues");
-			if (queuesDir != null) {
-				log.debug( "adding queuesDir [" + queuesDir.toURL() + "]" );
-				RubyLoadPathMetaData loadPathMetaData = new RubyLoadPathMetaData();
-				loadPathMetaData.setURL( queuesDir.toURL() );
-				unit.addAttachment( RubyLoadPathMetaData.class.getName() + "$queues", loadPathMetaData, RubyLoadPathMetaData.class );
-			}
-
-		} catch (IOException e) {
-			// ignore
-			return;
-		} catch (URISyntaxException e) {
-			throw new DeploymentException( e );
-		}
-
+		setPath( "app/queues" );
 	}
 
 }

@@ -27,10 +27,10 @@ import javax.xml.namespace.QName;
 
 import org.apache.cxf.interceptor.Fault;
 import org.jboss.logging.Logger;
+import org.jboss.ruby.core.runtime.spi.RubyRuntimePool;
+import org.jboss.ruby.core.util.StringUtils;
 import org.jboss.ruby.enterprise.endpoints.databinding.RubyType;
 import org.jboss.ruby.enterprise.endpoints.databinding.RubyTypeSpace;
-import org.jboss.ruby.runtime.RubyRuntimePool;
-import org.jboss.ruby.util.StringUtils;
 import org.jruby.Ruby;
 import org.jruby.RubyClass;
 import org.jruby.javasupport.JavaEmbedUtils;

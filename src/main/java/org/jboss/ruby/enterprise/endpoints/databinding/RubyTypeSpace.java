@@ -43,13 +43,13 @@ import org.apache.ws.commons.schema.XmlSchemaComplexType;
 import org.apache.ws.commons.schema.XmlSchemaObject;
 import org.apache.ws.commons.schema.XmlSchemaObjectTable;
 import org.jboss.logging.Logger;
+import org.jboss.ruby.core.RubyDynamicClassLoader;
 import org.jboss.ruby.enterprise.endpoints.databinding.complex.RubyComplexType;
 import org.jboss.ruby.enterprise.endpoints.databinding.simple.RubyBooleanType;
 import org.jboss.ruby.enterprise.endpoints.databinding.simple.RubyDateTimeType;
 import org.jboss.ruby.enterprise.endpoints.databinding.simple.RubyFloatType;
 import org.jboss.ruby.enterprise.endpoints.databinding.simple.RubyIntegerType;
 import org.jboss.ruby.enterprise.endpoints.databinding.simple.RubyStringType;
-import org.jboss.ruby.runtime.RubyDynamicClassLoader;
 import org.w3c.dom.Element;
 
 public class RubyTypeSpace {

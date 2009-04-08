@@ -10,7 +10,9 @@
 
   <!-- Crypto -->
 
+<!--
   <bean name="CryptoYamlParsingDeployer"              class="org.jboss.ruby.enterprise.crypto.deployers.CryptoYamlParsingDeployer" />
+-->
   
   <!-- Rack and Web --> 
 
@@ -25,11 +27,11 @@
 
   <!-- Runtime factories -->
 
-  <bean name="RubyRuntimeFactoryDeployer"             class="org.jboss.ruby.runtime.deployers.RubyRuntimeFactoryDeployer">
+  <bean name="RubyRuntimeFactoryDeployer"             class="org.jboss.ruby.core.runtime.deployers.RubyRuntimeFactoryDeployer">
     <property name="kernel"><inject bean="jboss.kernel:service=Kernel"/></property>
   </bean>
-  <bean name="RubyRuntimeFactoryPublishingDeployer"   class="org.jboss.ruby.runtime.deployers.RubyRuntimeFactoryPublishingDeployer"/>
-  <bean name="RubyRuntimePoolDeployer"                class="org.jboss.ruby.runtime.deployers.RubyRuntimePoolDeployer"/>
+  <bean name="RubyRuntimeFactoryPublishingDeployer"   class="org.jboss.ruby.core.runtime.deployers.RubyRuntimeFactoryPublishingDeployer"/>
+  <bean name="RubyRuntimePoolDeployer"                class="org.jboss.ruby.core.runtime.deployers.RubyRuntimePoolDeployer"/>
 
   <!-- Job Scheduling -->
 
@@ -69,7 +71,7 @@
 
 
   <!-- Crypto -->
-  <bean name="RailsCryptoYamlPostParsingDeployer"   class="org.jboss.rails.crypto.deployers.RailsCryptoYamlPostParsingDeployer"/>
+  <bean name="RailsCryptoYamlParsingDeployer"       class="org.jboss.rails.crypto.deployers.RailsCryptoYamlParsingDeployer"/>
 
   <!-- Rack -->
   <bean name="RailsRackDeployer"                    class="org.jboss.rails.web.deployers.RailsRackDeployer"/>
@@ -85,15 +87,17 @@
   <bean name="RailsRubyRuntimeFactoryDescriber"     class="org.jboss.rails.runtime.deployers.RailsRubyRuntimeFactoryDescriber"/>
 
   <!-- Endpoint Deployment  -->
-  <bean name="RailsEndpointsParsingDeployer"        class="org.jboss.rails.endpoints.deployers.RailsEndpointsParsingDeployer"/>
+  <bean name="RailsEndpointsScanningDeployer"       class="org.jboss.rails.endpoints.deployers.RailsEndpointsScanningDeployer"/>
 
   <bean name="RailsJobsRubyLoadPathDescriber"       class="org.jboss.rails.jobs.deployers.RailsJobsRubyLoadPathDescriber"/>
+
+  <!-- SIP -->
   
-  <bean name="RailsSipRubyLoadPathDescriber"       class="org.jboss.rails.sip.deployers.RailsSipRubyLoadPathDescriber"/>
+  <bean name="RailsSipRubyLoadPathDescriber"        class="org.jboss.rails.sip.deployers.RailsSipRubyLoadPathDescriber"/>
 
   <!-- Task Queue Deployment  -->
 
-  <bean name="RailsQueuesDeployer"                  class="org.jboss.rails.queues.deployers.RailsQueuesDeployer"/>
+  <bean name="RailsQueuesScanningDeployer"          class="org.jboss.rails.queues.deployers.RailsQueuesScanningDeployer"/>
   <bean name="RailsQueuesRubyLoadPathDescriber"     class="org.jboss.rails.queues.deployers.RailsQueuesRubyLoadPathDescriber"/>
 
 </deployment>

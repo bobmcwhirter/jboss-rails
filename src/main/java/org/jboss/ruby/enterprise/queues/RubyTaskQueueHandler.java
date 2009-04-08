@@ -10,7 +10,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.jboss.logging.Logger;
-import org.jboss.ruby.runtime.RubyRuntimePool;
+import org.jboss.ruby.core.runtime.spi.RubyRuntimePool;
 
 public class RubyTaskQueueHandler {
 

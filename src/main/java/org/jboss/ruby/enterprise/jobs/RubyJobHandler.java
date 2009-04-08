@@ -22,8 +22,8 @@
 package org.jboss.ruby.enterprise.jobs;
 
 import org.jboss.logging.Logger;
-import org.jboss.ruby.runtime.RubyRuntimePool;
-import org.jboss.ruby.util.StringUtils;
+import org.jboss.ruby.core.runtime.spi.RubyRuntimePool;
+import org.jboss.ruby.core.util.StringUtils;
 import org.jruby.Ruby;
 import org.jruby.RubyModule;
 import org.jruby.javasupport.JavaEmbedUtils;

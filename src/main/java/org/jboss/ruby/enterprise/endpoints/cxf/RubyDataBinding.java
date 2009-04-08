@@ -28,8 +28,8 @@ import org.apache.cxf.databinding.AbstractDataBinding;
 import org.apache.cxf.databinding.DataReader;
 import org.apache.cxf.databinding.DataWriter;
 import org.apache.cxf.service.Service;
+import org.jboss.ruby.core.runtime.spi.RubyRuntimePool;
 import org.jboss.ruby.enterprise.endpoints.databinding.RubyTypeSpace;
-import org.jboss.ruby.runtime.RubyRuntimePool;
 import org.w3c.dom.Node;
 
 public class RubyDataBinding extends AbstractDataBinding {

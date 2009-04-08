@@ -24,6 +24,7 @@ package org.jboss.ruby.enterprise.crypto.deployers;
 import java.util.Map;
 
 import org.ho.yaml.Yaml;
+import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.vfs.spi.deployer.AbstractVFSParsingDeployer;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.ruby.enterprise.crypto.metadata.CryptoMetaData;
@@ -32,9 +33,19 @@ import org.jboss.virtual.VirtualFile;
 
 public class CryptoYamlParsingDeployer extends AbstractVFSParsingDeployer<CryptoMetaData>{
 
+	private String storeBasePath;
+
 	public CryptoYamlParsingDeployer() {
 		super(CryptoMetaData.class);
 		setName( "crypto.yml" );
+	}
+	
+	public void setStoreBasePath(String storeBasePath) {
+		this.storeBasePath = storeBasePath;
+	}
+	
+	public String getStoreBasePath() {
+		return this.storeBasePath;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -48,7 +59,15 @@ public class CryptoYamlParsingDeployer extends AbstractVFSParsingDeployer<Crypto
 			CryptoStoreMetaData storeMetaData = new CryptoStoreMetaData();
 			Map<String, String> store = crypto.get( name );
 			storeMetaData.setName( name );
-			storeMetaData.setStore( store.get( "store" ) );
+			String storePath = store.get( "store" );
+			if ( ! storePath.startsWith( "/" )  ) {
+				if ( this.storeBasePath == null || this.storeBasePath.equals( "" ) ) {
+					throw new DeploymentException( "Relative store specified (" + storePath + ") but storeBasePath not set on CryptoYamlParsingDeployer" );
+				}
+				storePath = this.storeBasePath + "/" + storePath;
+				
+			}
+			storeMetaData.setStore( storePath );
 			storeMetaData.setPassword( store.get( "password" ) );
 			metaData.addCryptoStoreMetaData( storeMetaData );
 		}

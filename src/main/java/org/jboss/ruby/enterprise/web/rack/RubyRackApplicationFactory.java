@@ -21,7 +21,9 @@
  */
 package org.jboss.ruby.enterprise.web.rack;
 
-import org.jboss.ruby.runtime.RubyRuntimeFactory;
+import org.jboss.ruby.core.runtime.spi.RubyRuntimeFactory;
+import org.jboss.ruby.enterprise.web.rack.spi.RackApplication;
+import org.jboss.ruby.enterprise.web.rack.spi.RackApplicationFactory;
 import org.jruby.Ruby;
 
 public class RubyRackApplicationFactory implements RackApplicationFactory {

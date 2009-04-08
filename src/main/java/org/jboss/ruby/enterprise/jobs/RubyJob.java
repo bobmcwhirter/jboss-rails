@@ -24,7 +24,7 @@ package org.jboss.ruby.enterprise.jobs;
 import java.text.ParseException;
 
 import org.jboss.logging.Logger;
-import org.jboss.ruby.runtime.RubyRuntimePool;
+import org.jboss.ruby.core.runtime.spi.RubyRuntimePool;
 import org.quartz.CronTrigger;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;

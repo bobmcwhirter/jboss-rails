@@ -33,10 +33,10 @@ import javax.xml.validation.Schema;
 import org.apache.cxf.databinding.DataReader;
 import org.apache.cxf.message.Attachment;
 import org.apache.cxf.service.model.MessagePartInfo;
+import org.jboss.ruby.core.runtime.spi.RubyRuntimePool;
 import org.jboss.ruby.enterprise.endpoints.databinding.RubyType;
 import org.jboss.ruby.enterprise.endpoints.databinding.RubyTypeSpace;
 import org.jboss.ruby.enterprise.endpoints.databinding.RubyXMLStreamDataReader;
-import org.jboss.ruby.runtime.RubyRuntimePool;
 import org.jruby.Ruby;
 import org.jruby.runtime.builtin.IRubyObject;
 

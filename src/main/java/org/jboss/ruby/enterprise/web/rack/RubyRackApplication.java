@@ -28,7 +28,9 @@ import javax.servlet.sip.SipServletRequest;
 import javax.servlet.sip.SipServletResponse;
 
 import org.jboss.logging.Logger;
-import org.jboss.ruby.util.StringUtils;
+import org.jboss.ruby.core.util.StringUtils;
+import org.jboss.ruby.enterprise.web.rack.spi.RackApplication;
+import org.jboss.ruby.enterprise.web.rack.spi.RackResponse;
 import org.jruby.Ruby;
 import org.jruby.RubyArray;
 import org.jruby.RubyIO;

@@ -23,7 +23,6 @@ package org.jboss.rails.core.deployers;
 
 import java.util.Map;
 
-import org.ho.yaml.Yaml;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.spi.deployer.helpers.AbstractDeployer;
@@ -31,8 +30,13 @@ import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.rails.core.metadata.RailsApplicationMetaData;
 import org.jboss.virtual.VirtualFile;
+import org.jruby.util.ByteList;
+import org.jvyamlb.YAML;
 
 public class RailsEnvYamlParsingDeployer extends AbstractDeployer {
+	
+	public static final ByteList RAILS_ENV_KEY = ByteList.create( "RAILS_ENV" );
+	
 	public RailsEnvYamlParsingDeployer() {
 		setStage(DeploymentStages.PARSE);
 		addInput(RailsApplicationMetaData.class);
@@ -62,21 +66,25 @@ public class RailsEnvYamlParsingDeployer extends AbstractDeployer {
 	@SuppressWarnings("unchecked")
 	protected RailsApplicationMetaData parse(VFSDeploymentUnit unit, VirtualFile file, RailsApplicationMetaData root) throws Exception {
 		try {
-			Map<String, String> parsed = (Map<String, String>) Yaml.load(file.openStream());
+			Map<ByteList, ByteList> parsed = (Map<ByteList, ByteList>) YAML.load(file.openStream());
 
-			String railsEnv = parsed.get("RAILS_ENV");
+			ByteList railsEnv = parsed.get( RAILS_ENV_KEY );
 
-			if (railsEnv == null || railsEnv.trim().equals("")) {
-				railsEnv = "development";
+			String railsEnvStr = "development";
+			if (railsEnv != null ) {
+				railsEnvStr = railsEnv.toString().trim();
+				if ( railsEnvStr.equals( "" ) ) {
+					railsEnvStr = "development";
+				}
 			}
 
 			RailsApplicationMetaData railsMetaData = root;
 
 			if (railsMetaData == null) {
-				railsMetaData = new RailsApplicationMetaData(unit.getRoot(), railsEnv);
+				railsMetaData = new RailsApplicationMetaData(unit.getRoot(), railsEnvStr);
 			} else {
 				if (railsMetaData.getRailsEnv() == null) {
-					railsMetaData.setRailsEnv(railsEnv);
+					railsMetaData.setRailsEnv(railsEnvStr);
 				}
 			}
 			return railsMetaData;

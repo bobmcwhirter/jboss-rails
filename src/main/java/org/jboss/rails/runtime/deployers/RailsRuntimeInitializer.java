@@ -25,8 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.logging.Logger;
-import org.jboss.ruby.runtime.RubyDynamicClassLoader;
-import org.jboss.ruby.runtime.RuntimeInitializer;
+import org.jboss.ruby.core.RubyDynamicClassLoader;
+import org.jboss.ruby.core.runtime.spi.RuntimeInitializer;
 import org.jruby.Ruby;
 import org.jruby.RubyArray;
 import org.jruby.javasupport.JavaEmbedUtils;
