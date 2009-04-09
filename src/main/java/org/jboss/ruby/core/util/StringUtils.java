@@ -30,6 +30,32 @@ import java.util.regex.Pattern;
  */
 public class StringUtils {
 	
+	public static String pathToClassName(String path) {
+		return pathToClassName( path, ".rb" );
+	}
+	public static String pathToClassName(String path, String extension) {
+		if ( path.startsWith( "/" ) ) {
+			path = path.substring( 1 );
+		}
+		
+		if ( extension != null ) {
+			if ( ! extension.startsWith( "." ) ) {
+				extension = "." + extension;
+			}
+			
+			if ( path.endsWith( extension ) ) {
+				path = path.substring( 0, path.length() - extension.length() );
+			}
+		}
+		String className = camelize( path );
+		return className; 
+	}
+	
+	public static String classNameToPath(String className) {
+		String path = className;
+		return path;
+	}
+	
     public static String underscore(String word) {
         String firstPattern = "([A-Z]+)([A-Z][a-z])";
         String secondPattern = "([a-z\\d])([A-Z])";
@@ -43,12 +69,32 @@ public class StringUtils {
         return word;
     }
 
-	public static String camelize(String word, boolean lowercaseFirstLetter) {
-		// replace all slashes with dots (package separator)
+    public static String camelize(String str) {
+    	Pattern p = Pattern.compile("\\/(.?)");
+		Matcher m = p.matcher(str);
+		while (m.find()) {
+			str = m.replaceFirst("::" + m.group(1).toUpperCase() );
+			m = p.matcher(str);
+		}
+		
+		p = Pattern.compile( "(_)(.)" );
+		m = p.matcher( str );
+		while ( m.find() ) {
+			str = m.replaceFirst( m.group(2).toUpperCase() );
+		}
+		
+		if ( str.length() > 0 ) {
+			str = str.substring( 0, 1 ).toUpperCase() + str.substring( 1 );
+		}
+		return str;
+    }
+    
+	public static String old_camelize(String word, boolean lowercaseFirstLetter) {
+		// replace all slashes with double-colon (package separator)
 		Pattern p = Pattern.compile("\\/(.?)");
 		Matcher m = p.matcher(word);
 		while (m.find()) {
-			word = m.replaceFirst("." + m.group(1)/* .toUpperCase() */);
+			word = m.replaceFirst("::" + m.group(1)/* .toUpperCase() */);
 			m = p.matcher(word);
 		}
 

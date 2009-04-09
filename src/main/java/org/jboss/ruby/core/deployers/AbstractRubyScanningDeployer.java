@@ -85,7 +85,7 @@ public abstract class AbstractRubyScanningDeployer extends AbstractDeployer {
 			
 			for ( VirtualFile child : children ) {
 				String relativePath = child.getPathName().substring( prefixLength );
-				deploy( unit, child, relativePath );
+				deploy( unit, child, relativePath.substring(1) );
 			}
 
 		} catch (IOException e) {

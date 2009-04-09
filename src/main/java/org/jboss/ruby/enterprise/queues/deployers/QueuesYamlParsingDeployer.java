@@ -45,25 +45,27 @@ public class QueuesYamlParsingDeployer extends AbstractParsingDeployer {
 
 		try {
 			Map<ByteList, Map<ByteList, Object>> results = (Map<ByteList, Map<ByteList, Object>>) YAML.load(file.openStream());
-			for (ByteList queueClassNameBytes : results.keySet()) {
-				String queueClassName = queueClassNameBytes.toString();
-				RubyTaskQueueMetaData queue = queues.getQueueByClassName(queueClassName);
-				if (queue == null) {
-					queue = new RubyTaskQueueMetaData();
-					queue.setQueueClassName(queueClassName);
-					queues.addQueue(queue);
-				}
+			if (results != null) {
+				for (ByteList queueClassNameBytes : results.keySet()) {
+					String queueClassName = queueClassNameBytes.toString();
+					RubyTaskQueueMetaData queue = queues.getQueueByClassName(queueClassName);
+					if (queue == null) {
+						queue = new RubyTaskQueueMetaData();
+						queue.setQueueClassName(queueClassName);
+						queues.addQueue(queue);
+					}
 
-				log.info("added queue: " + queue);
+					log.info("added queue: " + queue);
 
-				Map<ByteList, Object> details = results.get(queueClassNameBytes);
+					Map<ByteList, Object> details = results.get(queueClassNameBytes);
 
-				log.info("details: " + details);
-				if (details != null) {
-					ByteList enabledKey = ByteList.create("enabled");
-					Boolean enabled = (Boolean) details.get(enabledKey);
-					if (enabled != null) {
-						queue.setEnabled(enabled.booleanValue());
+					log.info("details: " + details);
+					if (details != null) {
+						ByteList enabledKey = ByteList.create("enabled");
+						Boolean enabled = (Boolean) details.get(enabledKey);
+						if (enabled != null) {
+							queue.setEnabled(enabled.booleanValue());
+						}
 					}
 				}
 			}

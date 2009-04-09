@@ -63,6 +63,12 @@
     </dependency>
     <dependency>
       <groupId>org.mobicents.servlet.sip</groupId>
+      <artifactId>sip-servlets-impl</artifactId>
+      <version>${mobicents.sip.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mobicents.servlet.sip</groupId>
       <artifactId>sip-servlets-spec</artifactId>
       <version>${mobicents.spec.version}</version>
       <scope>compile</scope>
@@ -236,6 +242,18 @@
         <enabled>true</enabled>
       </snapshots>
     </repository>
+    <repository>
+      <id>apache-ws-snapshots2</id>
+      <name>Apache WS Repository</name>
+      <layout>default</layout>
+      <url>http://ws.zones.apache.org/repository2/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+    </repository>
   </repositories>
 
   <!-- Plugin Repositories -->
@@ -388,10 +406,10 @@
         </executions>
       </plugin>
 
-<!--
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>rspec-maven-plugin</artifactId>
+        <version>1.0-beta-6-SNAPSHOT</version>
         <configuration>
           <jrubyHome>${env.JRUBY_HOME}</jrubyHome>
           <sourceDirectory>${basedir}/src/test/specs</sourceDirectory>
@@ -408,7 +426,6 @@
           </execution>
         </executions>
       </plugin>
--->
     </plugins>
   </build>
 

@@ -115,7 +115,7 @@ public class DefaultRubyRuntimeFactory implements RubyRuntimeFactory {
 	}
 
 	private void setUpConstants(Ruby runtime, String applicationName) {
-		runtime.evalScriptlet( "require %q(org/jboss/ruby/runtime/runtime_constants)\n" );
+		runtime.evalScriptlet( "require %q(org/jboss/ruby/core/runtime_constants)\n" );
 		RubyModule jbossModule = runtime.getClassFromPath("JBoss");
 		JavaEmbedUtils.invokeMethod(runtime, jbossModule, "setup_constants", new Object[] { Version.getInstance(), applicationName }, void.class );
 	}

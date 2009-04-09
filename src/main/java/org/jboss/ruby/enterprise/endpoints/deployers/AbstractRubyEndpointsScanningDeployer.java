@@ -84,7 +84,7 @@ public class AbstractRubyEndpointsScanningDeployer extends AbstractRubyScanningD
 	}
 
 	private String getEndpointClassName(String name) {
-		return StringUtils.camelize(name + "Endpoint", false);
+		return StringUtils.camelize(name + "Endpoint");
 	}
 
 }
