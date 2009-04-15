@@ -1,12 +1,7 @@
 package org.jboss.ruby.enterprise.queues.deployers;
 
-import java.io.IOException;
-import java.util.List;
-
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.DeploymentStages;
-import org.jboss.deployers.spi.deployer.helpers.AbstractDeployer;
-import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.ruby.core.deployers.AbstractRubyScanningDeployer;
 import org.jboss.ruby.core.util.StringUtils;
@@ -36,7 +31,7 @@ public class AbstractRubyQueuesScanningDeployer extends AbstractRubyScanningDepl
 		}
 
 		String simplePath = relativePath.substring(0, relativePath.length() - 3);
-		String rubyClassName = StringUtils.camelize(simplePath, false);
+		String rubyClassName = StringUtils.camelize(simplePath );
 		rubyClassName = rubyClassName.replaceAll("\\.", "::");
 
 		RubyTaskQueueMetaData queueMetaData = metaData.getQueueByClassName(rubyClassName);

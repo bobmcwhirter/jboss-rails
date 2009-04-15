@@ -4,6 +4,7 @@ import org.jboss.ruby.core.util.StringUtils
 describe StringUtils do
   
   describe "camelize" do 
+    
     it "should capitalize the first character" do
       StringUtils::camelize( "foo" ).should eql( "Foo" )
     end
