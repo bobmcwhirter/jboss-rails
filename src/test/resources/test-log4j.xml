@@ -14,16 +14,24 @@
 <!--
       <param name="ConversionPattern" value="%d{ABSOLUTE} %-5p [%c{1}] %m%n"/>
 -->
-      <param name="ConversionPattern" value="%-5p [%c]%n      %m%n"/>
+      <param name="ConversionPattern" value="%-5p [%c{1}]%n      %m%n"/>
     </layout>
   </appender>
 
-  <category name="org.jboss.kernel">
+  <category name="org.jboss.ruby">
+    <priority value="TRACE"/>
+  </category>
+
+  <category name="org.jboss.rails">
+    <priority value="TRACE"/>
+  </category>
+
+  <category name="org.jboss.deployers.structure">
     <priority value="TRACE"/>
   </category>
 
   <root>
-    <priority value="TRACE"/>
+    <priority value="ERROR"/>
     <appender-ref ref="TEST.CONSOLE"/>
   </root>
 

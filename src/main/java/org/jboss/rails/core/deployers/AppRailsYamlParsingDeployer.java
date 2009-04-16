@@ -48,20 +48,20 @@ import org.jvyamlb.YAML;
 public class AppRailsYamlParsingDeployer extends AbstractVFSParsingDeployer<RailsApplicationMetaData> {
 
 	private Logger log = Logger.getLogger(AppRailsYamlParsingDeployer.class);
-	
-	private static final ByteList APPLICATION_KEY = ByteList.create( "application" );
-	private static final ByteList WEB_KEY = ByteList.create( "web" );
-	private static final ByteList SIP_KEY = ByteList.create( "sip" );
-	
-	private static final ByteList RAILS_ROOT_KEY = ByteList.create( "RAILS_ROOT" );
-	private static final ByteList RAILS_ENV_KEY = ByteList.create( "RAILS_ENV" );
-	
-	private static final ByteList HOST_KEY = ByteList.create( "host" );
-	private static final ByteList CONTEXT_KEY = ByteList.create( "context" );
-	
-	private static final ByteList APPNAME_KEY = ByteList.create( "appname" );
-	private static final ByteList MAINSERVLET_KEY = ByteList.create( "mainservlet" );
-	private static final ByteList RUBYCONTROLLER_KEY = ByteList.create( "rubycontroller" );
+
+	private static final ByteList APPLICATION_KEY = ByteList.create("application");
+	private static final ByteList WEB_KEY = ByteList.create("web");
+	private static final ByteList SIP_KEY = ByteList.create("sip");
+
+	private static final ByteList RAILS_ROOT_KEY = ByteList.create("RAILS_ROOT");
+	private static final ByteList RAILS_ENV_KEY = ByteList.create("RAILS_ENV");
+
+	private static final ByteList HOST_KEY = ByteList.create("host");
+	private static final ByteList CONTEXT_KEY = ByteList.create("context");
+
+	private static final ByteList APPNAME_KEY = ByteList.create("appname");
+	private static final ByteList MAINSERVLET_KEY = ByteList.create("mainservlet");
+	private static final ByteList RUBYCONTROLLER_KEY = ByteList.create("rubycontroller");
 
 	public AppRailsYamlParsingDeployer() {
 		super(RailsApplicationMetaData.class);
@@ -73,14 +73,14 @@ public class AppRailsYamlParsingDeployer extends AbstractVFSParsingDeployer<Rail
 	}
 
 	@Override
-	protected RailsApplicationMetaData parse(VFSDeploymentUnit vfsUnit, VirtualFile file, RailsApplicationMetaData root) throws Exception {
+	protected RailsApplicationMetaData parse(VFSDeploymentUnit vfsUnit, VirtualFile file, RailsApplicationMetaData root)
+			throws Exception {
+		log.debug("parse( " + vfsUnit + ", " + file + ", " + root + ")");
 
 		if (!file.equals(vfsUnit.getRoot())) {
 			log.debug("not deploying non-root: " + file);
 			return null;
 		}
-
-		log.debug("deploying: " + file);
 
 		Deployment deployment = parseAndSetUp(file);
 
@@ -119,7 +119,8 @@ public class AppRailsYamlParsingDeployer extends AbstractVFSParsingDeployer<Rail
 		unit.addAttachment("jboss.rails.root.deployer", deployer);
 	}
 
-	private Deployment createDeployment(RailsApplicationMetaData railsMetaData, RackWebApplicationMetaData webMetaData, SipApplicationMetaData sipMetaData) throws MalformedURLException, IOException {
+	private Deployment createDeployment(RailsApplicationMetaData railsMetaData, RackWebApplicationMetaData webMetaData,
+			SipApplicationMetaData sipMetaData) throws MalformedURLException, IOException {
 		AbstractVFSDeployment deployment = new AbstractVFSDeployment(railsMetaData.getRailsRoot());
 
 		MutableAttachments attachments = ((MutableAttachments) deployment.getPredeterminedManagedObjects());
@@ -129,7 +130,7 @@ public class AppRailsYamlParsingDeployer extends AbstractVFSParsingDeployer<Rail
 		if (webMetaData != null) {
 			attachments.addAttachment(RackWebApplicationMetaData.class, webMetaData);
 		}
-		
+
 		if (sipMetaData != null) {
 			attachments.addAttachment(SipApplicationMetaData.class, sipMetaData);
 		}
@@ -142,50 +143,49 @@ public class AppRailsYamlParsingDeployer extends AbstractVFSParsingDeployer<Rail
 		try {
 			Map<String, Object> results = (Map<String, Object>) YAML.load(file.openStream());
 
-			Map<ByteList, Object> application = (Map<ByteList, Object>) results.get( APPLICATION_KEY );
-			Map<ByteList, Object> web = (Map<ByteList, Object>) results.get( WEB_KEY );
-			Map<ByteList, Object> sip = (Map<ByteList, Object>) results.get( SIP_KEY );
+			Map<ByteList, Object> application = (Map<ByteList, Object>) results.get(APPLICATION_KEY);
+			Map<ByteList, Object> web = (Map<ByteList, Object>) results.get(WEB_KEY);
+			Map<ByteList, Object> sip = (Map<ByteList, Object>) results.get(SIP_KEY);
 
 			RailsApplicationMetaData railsMetaData = new RailsApplicationMetaData();
 
 			if (application != null) {
-				ByteList railsRoot = (ByteList) application.get( RAILS_ROOT_KEY );
-				ByteList railsEnv = (ByteList) application.get( RAILS_ENV_KEY );
+				ByteList railsRoot = (ByteList) application.get(RAILS_ROOT_KEY);
+				ByteList railsEnv = (ByteList) application.get(RAILS_ENV_KEY);
 				URL railsRootUrl = new URL("file://" + railsRoot);
 				VirtualFile railsRootFile = VFS.getRoot(railsRootUrl);
 				railsMetaData.setRailsRoot(railsRootFile);
-				if ( railsEnv != null ) {
-					railsMetaData.setRailsEnv(railsEnv.toString() );
+				if (railsEnv != null) {
+					railsMetaData.setRailsEnv(railsEnv.toString());
 				}
 			}
 
 			RackWebApplicationMetaData webMetaData = null;
-			
+
 			if (web != null) {
-				ByteList context = (ByteList) web.get( CONTEXT_KEY );
-				ByteList host = (ByteList) web.get( HOST_KEY );
+				ByteList context = (ByteList) web.get(CONTEXT_KEY);
+				ByteList host = (ByteList) web.get(HOST_KEY);
 				webMetaData = new RackWebApplicationMetaData();
-				if ( host != null ) {
-					webMetaData.setHost( host.toString() );
+				if (host != null) {
+					webMetaData.setHost(host.toString());
 				}
-				if ( context != null ) {
-					webMetaData.setContext(context.toString() );
+				if (context != null) {
+					webMetaData.setContext(context.toString());
 				}
 			}
 
 			SipApplicationMetaData sipMetaData = null;
-			
+
 			if (sip != null) {
-				ByteList applicationName = (ByteList) sip.get( APPNAME_KEY );
-				ByteList mainServlet = (ByteList) sip.get( MAINSERVLET_KEY );
-				ByteList rubyController = (ByteList) sip.get( RUBYCONTROLLER_KEY );
+				ByteList applicationName = (ByteList) sip.get(APPNAME_KEY);
+				ByteList mainServlet = (ByteList) sip.get(MAINSERVLET_KEY);
+				ByteList rubyController = (ByteList) sip.get(RUBYCONTROLLER_KEY);
 				sipMetaData = new SipApplicationMetaData();
 				sipMetaData.setApplicationName(applicationName.toString());
-				sipMetaData.setMainServlet(mainServlet.toString() );
-				sipMetaData.setRubyController(rubyController.toString() );
+				sipMetaData.setMainServlet(mainServlet.toString());
+				sipMetaData.setRubyController(rubyController.toString());
 			}
 
-			
 			return createDeployment(railsMetaData, webMetaData, sipMetaData);
 
 		} finally {

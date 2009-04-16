@@ -44,18 +44,22 @@ public class RailsEnvYamlParsingDeployer extends AbstractDeployer {
 	}
 
 	public void deploy(DeploymentUnit unit) throws DeploymentException {
+		log.info( "deploying1: " + unit );
 		if (unit instanceof VFSDeploymentUnit) {
 			deploy((VFSDeploymentUnit) unit);
 		}
 	}
 
 	public void deploy(VFSDeploymentUnit unit) throws DeploymentException {
+		log.info( "deploying2: " + unit );
 		VirtualFile file = unit.getMetaDataFile("rails-env.yml");
 
+		log.info( "rails-env file: " + file );
 		if (file != null) {
 			try {
 				RailsApplicationMetaData railsAppMetaData = unit.getAttachment(RailsApplicationMetaData.class);
 				railsAppMetaData = parse(unit, file, railsAppMetaData);
+				log.info( "adding " + railsAppMetaData );
 				unit.addAttachment(RailsApplicationMetaData.class, railsAppMetaData);
 			} catch (Exception e) {
 				throw new DeploymentException(e);

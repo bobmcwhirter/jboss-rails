@@ -425,6 +425,10 @@
               <name>log4j.configuration</name>
               <value>test-log4j.xml</value>
             </property>
+            <property>
+              <name>java.protocol.handler.pkgs</name>
+              <value>org.jboss.virtual.protocol</value>
+            </property>
           </systemProperties>
         </configuration>
         <executions>
