@@ -1,5 +1,5 @@
 
-require 'deployers/deployer_test_helper'
+require 'helpers/jboss/deployer_test_helper'
 
 import org.jboss.rails.core.deployers.RailsStructure
 

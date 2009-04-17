@@ -1,12 +1,12 @@
 
-require 'deployers/deployer_test_helper'
+require 'deployers/shared_spec'
 
 import org.jboss.ruby.enterprise.crypto.deployers.CryptoYamlParsingDeployer
 import org.jboss.ruby.enterprise.crypto.metadata.CryptoMetaData
 
 describe CryptoYamlParsingDeployer do
   
-  include DeployerTestHelper
+  it_should_behave_like "all deployers"
   
   def create_deployers
     @deployer =  CryptoYamlParsingDeployer.new()
@@ -14,14 +14,6 @@ describe CryptoYamlParsingDeployer do
     [ 
       @deployer
     ]
-  end
-  
-  before( :each ) do 
-    setup_microcontainer    
-  end
-  
-  after( :each ) do
-    destroy_microcontainer
   end
   
   it "should use adjust based upon base-path" do

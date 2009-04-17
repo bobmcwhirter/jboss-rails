@@ -1,25 +1,17 @@
 
-require 'deployers/deployer_test_helper'
+require 'deployers/shared_spec'
 
 import org.jboss.rails.core.deployers.RailsEnvYamlParsingDeployer
 import org.jboss.rails.core.metadata.RailsApplicationMetaData
 
 describe RailsEnvYamlParsingDeployer do
   
-  include DeployerTestHelper
+  it_should_behave_like "all deployers"
   
   def create_deployers
     [ 
       RailsEnvYamlParsingDeployer.new 
     ]
-  end
-  
-  before( :each ) do 
-    setup_microcontainer    
-  end
-  
-  after( :each ) do
-    destroy_microcontainer
   end
   
   it "should use the unit's root as RAILS_ROOT" do

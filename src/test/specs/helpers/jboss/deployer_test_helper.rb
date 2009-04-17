@@ -17,7 +17,7 @@ import java.net.URL
 
 VFS.init()
 
-require 'helpers/deployment_builder'
+require 'helpers/jboss/deployment_builder'
 
 module DeployerTestHelper
   
@@ -37,8 +37,6 @@ module DeployerTestHelper
     end    
   end
   
-
-  
   def deploy(path=nil,&block)
     vfs_file = nil
     structure = nil
@@ -50,13 +48,13 @@ module DeployerTestHelper
       vfs_file = VFS.getRoot( URL.new( "file:///#{path}" ) )
     else
       unless block.nil?
-        builder = DeploymentBuilder.new( &block )
-        vfs_file = builder.root_vfs
+        builder   = JBoss::DeploymentBuilder.new( &block )
+        vfs_file  = builder.root_vfs
         structure = builder.structure
+        
         @cleanup << vfs_file
       end
     end
-    #deployment = AbstractVFSDeployment.new(vfs_file)
     deployment = VFSDeploymentFactory.getInstance().createVFSDeployment( vfs_file )
     
     if ( structure )
@@ -65,13 +63,18 @@ module DeployerTestHelper
     
     @main_deployer.addDeployment( deployment )    
     @main_deployer.process()
-    #@main_deployer.getDeploymentUnit( deployment.getName() )
     deployment
   end
   
   def deployment_unit_for(deployment)
     @main_deployer.getDeploymentUnit( deployment.getName() )
   end
+  
+  def deployer_instances
+    return []    
+  end
+  
+  private
   
   def create_main_deployer()
     main_deployer = MainDeployerImpl.new
@@ -85,10 +88,6 @@ module DeployerTestHelper
       deployers.addDeployer( deployer )      
     end
     main_deployer 
-  end
-  
-  def deployer_instances
-    return []    
   end
   
   def create_structural_deployers_holder
