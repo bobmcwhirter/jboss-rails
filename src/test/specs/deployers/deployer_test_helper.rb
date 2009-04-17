@@ -28,7 +28,10 @@ module DeployerTestHelper
     @controller = @kernel.getController();
 
     @main_deployer = create_main_deployer();
+    @cleanup = nil
   end
+  
+
   
   def deploy(path=nil,&block)
     vfs_file = nil
@@ -44,6 +47,7 @@ module DeployerTestHelper
         builder = DeploymentBuilder.new( &block )
         vfs_file = builder.root_vfs
         structure = builder.structure
+        @cleanup = vfs_file
       end
     end
     #deployment = AbstractVFSDeployment.new(vfs_file)

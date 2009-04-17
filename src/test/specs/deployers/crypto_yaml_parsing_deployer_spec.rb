@@ -1,16 +1,18 @@
 
 require 'deployers/deployer_test_helper'
 
-import org.jboss.rails.core.deployers.RailsEnvYamlParsingDeployer
-import org.jboss.rails.core.metadata.RailsApplicationMetaData
+import org.jboss.ruby.enterprise.crypto.deployers.CryptoYamlParsingDeployer
+import org.jboss.ruby.enterprise.crypto.metadata.CryptoMetaData
 
-describe RailsEnvYamlParsingDeployer do
+describe CryptoYamlParsingDeployer do
   
   include DeployerTestHelper
   
   def create_deployers
+    @deployer =  CryptoYamlParsingDeployer.new()
+    @deployer.setStoreBasePath( 'path/to/crypto/' )
     [ 
-      RailsEnvYamlParsingDeployer.new 
+      @deployer
     ]
   end
   
@@ -24,20 +26,18 @@ describe RailsEnvYamlParsingDeployer do
     end
   end
   
-  it "should use the unit's root as RAILS_ROOT" do
+  it "should use adjust based upon base-path" do
     deployment = deploy {
       root {
         dir( 'config', :metadata=>true ) {
-          file 'rails-env.yml', :read=>"rails-env/simple-rails-env.yml"
+          file 'crypto.yml', :read=>"crypto/multi-crypto.yml"
         }
       }
     }
     unit       = deployment_unit_for( deployment )
-    meta_data  = unit.getAttachment( RailsApplicationMetaData.java_class )
+    meta_data  = unit.getAttachment( CryptoMetaData.java_class )
     
     meta_data.should_not be_nil
-    meta_data.getRailsRoot().should eql( unit.getRoot() )
-    meta_data.getRailsEnv().should eql( 'simply-an-env' )
   end
   
 end
