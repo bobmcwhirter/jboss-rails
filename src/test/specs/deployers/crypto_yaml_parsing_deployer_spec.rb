@@ -21,9 +21,7 @@ describe CryptoYamlParsingDeployer do
   end
   
   after( :each ) do
-    unless ( @cleanup.nil? )
-      Java::OrgJbossVirtualPluginsContextMemory::MemoryContextFactory.getInstance().deleteRoot( @cleanup.toURL() )
-    end
+    destroy_microcontainer
   end
   
   it "should use adjust based upon base-path" do

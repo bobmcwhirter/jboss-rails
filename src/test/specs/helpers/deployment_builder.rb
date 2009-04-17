@@ -5,23 +5,18 @@ import org.jboss.deployers.spi.structure.StructureMetaDataFactory
 class DeploymentBuilder
   
   def initialize(&block)
-    puts "initializing deployment with #{block}" 
     @root_url = "vfsmemory://test/"
     @root_vfs = VFS.getRoot( URL.new( @root_url ) )
     @stack = []
     @metadata_paths = []
-    puts "root is #{@root_vfs}"
     instance_eval &block if block 
     apply_structure
-    puts "completed root is #{@root_vfs}"
-    show_root
   end
   
   def apply_structure
     @structure = StructureMetaDataFactory.createStructureMetaData()
     context = StructureMetaDataFactory.createContextInfo()
     @metadata_paths.each do |path|
-      puts "metadata path [#{path}]"
       context.addMetaDataPath( path ) 
     end
     @structure.addContext( context )
@@ -55,7 +50,6 @@ class DeploymentBuilder
     if ( opts[:metadata] ) 
       @metadata_paths << current_path 
     end
-    puts "#{current_path} options #{opts.inspect}"
     Java::OrgJbossVirtualPluginsContextMemory::MemoryContextFactory.getInstance().createDirectory( URL.new( current_url ) )
     instance_eval &block if block 
     @stack.pop
@@ -76,8 +70,6 @@ class DeploymentBuilder
     
     ( bytes = java.lang.String.new( "" ) ) unless bytes
       
-    puts "#{current_path} options #{opts.inspect}"
-    puts "contents [#{bytes}]"
     Java::OrgJbossVirtualPluginsContextMemory::MemoryContextFactory.getInstance().putFile( URL.new( current_url ), bytes.getBytes() )
     @stack.pop
   end

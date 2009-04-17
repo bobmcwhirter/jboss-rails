@@ -19,9 +19,7 @@ describe RailsEnvYamlParsingDeployer do
   end
   
   after( :each ) do
-    unless ( @cleanup.nil? )
-      Java::OrgJbossVirtualPluginsContextMemory::MemoryContextFactory.getInstance().deleteRoot( @cleanup.toURL() )
-    end
+    destroy_microcontainer
   end
   
   it "should use the unit's root as RAILS_ROOT" do

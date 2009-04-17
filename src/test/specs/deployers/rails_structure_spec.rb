@@ -5,10 +5,6 @@ import org.jboss.rails.core.deployers.RailsStructure
 
 describe RailsStructure do
   
-  include DeployerTestHelper
-  
-  before( :each ) do 
-    setup_microcontainer    
-  end
+  it "should recognize a RAILS_ROOT"
   
 end

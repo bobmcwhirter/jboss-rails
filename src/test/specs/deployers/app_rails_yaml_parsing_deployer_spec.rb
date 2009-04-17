@@ -18,6 +18,10 @@ describe AppRailsYamlParsingDeployer do
     setup_microcontainer    
   end
   
+  after( :each ) do
+    destroy_microcontainer
+  end
+  
   it "should create a sub-deployment with pre-attached RailsApplicationMetaData" do
     #deployment = deploy( "#{BASE_DIR}/src/test/resources/deployments/toplevel/simple-rails.yml" )
     deployment = deploy( 'toplevel/simple-rails.yml' )
