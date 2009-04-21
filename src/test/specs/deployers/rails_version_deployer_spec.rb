@@ -25,7 +25,6 @@ describe RailsVersionDeployer do
       attachments {
         attach( RailsApplicationMetaData ) do |md, root|
           md.setRailsRoot( root )
-          puts "metadata is #{md.inspect}"
         end 
       }
     }
@@ -33,6 +32,35 @@ describe RailsVersionDeployer do
     meta_data  = unit.getAttachment( RailsVersionMetaData.java_class )
     
     meta_data.should_not be_nil
+    
+    meta_data.getMajor().should eql( 2 )
+    meta_data.getMinor().should eql( 4 )
+    meta_data.getTiny().should  eql( 9 )
+  end
+  
+  it "should complain appropriately if version.rb cannot be found" do
+    deployment = deploy {
+      attachments {
+        attach( RailsApplicationMetaData ) do |md, root|
+          md.setRailsRoot( root )
+        end 
+      }
+    }
+    
+    unit = deployment_unit_for( deployment )
+    
+    unit.should_not be_nil
+    
+    errored = error_contexts()
+    
+    errored.should_not be_empty
+    
+    exception = errored[ unit.getRoot().toURL().toExternalForm() ]
+    
+    exception.should_not be_nil
+    
+    exception.getMessage().should match( /.*vendorized.*/ )
+    
   end
   
 end

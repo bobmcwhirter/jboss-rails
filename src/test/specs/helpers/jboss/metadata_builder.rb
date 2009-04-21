@@ -23,7 +23,6 @@ module JBoss
     def attach_to(deployment)
       
       @entries.each do |entry|
-        puts "attaching #{entry.inspect}"
         if ( entry.name.nil? ) 
           deployment.getPredeterminedManagedObjects().addAttachment( entry.java_class, entry.object )
         else

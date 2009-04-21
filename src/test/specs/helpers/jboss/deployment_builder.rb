@@ -9,17 +9,8 @@ module JBoss
   class DeploymentBuilder
   
     def initialize(url=nil, &block)
-      @url = url
+      @vfs_builder = JBoss::VFSBuilder.new( url )
       instance_eval &block if block 
-    end
-    
-    def apply_structure
-      @structure = StructureMetaDataFactory.createStructureMetaData()
-      context = StructureMetaDataFactory.createContextInfo()
-      @metadata_paths.each do |path|
-        context.addMetaDataPath( path ) 
-      end
-      @structure.addContext( context )
     end
     
     def attachments(&block)
@@ -27,27 +18,17 @@ module JBoss
     end
     
     def root(opts={}, &block)
-      raise "deployment created by URL may not be created using a block" if @url
-      @vfs_builder = JBoss::VFSBuilder.new( opts, &block )
+      @vfs_builder.root( &block )
     end
     
     def deployment
-      if ( @url )
-        vfs_file = VFS.getRoot( java.net.URL.new( @url ) )
-        dep = VFSDeploymentFactory.getInstance().createVFSDeployment( vfs_file )
-      else
-        root = nil
-        structure = nil
-        if ( @vfs_builder )
-          root      = @vfs_builder.root_vfs 
-          structure = @vfs_builder.structure
-        end
+      root      = @vfs_builder.root_vfs 
+      structure = @vfs_builder.structure
       
-        dep = VFSDeploymentFactory.getInstance().createVFSDeployment( root )
+      dep = VFSDeploymentFactory.getInstance().createVFSDeployment( root )
         
-        if ( structure )
-          dep.getPredeterminedManagedObjects().addAttachment( StructureMetaData.java_class, structure )      
-        end
+      if ( structure )
+        dep.getPredeterminedManagedObjects().addAttachment( StructureMetaData.java_class, structure )      
       end
       
       if ( @metadata_builder ) 

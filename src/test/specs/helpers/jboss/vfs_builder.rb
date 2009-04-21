@@ -6,14 +6,17 @@ module JBoss
   
   class VFSBuilder
   
-    def initialize(opts={}, &block)
-      @root_url = "vfsmemory://test/"
+    def initialize(url)
+      if ( url ) 
+        @root_url = url
+        @modifiable = false
+      else 
+        @root_url = "vfsmemory://test/"
+        @modifiable = true
+      end
       @root_vfs = VFS.getRoot( URL.new( @root_url ) )
       @stack = []
       @metadata_paths = []
-      #instance_eval &block if block 
-      root( opts, &block )
-      build_structure
     end
     
     def build_structure
@@ -26,6 +29,7 @@ module JBoss
     end
     
     def structure
+      build_structure unless @structure
       @structure 
     end
     
@@ -41,7 +45,7 @@ module JBoss
     end
     
     def show_node(node, indent)
-      puts "#{indent}#{node.getPathName()} #{node.class.java_class}"
+      puts "#{indent}#{node.getPathName()}"
       node.getChildren().each do |child|
         show_node( child, "  #{indent}") 
       end

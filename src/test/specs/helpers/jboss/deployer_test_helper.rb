@@ -12,6 +12,8 @@ import org.jboss.deployers.spi.deployer.helpers.DefaultManagedObjectCreator
 import org.jboss.deployers.spi.structure.StructureMetaData
 import org.jboss.deployers.vfs.plugins.structure.VFSStructureBuilder
 import org.jboss.deployers.vfs.spi.client .VFSDeploymentFactory
+import org.jboss.deployers.client.spi.IncompleteDeploymentException
+
 import org.jboss.virtual.VFS
 import java.net.URL
 
@@ -62,6 +64,18 @@ module DeployerTestHelper
   def deployment_unit_for(deployment)
     @main_deployer.getDeploymentUnit( deployment.getName() )
   end
+  
+  def error_contexts()
+    errors = {}
+    begin
+      @main_deployer.checkComplete()
+    rescue IncompleteDeploymentException => e
+      incomplete = e.cause.getIncompleteDeployments()
+      errors = incomplete.getContextsInError()
+    end
+    errors 
+  end
+  
   
   def deployer_instances
     return []    
