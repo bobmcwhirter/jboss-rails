@@ -1,6 +1,7 @@
 #import org.jboss.virtual.plugins.context.memory.MemoryContextFactory
 
 require 'helpers/jboss/vfs_builder'
+require 'helpers/jboss/metadata_builder'
 import org.jboss.deployers.vfs.spi.client .VFSDeploymentFactory
 
 module JBoss
@@ -22,7 +23,7 @@ module JBoss
     end
     
     def attachments(&block)
-      @metadata_builder = MetaDataBuilder.new( &boock )
+      @metadata_builder = JBoss::MetadataBuilder.new( @vfs_builder.root_vfs, &block )
     end
     
     def root(opts={}, &block)

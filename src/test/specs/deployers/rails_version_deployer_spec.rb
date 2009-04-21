@@ -22,6 +22,12 @@ describe RailsVersionDeployer do
           file( 'version.rb', :read=>'rails-version.rb' ) 
         }
       }
+      attachments {
+        attach( RailsApplicationMetaData ) do |md, root|
+          md.setRailsRoot( root )
+          puts "metadata is #{md.inspect}"
+        end 
+      }
     }
     unit       = deployment_unit_for( deployment )
     meta_data  = unit.getAttachment( RailsVersionMetaData.java_class )

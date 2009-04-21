@@ -29,7 +29,7 @@ describe RailsRootRecognizingDeployer do
     meta_data.getRailsRoot().should eql( unit.getRoot() )
   end
   
-  it "should nto trigger by config/**" do
+  it "should not trigger by config/**" do
     deployment = deploy {
       root {
         dir( 'config' ) {
