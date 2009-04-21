@@ -28,6 +28,18 @@ describe CryptoYamlParsingDeployer do
     meta_data  = unit.getAttachment( CryptoMetaData.java_class )
     
     meta_data.should_not be_nil
+    
+    [ 'keystore', 'truststore' ].each do |name|
+      store = meta_data.getCryptoStore( name )
+      store.should_not be_nil
+      store.getStore().should eql( "path/to/crypto/auth/#{store.name}.jks" )
+      store.getPassword().should eql( "foobar4#{name}" )
+    end
+    
+    store = meta_data.getCryptoStore( "otherstore" )
+    store.should_not be_nil
+    store.getStore().should eql( "/fq/path/to/otherstore.jks" )
+    store.getPassword().should eql( "foobar4otherstore" )
   end
   
 end

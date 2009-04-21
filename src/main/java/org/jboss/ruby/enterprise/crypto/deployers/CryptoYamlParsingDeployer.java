@@ -41,6 +41,9 @@ public class CryptoYamlParsingDeployer extends AbstractVFSParsingDeployer<Crypto
 	}
 	
 	public void setStoreBasePath(String storeBasePath) {
+		if ( storeBasePath.endsWith( "/") ) {
+			storeBasePath = storeBasePath.substring( 0, storeBasePath.length() - 1 );
+		}
 		this.storeBasePath = storeBasePath;
 	}
 	

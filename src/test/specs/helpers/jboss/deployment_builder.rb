@@ -1,18 +1,15 @@
 #import org.jboss.virtual.plugins.context.memory.MemoryContextFactory
 
-import org.jboss.deployers.spi.structure.StructureMetaDataFactory
+require 'helpers/jboss/vfs_builder'
+import org.jboss.deployers.vfs.spi.client .VFSDeploymentFactory
 
 module JBoss
   
   class DeploymentBuilder
   
-    def initialize(&block)
-      @root_url = "vfsmemory://test/"
-      @root_vfs = VFS.getRoot( URL.new( @root_url ) )
-      @stack = []
-      @metadata_paths = []
+    def initialize(url=nil, &block)
+      @url = url
       instance_eval &block if block 
-      apply_structure
     end
     
     def apply_structure
@@ -24,80 +21,41 @@ module JBoss
       @structure.addContext( context )
     end
     
-    def structure
-      @structure 
-    end
-    
-    def root_vfs
-      @root_vfs
-    end
-    
-    def show_root
-      show_node( @root_vfs, '' ) 
-    end
-    
-    def show_node(node, indent)
-      puts "#{indent}#{node.getPathName()} #{node.class.java_class}"
-      node.getChildren().each do |child|
-        show_node( child, "  #{indent}") 
-      end
+    def attachments(&block)
+      @metadata_builder = MetaDataBuilder.new( &boock )
     end
     
     def root(opts={}, &block)
-      dir( '', opts, &block ) 
+      raise "deployment created by URL may not be created using a block" if @url
+      @vfs_builder = JBoss::VFSBuilder.new( opts, &block )
     end
     
-    def dir(name, opts={}, &block)
-      @stack.push name 
-      begin
-        if ( opts[:metadata] ) 
-          @metadata_paths << current_path 
+    def deployment
+      if ( @url )
+        vfs_file = VFS.getRoot( java.net.URL.new( @url ) )
+        dep = VFSDeploymentFactory.getInstance().createVFSDeployment( vfs_file )
+      else
+        root = nil
+        structure = nil
+        if ( @vfs_builder )
+          root      = @vfs_builder.root_vfs 
+          structure = @vfs_builder.structure
         end
-        context_factory.createDirectory( URL.new( current_url ) )
-        instance_eval &block if block 
-      ensure
-        @stack.pop
-      end
-    end
-    
-    def file(name, opts={}, &block)
-      @stack.push name
-      begin
-        content = nil
-        if ( opts[:read] ) 
-          content = read_deployment_file( opts[:read] )
-        else
-          if ( block.nil? )
-            raise "file contents must be defined"
-          else
-            content = instance_eval( &block ).to_s
-          end
+      
+        dep = VFSDeploymentFactory.getInstance().createVFSDeployment( root )
+        
+        if ( structure )
+          dep.getPredeterminedManagedObjects().addAttachment( StructureMetaData.java_class, structure )      
         end
-        
-        ( content = '' ) unless content
-        
-        content_str = java.lang.String.new( content )
-          
-        context_factory.putFile( URL.new( current_url ), content_str.getBytes() )
-      ensure
-        @stack.pop
       end
+      
+      if ( @metadata_builder ) 
+        @metadata_builder.attach_to( dep )        
+      end
+      
+      return dep
+
     end
     
-    def read_deployment_file(path)
-      File.read( "#{BASE_DIR}/src/test/resources/deployments/#{path}") 
-    end
-    
-    def current_path
-      @stack.join( "/" ) 
-    end
-    
-    def current_url
-      @root_url + current_path()
-    end
-    
-    def context_factory
-      Java::OrgJbossVirtualPluginsContextMemory::MemoryContextFactory.getInstance()
-    end
   end
 end

@@ -45,20 +45,13 @@ module DeployerTestHelper
       if ( path[0,1] != '/' ) 
         path = BASE_DIR + '/src/test/resources/deployments/' + path
       end
-      vfs_file = VFS.getRoot( URL.new( "file:///#{path}" ) )
+      url = "file:///#{path}"
+      deployment   = JBoss::DeploymentBuilder.new( url ).deployment
     else
       unless block.nil?
-        builder   = JBoss::DeploymentBuilder.new( &block )
-        vfs_file  = builder.root_vfs
-        structure = builder.structure
-        
-        @cleanup << vfs_file
+        deployment   = JBoss::DeploymentBuilder.new( &block ).deployment
+        @cleanup << deployment.getRoot()
       end
-    end
-    deployment = VFSDeploymentFactory.getInstance().createVFSDeployment( vfs_file )
-    
-    if ( structure )
-      deployment.getPredeterminedManagedObjects().addAttachment( StructureMetaData.java_class, structure )      
     end
     
     @main_deployer.addDeployment( deployment )    

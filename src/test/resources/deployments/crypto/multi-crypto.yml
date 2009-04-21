@@ -7,6 +7,6 @@ keystore:
   store: auth/keystore.jks
   password: foobar4keystore
 
-broken: 
-  store: auth/truststore.jks
-  password: breakfast
+otherstore:
+  store: /fq/path/to/otherstore.jks
+  password: foobar4otherstore

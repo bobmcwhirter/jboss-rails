@@ -121,7 +121,7 @@ public class RubyEndpointDeployer extends AbstractDeployer {
 							storeName = "truststore";
 						}
 
-						CryptoStoreMetaData storeMetaData = crypto.getCryptoStoreMetaData(storeName);
+						CryptoStoreMetaData storeMetaData = crypto.getCryptoStore(storeName);
 
 						if (storeMetaData != null) {
 							beanBuilder.addPropertyMetaData("trustStoreFile", storeMetaData.getStore());

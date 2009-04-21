@@ -37,11 +37,11 @@ public class CryptoMetaData {
 		this.stores.put( cryptoStoreMetaData.getName(), cryptoStoreMetaData );
 	}
 	
-	public CryptoStoreMetaData getCryptoStoreMetaData(String name) {
+	public CryptoStoreMetaData getCryptoStore(String name) {
 		return this.stores.get( name );
 	}
 	
-	public Collection<CryptoStoreMetaData> getCryptoStoreMetaDatas() {
+	public Collection<CryptoStoreMetaData> getCryptoStores() {
 		return this.stores.values();
 	}
 	
