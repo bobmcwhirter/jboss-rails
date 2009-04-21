@@ -17,6 +17,7 @@ module JBoss
       @root_vfs = VFS.getRoot( URL.new( @root_url ) )
       @stack = []
       @metadata_paths = []
+      @structure = nil
     end
     
     def build_structure
@@ -62,7 +63,7 @@ module JBoss
           @metadata_paths << current_path 
         end
         context_factory.createDirectory( URL.new( current_url ) )
-        instance_eval &block if block 
+        instance_eval( &block ) if block 
       ensure
         @stack.pop
       end

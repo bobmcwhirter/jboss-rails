@@ -10,11 +10,12 @@ module JBoss
   
     def initialize(url=nil, &block)
       @vfs_builder = JBoss::VFSBuilder.new( url )
-      instance_eval &block if block 
+      @metadata_builder = JBoss::MetadataBuilder.new( @vfs_builder.root_vfs )
+      instance_eval( &block ) if block 
     end
     
     def attachments(&block)
-      @metadata_builder = JBoss::MetadataBuilder.new( @vfs_builder.root_vfs, &block )
+      @metadata_builder.attachments( &block )
     end
     
     def root(opts={}, &block)

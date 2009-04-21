@@ -10,7 +10,11 @@ module JBoss
     def initialize(root, &block)
       @root = root
       @entries = []
-      instance_eval &block if block 
+      attachments( &block )
+    end
+    
+    def attachments(&block)
+      instance_eval( &block ) if block
     end
     
     def attach(cls, name=nil, &block)

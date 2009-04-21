@@ -1,4 +1,17 @@
 
+class Object
+  
+  def quiet_import(*args)
+    old_verbose, $VERBOSE = $VERBOSE, nil  
+    old_import( *args )
+    $VERBOSE = old_verbose
+  end
+  
+  alias_method :old_import, :import
+  alias_method :import, :quiet_import
+
+end
+
 import org.jboss.kernel.plugins.bootstrap.basic.BasicBootstrap
 import org.jboss.dependency.plugins.AbstractController
 import org.jboss.deployers.plugins.deployers.DeployersImpl
