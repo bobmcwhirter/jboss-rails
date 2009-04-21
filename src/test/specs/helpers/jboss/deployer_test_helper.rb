@@ -8,12 +8,13 @@ class Object
   end
   
   alias_method :old_import, :import
-  alias_method :import, :quiet_import
+  alias_method :import,     :quiet_import
 
 end
 
 import org.jboss.kernel.plugins.bootstrap.basic.BasicBootstrap
 import org.jboss.dependency.plugins.AbstractController
+import org.jboss.deployers.client.spi.IncompleteDeploymentException
 import org.jboss.deployers.plugins.deployers.DeployersImpl
 import org.jboss.deployers.plugins.main.MainDeployerImpl
 import org.jboss.deployers.structure.spi.StructureBuilder
@@ -25,7 +26,6 @@ import org.jboss.deployers.spi.deployer.helpers.DefaultManagedObjectCreator
 import org.jboss.deployers.spi.structure.StructureMetaData
 import org.jboss.deployers.vfs.plugins.structure.VFSStructureBuilder
 import org.jboss.deployers.vfs.spi.client .VFSDeploymentFactory
-import org.jboss.deployers.client.spi.IncompleteDeploymentException
 
 import org.jboss.virtual.VFS
 import java.net.URL

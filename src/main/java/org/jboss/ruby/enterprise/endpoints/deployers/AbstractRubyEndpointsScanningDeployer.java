@@ -56,7 +56,8 @@ public class AbstractRubyEndpointsScanningDeployer extends AbstractRubyScanningD
 		String classLocation = name + "_endpoint";
 		String rubyFileName = classLocation + ".rb";
 		try {
-			VirtualFile rubyFile = wsdl.getParent().getChild(rubyFileName);
+			//VirtualFile rubyFile = wsdl.getParent().getChild(rubyFileName);
+			VirtualFile rubyFile = unit.getRoot().getChild( ENDPOINTS_DIR ).getChild( rubyFileName );
 			if (rubyFile == null) {
 				log.warn("No Ruby endpoint handler definition '" + name + SUFFIX + "' found for WSDL: " + wsdl);
 				return;
