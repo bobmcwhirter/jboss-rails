@@ -39,7 +39,7 @@ public class RailsRubyRuntimeFactoryDescriber extends AbstractDeployer {
 
 	public RailsRubyRuntimeFactoryDescriber() {
 		setStage(DeploymentStages.PRE_DESCRIBE);
-		addInput(RailsApplicationMetaData.class);
+		setInput(RailsApplicationMetaData.class);
 		addOutput(RubyRuntimeMetaData.class);
 	}
 
@@ -50,53 +50,56 @@ public class RailsRubyRuntimeFactoryDescriber extends AbstractDeployer {
 	}
 
 	public void deploy(VFSDeploymentUnit unit) throws DeploymentException {
-		log.debug("attempt deploy against: " + unit);
 		RailsApplicationMetaData railsMetaData = unit.getAttachment(RailsApplicationMetaData.class);
-		if (railsMetaData == null) {
-			log.debug("no RailsApplicationMetaData attached");
-			return;
-		}
-		log.debug("actually deploy against: " + unit);
-		RailsRuntimeInitializer initializer = createRuntimeInitializer(railsMetaData.getRailsRootPath(), railsMetaData.getRailsEnv());
-
+		
 		RubyRuntimeMetaData runtimeMetaData = unit.getAttachment(RubyRuntimeMetaData.class);
 		if (runtimeMetaData == null) {
 			runtimeMetaData = new RubyRuntimeMetaData();
+			runtimeMetaData.setBaseDir( railsMetaData.getRailsRoot() );
 			unit.addAttachment(RubyRuntimeMetaData.class, runtimeMetaData);
 		}
 
-		runtimeMetaData.setRuntimeInitializer( initializer );
-
+		addRuntimeInitializer(runtimeMetaData, railsMetaData );
+		
 		try {
-			RubyLoadPathMetaData railsRootPath = new RubyLoadPathMetaData();
-			railsRootPath.setURL(unit.getRoot().toURL());
-			unit.addAttachment( RubyLoadPathMetaData.class.getName() + "$RAILS_ROOT", railsRootPath, RubyLoadPathMetaData.class );
-			
-			RubyLoadPathMetaData railtiesPath = new RubyLoadPathMetaData();
-			railtiesPath.setURL(unit.getRoot().getChild( "vendor/rails/railties/lib" ).toURL() );
-			unit.addAttachment( RubyLoadPathMetaData.class.getName() + "$railties/lib", railtiesPath, RubyLoadPathMetaData.class );
-			
+			addRailsRootLoadPath(runtimeMetaData, railsMetaData);
+			addRailtiesLibLoadPath(runtimeMetaData, railsMetaData);
 			VirtualFile baseDir = unit.getRoot();
-			unit.addAttachment( VirtualFile.class.getName() + "$ruby.baseDir", baseDir );
+			unit.addAttachment(VirtualFile.class.getName() + "$ruby.baseDir", baseDir);
 		} catch (MalformedURLException e) {
-			throw new DeploymentException( e );
+			throw new DeploymentException(e);
 		} catch (URISyntaxException e) {
-			throw new DeploymentException( e );
+			throw new DeploymentException(e);
 		} catch (IOException e) {
-			throw new DeploymentException( e );
+			throw new DeploymentException(e);
 		}
 
 	}
 
-	public RailsRuntimeInitializer createRuntimeInitializer(String railsRoot, String railsEnv) {
-		return new RailsRuntimeInitializer( railsRoot, railsEnv );
+	protected void addRuntimeInitializer(RubyRuntimeMetaData runtimeMetaData, RailsApplicationMetaData railsMetaData) {
+		RailsRuntimeInitializer initializer = createRuntimeInitializer(railsMetaData.getRailsRoot(), railsMetaData
+				.getRailsEnv());
+
+		runtimeMetaData.setRuntimeInitializer(initializer);
 	}
 
-	/*
-	 * public static String createInitScript(String railsRoot, String railsEnv)
-	 * { String initScript = "RAILS_ROOT='" + railsRoot + "'\n" + "RAILS_ENV='"
-	 * + railsEnv + "'\n" + "require \"#{RAILS_ROOT}/config/boot.rb\"\n" +
-	 * "require \"#{RAILS_ROOT}/config/environment.rb\"\n"; return initScript; }
-	 */
+	protected void addRailsRootLoadPath(RubyRuntimeMetaData runtimeMetaData, RailsApplicationMetaData railsMetaData) throws MalformedURLException, URISyntaxException {
+		RubyLoadPathMetaData railsRootPath = new RubyLoadPathMetaData();
+		railsRootPath.setURL( railsMetaData.getRailsRoot().toURL() );
+		runtimeMetaData.appendLoadPath( railsRootPath );
+	}
+
+	protected void addRailtiesLibLoadPath(RubyRuntimeMetaData runtimeMetaData, RailsApplicationMetaData railsMetaData) throws IOException, URISyntaxException {
+		VirtualFile railtiesLib = railsMetaData.getRailsRoot().getChild("vendor/rails/railties/lib");
+		if (railtiesLib != null) {
+			RubyLoadPathMetaData railtiesPath = new RubyLoadPathMetaData();
+			railtiesPath.setURL(railtiesLib.toURL());
+			runtimeMetaData.appendLoadPath( railtiesPath );
+		}
+	}
+
+	public RailsRuntimeInitializer createRuntimeInitializer(VirtualFile railsRoot, String railsEnv) {
+		return new RailsRuntimeInitializer(railsRoot, railsEnv);
+	}
 
 }

@@ -10,6 +10,7 @@ import org.jboss.deployers.spi.deployer.helpers.AbstractDeployer;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.ruby.core.runtime.metadata.RubyLoadPathMetaData;
+import org.jboss.ruby.core.runtime.metadata.RubyRuntimeMetaData;
 import org.jboss.virtual.VirtualFile;
 import org.jboss.virtual.VirtualFileFilter;
 
@@ -69,8 +70,13 @@ public abstract class AbstractRubyScanningDeployer extends AbstractDeployer {
 			}
 			
 			if ( this.isAddToLoadPath() ) {
+				RubyRuntimeMetaData runtimeMetaData = unit.getAttachment( RubyRuntimeMetaData.class );
+				if ( runtimeMetaData == null ) {
+					runtimeMetaData = new RubyRuntimeMetaData();
+					unit.addAttachment( RubyRuntimeMetaData.class, runtimeMetaData );
+				}
 				RubyLoadPathMetaData loadPath = new RubyLoadPathMetaData( scanRoot.toURL() );
-				unit.addAttachment( RubyLoadPathMetaData.class.getName() + "$" + scanRoot, loadPath, RubyLoadPathMetaData.class );
+				runtimeMetaData.appendLoadPath( loadPath );
 			}
 			
 			List<VirtualFile> children = null;

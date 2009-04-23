@@ -27,6 +27,7 @@ import java.util.List;
 import org.jboss.logging.Logger;
 import org.jboss.ruby.core.RubyDynamicClassLoader;
 import org.jboss.ruby.core.runtime.spi.RuntimeInitializer;
+import org.jboss.virtual.VirtualFile;
 import org.jruby.Ruby;
 import org.jruby.RubyArray;
 import org.jruby.javasupport.JavaEmbedUtils;
@@ -34,19 +35,32 @@ import org.jruby.runtime.builtin.IRubyObject;
 
 public class RailsRuntimeInitializer implements RuntimeInitializer {
 	
-	private String railsRoot;
+	private VirtualFile railsRoot;
 	private String railsEnv;
 
-	public RailsRuntimeInitializer(String railsRoot, String railsEnv) {
+	public RailsRuntimeInitializer(VirtualFile railsRoot, String railsEnv) {
 		this.railsRoot = railsRoot;
 		this.railsEnv  = railsEnv;
 	}
+	
+	public VirtualFile getRailsRoot() {
+		return this.railsRoot;
+	}
+	
+	public String getRailsEnv() {
+		return this.railsEnv;
+	}
 
 	public void initialize(RubyDynamicClassLoader cl, Ruby ruby) throws Exception {
-		Logger logger = Logger.getLogger( railsRoot );
+		String railsRootPath = railsRoot.toURL().getFile();
+		if ( railsRootPath.endsWith( "/" ) ) {
+			railsRootPath = railsRootPath.substring( 0, railsRootPath.length() - 1 );
+		}
+		
+		Logger logger = Logger.getLogger( railsRootPath );
 		IRubyObject rubyLogger = JavaEmbedUtils.javaToRuby( ruby,  logger );
 		ruby.getGlobalVariables().set( "$JBOSS_RAILS_LOGGER", rubyLogger );
-		ruby.evalScriptlet( createProlog() );
+		ruby.evalScriptlet( createProlog( railsRootPath ) );
 		
 		RubyArray rubyLoadPath = (RubyArray) ruby.getGlobalVariables().get( "$LOAD_PATH" );
 		
@@ -62,14 +76,14 @@ public class RailsRuntimeInitializer implements RuntimeInitializer {
 		ruby.evalScriptlet( createEpilog() );
 	}
 	
-	public String createProlog() {
+	protected String createProlog(String railsRootPath) {
 		return
-			"RAILS_ROOT='" + railsRoot + "'\n" + 
+			"RAILS_ROOT='" + railsRootPath + "'\n" + 
 			"RAILS_ENV='" + railsEnv + "'\n" + 
 		    "require %q(org/jboss/rails/runtime/deployers/rails_init.rb)\n";
 	}
 	
-	public String createEpilog() {
+	protected String createEpilog() {
 		return  "load %q(config/environment.rb)\n";
 	}
 

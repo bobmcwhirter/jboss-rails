@@ -23,11 +23,12 @@ package org.jboss.ruby.core.runtime.deployers;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.DeploymentStages;
+import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.deployers.vfs.spi.deployer.AbstractSimpleVFSRealDeployer;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.kernel.Kernel;
@@ -65,7 +66,7 @@ public class RubyRuntimeFactoryDeployer extends AbstractSimpleVFSRealDeployer<Ru
 		factory.setApplicationName( unit.getSimpleName() );
 
 		try {
-			RubyDynamicClassLoader classLoader = createClassLoader(unit);
+			RubyDynamicClassLoader classLoader = createClassLoader(unit, metaData);
 			factory.setClassLoader(classLoader);
 			unit.addAttachment(RubyDynamicClassLoader.class, classLoader);
 		} catch (MalformedURLException e) {
@@ -76,17 +77,19 @@ public class RubyRuntimeFactoryDeployer extends AbstractSimpleVFSRealDeployer<Ru
 
 	}
 
-	private RubyDynamicClassLoader createClassLoader(VFSDeploymentUnit unit) throws MalformedURLException {
+	private RubyDynamicClassLoader createClassLoader(VFSDeploymentUnit unit, RubyRuntimeMetaData metaData) throws MalformedURLException {
 
-		Set<? extends RubyLoadPathMetaData> allMetaData = unit.getAllMetaData(RubyLoadPathMetaData.class);
+		List<URL> urls = new ArrayList<URL>();
 
-		Set<URL> urls = new HashSet<URL>();
-
-		for (RubyLoadPathMetaData each : allMetaData) {
+		for (RubyLoadPathMetaData each : metaData.getLoadPaths()) {
 			urls.add(each.getURL());
 		}
 		
-		VirtualFile baseDir = unit.getAttachment( VirtualFile.class.getName() + "$ruby.baseDir", VirtualFile.class );
+		VirtualFile baseDir = metaData.getBaseDir();
+		
+		if ( baseDir == null ) {
+			baseDir = unit.getRoot();
+		}
 
 		RubyDynamicClassLoader classLoader = RubyDynamicClassLoader.create(unit.getSimpleName(), urls, unit.getClassLoader(), baseDir );
 		return classLoader;

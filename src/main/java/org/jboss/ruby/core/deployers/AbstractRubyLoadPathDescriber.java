@@ -9,6 +9,7 @@ import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.vfs.spi.deployer.AbstractSimpleVFSRealDeployer;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.ruby.core.runtime.metadata.RubyLoadPathMetaData;
+import org.jboss.ruby.core.runtime.metadata.RubyRuntimeMetaData;
 import org.jboss.virtual.VirtualFile;
 
 public abstract class AbstractRubyLoadPathDescriber<T> extends AbstractSimpleVFSRealDeployer<T>{
@@ -16,13 +17,23 @@ public abstract class AbstractRubyLoadPathDescriber<T> extends AbstractSimpleVFS
 	public AbstractRubyLoadPathDescriber(Class<T> input) {
 		super( input );
 		setStage( DeploymentStages.DESCRIBE );
-		addOutput(RubyLoadPathMetaData.class);
+		addInput( RubyRuntimeMetaData.class );
+		addOutput( RubyRuntimeMetaData.class );
 	}
 	
 	protected void addLoadPath(VFSDeploymentUnit unit, URL url) {
-		RubyLoadPathMetaData loadPathMetaData = new RubyLoadPathMetaData();
-		loadPathMetaData.setURL( url );
-		unit.addAttachment( RubyLoadPathMetaData.class.getName() + "$" + url, loadPathMetaData, RubyLoadPathMetaData.class );
+		
+		RubyRuntimeMetaData runtimeMetaData = unit.getAttachment( RubyRuntimeMetaData.class );
+		
+		if ( runtimeMetaData == null ) {
+			runtimeMetaData = new RubyRuntimeMetaData();
+			unit.addAttachment( RubyRuntimeMetaData.class, runtimeMetaData );
+		}
+		
+		RubyLoadPathMetaData loadPath = new RubyLoadPathMetaData();
+		loadPath.setURL( url );
+		
+		runtimeMetaData.appendLoadPath( loadPath );
 	}
 	
 	protected void addLoadPath(VFSDeploymentUnit unit, VirtualFile file) throws MalformedURLException, URISyntaxException {

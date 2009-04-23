@@ -21,14 +21,28 @@
  */
 package org.jboss.ruby.core.runtime.metadata;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.jboss.ruby.core.runtime.spi.RuntimeInitializer;
+import org.jboss.virtual.VirtualFile;
 
 public class RubyRuntimeMetaData {
 	
+	private VirtualFile baseDir;
 	private RuntimeInitializer initializer;
+	private List<RubyLoadPathMetaData> loadPaths = new LinkedList<RubyLoadPathMetaData>();
 
 	public RubyRuntimeMetaData() {
 		
+	}
+	
+	public void setBaseDir(VirtualFile baseDir) {
+		this.baseDir = baseDir;
+	}
+	
+	public VirtualFile getBaseDir() {
+		return this.baseDir;
 	}
 	
 	public void setRuntimeInitializer(RuntimeInitializer initializer) {
@@ -38,5 +52,18 @@ public class RubyRuntimeMetaData {
 	public RuntimeInitializer getRuntimeInitializer() {
 		return this.initializer;
 	}
+	
+	public void prependLoadPath(RubyLoadPathMetaData loadPath) {
+		loadPaths.add(0, loadPath);
+	}
+	
+	public void appendLoadPath(RubyLoadPathMetaData loadPath) {
+		loadPaths.add( loadPath );
+	}
+	
+	public List<RubyLoadPathMetaData> getLoadPaths() {
+		return this.loadPaths;
+	}
+
 
 }
