@@ -33,7 +33,7 @@
   <bean name="RubyRuntimeFactoryDeployer"             class="org.jboss.ruby.core.runtime.deployers.RubyRuntimeFactoryDeployer">
     <property name="kernel"><inject bean="jboss.kernel:service=Kernel"/></property>
   </bean>
-  <bean name="RubyRuntimeFactoryPublishingDeployer"   class="org.jboss.ruby.core.runtime.deployers.RubyRuntimeFactoryPublishingDeployer"/>
+  <bean name="RubyRuntimeFactoryPublisher"            class="org.jboss.ruby.core.runtime.deployers.RubyRuntimeFactoryPublisher"/>
   <bean name="RubyRuntimePoolDeployer"                class="org.jboss.ruby.core.runtime.deployers.RubyRuntimePoolDeployer"/>
 
   <!-- Job Scheduling -->

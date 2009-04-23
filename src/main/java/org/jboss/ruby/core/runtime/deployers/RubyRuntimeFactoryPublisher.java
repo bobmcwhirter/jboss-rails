@@ -30,26 +30,28 @@ import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.ruby.core.RubyRuntimeFactoryProxy;
 import org.jboss.ruby.core.runtime.spi.RubyRuntimeFactory;
 
-public class RubyRuntimeFactoryPublishingDeployer extends AbstractDeployer {
+public class RubyRuntimeFactoryPublisher extends AbstractDeployer {
 
-	public RubyRuntimeFactoryPublishingDeployer() {
+	public RubyRuntimeFactoryPublisher() {
 		addOutput(BeanMetaData.class);
 		setStage(DeploymentStages.CLASSLOADER);
 	}
 
 	public void deploy(DeploymentUnit unit) throws DeploymentException {
+		log.info( "Deploying " + unit );
 		RubyRuntimeFactory factory = unit.getAttachment(RubyRuntimeFactory.class);
-		
-		if ( factory == null ) {
+
+		if (factory == null) {
 			return;
 		}
+		log.info( "factory " + factory );
 
-			String factoryName = getBeanName( unit );
-			log.trace("publishing RubyRuntimeFactory: " + factoryName);
-			BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder(factoryName, RubyRuntimeFactoryProxy.class.getName());
-			builder.addConstructorParameter(RubyRuntimeFactory.class.getName(), factory);
-			BeanMetaData factoryBean = builder.getBeanMetaData();
-			unit.addAttachment(BeanMetaData.class.getName() + "$RubyRuntimeFactory", factoryBean, BeanMetaData.class);
+		String factoryName = getBeanName(unit);
+		log.trace("publishing RubyRuntimeFactory: " + factoryName);
+		BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder(factoryName, RubyRuntimeFactoryProxy.class.getName());
+		builder.addConstructorParameter(RubyRuntimeFactory.class.getName(), factory);
+		BeanMetaData factoryBean = builder.getBeanMetaData();
+		unit.addAttachment(BeanMetaData.class.getName() + "$RubyRuntimeFactory", factoryBean, BeanMetaData.class);
 
 	}
 

@@ -24,9 +24,15 @@ module JBoss
       @entries << Entry.new( java_class, object, name )
     end
     
+    def attach_object(cls, object)
+      java_class = cls.java_class 
+      @entries << Entry.new( java_class, object, nil )
+    end
+    
     def attach_to(deployment)
       
       @entries.each do |entry|
+        puts "attaching [#{entry.name}, #{entry.object}, #{entry.java_class}"
         if ( entry.name.nil? ) 
           deployment.getPredeterminedManagedObjects().addAttachment( entry.java_class, entry.object )
         else
