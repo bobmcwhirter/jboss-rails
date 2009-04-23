@@ -38,6 +38,7 @@ describe RailsRackDeployer do
     web_metadata.getStaticPathPrefix().should eql( '/public' )
     web_metadata.getRackApplicationFactoryName().should_not be_nil
     web_metadata.getRackApplicationFactoryName().should eql( RubyRackApplicationFactoryDeployer.getBeanName( unit ) )
+    web_metadata.getRackApplicationFactoryName().should match /test-deployment/
     
   end
   

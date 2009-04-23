@@ -28,7 +28,6 @@ import java.util.List;
 
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.DeploymentStages;
-import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.deployers.vfs.spi.deployer.AbstractSimpleVFSRealDeployer;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.kernel.Kernel;
@@ -58,12 +57,9 @@ public class RubyRuntimeFactoryDeployer extends AbstractSimpleVFSRealDeployer<Ru
 
 	@Override
 	public void deploy(VFSDeploymentUnit unit, RubyRuntimeMetaData metaData) throws DeploymentException {
-		String factoryName = "jboss.ruby.runtime.factory." + unit.getSimpleName();
-		log.trace("creating RubyRuntimeFactory: " + factoryName);
-
-		DefaultRubyRuntimeFactory factory = new DefaultRubyRuntimeFactory(metaData.getRuntimeInitializer() );
+		DefaultRubyRuntimeFactory factory = new DefaultRubyRuntimeFactory(metaData.getRuntimeInitializer());
 		factory.setKernel(this.kernel);
-		factory.setApplicationName( unit.getSimpleName() );
+		factory.setApplicationName(unit.getSimpleName());
 
 		try {
 			RubyDynamicClassLoader classLoader = createClassLoader(unit, metaData);
@@ -77,33 +73,39 @@ public class RubyRuntimeFactoryDeployer extends AbstractSimpleVFSRealDeployer<Ru
 
 	}
 
-	private RubyDynamicClassLoader createClassLoader(VFSDeploymentUnit unit, RubyRuntimeMetaData metaData) throws MalformedURLException {
+	private RubyDynamicClassLoader createClassLoader(VFSDeploymentUnit unit, RubyRuntimeMetaData metaData)
+			throws MalformedURLException {
 
 		List<URL> urls = new ArrayList<URL>();
 
 		for (RubyLoadPathMetaData each : metaData.getLoadPaths()) {
 			urls.add(each.getURL());
 		}
-		
+
 		VirtualFile baseDir = metaData.getBaseDir();
-		
-		if ( baseDir == null ) {
+
+		if (baseDir == null) {
 			baseDir = unit.getRoot();
 		}
 
-		RubyDynamicClassLoader classLoader = RubyDynamicClassLoader.create(unit.getSimpleName(), urls, unit.getClassLoader(), baseDir );
+		ClassLoader parentClassLoader = null;
+		try {
+			parentClassLoader = unit.getClassLoader();
+		} catch (IllegalStateException e) {
+			parentClassLoader = getClass().getClassLoader();
+		}
+
+		RubyDynamicClassLoader classLoader = RubyDynamicClassLoader.create(unit.getSimpleName(), urls, parentClassLoader, baseDir);
 		return classLoader;
 	}
 
 	@Override
 	public void undeploy(VFSDeploymentUnit unit, RubyRuntimeMetaData deployment) {
-		RubyDynamicClassLoader cl = unit.getAttachment( RubyDynamicClassLoader.class );
-		
-		if ( cl != null ) {
+		RubyDynamicClassLoader cl = unit.getAttachment(RubyDynamicClassLoader.class);
+
+		if (cl != null) {
 			cl.destroy();
 		}
 	}
-	
-	
 
 }

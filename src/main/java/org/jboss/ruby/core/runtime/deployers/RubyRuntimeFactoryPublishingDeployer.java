@@ -39,15 +39,23 @@ public class RubyRuntimeFactoryPublishingDeployer extends AbstractDeployer {
 
 	public void deploy(DeploymentUnit unit) throws DeploymentException {
 		RubyRuntimeFactory factory = unit.getAttachment(RubyRuntimeFactory.class);
+		
+		if ( factory == null ) {
+			return;
+		}
 
-		if (factory != null) {
-			String factoryName = "jboss.ruby.runtime.factory." + unit.getSimpleName();
+			String factoryName = getBeanName( unit );
 			log.trace("publishing RubyRuntimeFactory: " + factoryName);
 			BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder(factoryName, RubyRuntimeFactoryProxy.class.getName());
 			builder.addConstructorParameter(RubyRuntimeFactory.class.getName(), factory);
 			BeanMetaData factoryBean = builder.getBeanMetaData();
 			unit.addAttachment(BeanMetaData.class.getName() + "$RubyRuntimeFactory", factoryBean, BeanMetaData.class);
-		}
+
+	}
+
+	public static String getBeanName(DeploymentUnit unit) {
+		String beanName = "jboss.ruby.runtime.factory." + unit.getSimpleName();
+		return beanName;
 
 	}
 
