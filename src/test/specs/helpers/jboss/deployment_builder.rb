@@ -2,7 +2,10 @@
 
 require 'helpers/jboss/vfs_builder'
 require 'helpers/jboss/metadata_builder'
-import org.jboss.deployers.vfs.spi.client .VFSDeploymentFactory
+#import org.jboss.deployers.vfs.spi.client .VFSDeploymentFactory
+#import org.jboss.deployers.vfs.plugins.client.AbstractVFSDeployment
+import org.jboss.ruby.NameableVFSDeployment
+
 
 module JBoss
   
@@ -26,7 +29,8 @@ module JBoss
       root      = @vfs_builder.root_vfs 
       structure = @vfs_builder.structure
       
-      dep = VFSDeploymentFactory.getInstance().createVFSDeployment( root )
+      #dep = VFSDeploymentFactory.getInstance().createVFSDeployment( root )
+      dep = NameableVFSDeployment.new( root, "test-deployment" )
         
       if ( structure )
         dep.getPredeterminedManagedObjects().addAttachment( StructureMetaData.java_class, structure )      

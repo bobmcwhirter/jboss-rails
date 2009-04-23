@@ -45,8 +45,6 @@ public class RackFilter implements Filter {
 
 	private static final String KERNEL_NAME = "jboss.kernel:service=Kernel";
 
-	// public static final String RACK_APP_FACTORY_INIT_PARAM =
-	// "jboss.rack.app.factory.name";
 	public static final String RACK_APP_POOL_INIT_PARAM = "jboss.rack.app.pool.name";
 
 	private RackApplicationPool rackAppFactory;

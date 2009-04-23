@@ -27,6 +27,7 @@ import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.vfs.spi.deployer.AbstractSimpleVFSRealDeployer;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.rails.core.metadata.RailsApplicationMetaData;
+import org.jboss.ruby.enterprise.web.rack.deployers.RubyRackApplicationFactoryDeployer;
 import org.jboss.ruby.enterprise.web.rack.metadata.RackWebApplicationMetaData;
 import org.jboss.ruby.enterprise.web.rack.metadata.RubyRackApplicationMetaData;
 
@@ -54,7 +55,8 @@ public class RailsRackDeployer extends AbstractSimpleVFSRealDeployer<RailsApplic
 			unit.addAttachment(RackWebApplicationMetaData.class, rackWebAppMetaData);
 		}
 
-		String appFactoryName = "jboss.rack.app." + unit.getSimpleName();
+		//String appFactoryName = "jboss.rack.app." + unit.getSimpleName();
+		String appFactoryName = RubyRackApplicationFactoryDeployer.getBeanName( unit );
 		rackWebAppMetaData.setRackApplicationFactoryName(appFactoryName);
 		rackWebAppMetaData.setStaticPathPrefix( "/public" );
 

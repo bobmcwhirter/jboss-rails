@@ -46,7 +46,7 @@ public class RubyRackApplicationFactoryDeployer extends AbstractSimpleVFSRealDep
 
 	@Override
 	public void deploy(VFSDeploymentUnit unit, RubyRackApplicationMetaData metaData) throws DeploymentException {
-		String beanName = "jboss.rack.app." + unit.getSimpleName();
+		String beanName = getBeanName( unit );
 
 		log.debug("deploying rack app factory: " + beanName);
 
@@ -70,6 +70,11 @@ public class RubyRackApplicationFactoryDeployer extends AbstractSimpleVFSRealDep
 
 		unit.addAttachment(BeanMetaData.class.getName() + "$" + RackApplicationPool.class.getName() + "$" + unit.getName(),
 				beanMetaData);
+	}
+	
+	public static String getBeanName(VFSDeploymentUnit unit) {
+		String beanName = "jboss.rack.app." + unit.getSimpleName();
+		return beanName;
 	}
 
 }
