@@ -5,12 +5,16 @@ describe "all deployers", :shared=>true do
   
   include DeployerTestHelper
   
-  before( :each ) do 
+  before( :all ) do 
     setup_microcontainer    
   end
   
-  after( :each ) do
+  after( :all ) do
     destroy_microcontainer
+  end
+  
+  after( :each ) do
+    cleanup_vfs
   end
   
 end

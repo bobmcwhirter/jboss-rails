@@ -27,6 +27,8 @@ import org.jboss.deployers.spi.structure.StructureMetaData
 import org.jboss.deployers.vfs.plugins.structure.VFSStructureBuilder
 import org.jboss.deployers.vfs.spi.client .VFSDeploymentFactory
 
+import org.jboss.beans.metadata.spi.BeanMetaData
+
 import org.jboss.virtual.VFS
 import java.net.URL
 
@@ -46,10 +48,14 @@ module DeployerTestHelper
     @cleanup = []
   end
   
-  def destroy_microcontainer
+  def cleanup_vfs
     @cleanup.each do |clean_me|
       Java::OrgJbossVirtualPluginsContextMemory::MemoryContextFactory.getInstance().deleteRoot( clean_me.toURL() )
     end    
+    @cleanup = []
+  end
+  
+  def destroy_microcontainer
   end
   
   def deploy(path=nil,&block)
@@ -89,9 +95,21 @@ module DeployerTestHelper
     errors 
   end
   
-  
   def deployer_instances
     return []    
+  end
+  
+  def bmd_for(unit, cls)
+    bmd = [] 
+    all_bmd = unit.getAllMetaData( BeanMetaData.java_class )
+    
+    all_bmd.each do |md|
+      if ( md.getBean() == cls.java_class.to_s )
+        bmd << md 
+      end 
+    end
+    
+    bmd
   end
   
   private

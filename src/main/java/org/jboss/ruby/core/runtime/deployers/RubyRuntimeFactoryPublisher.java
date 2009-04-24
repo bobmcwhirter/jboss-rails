@@ -30,6 +30,15 @@ import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.ruby.core.RubyRuntimeFactoryProxy;
 import org.jboss.ruby.core.runtime.spi.RubyRuntimeFactory;
 
+/** Deployer which publishes an attached RubyRuntimeFactory.
+ * 
+ * <p>
+ * While possibly not awesome design, we simply proxy the RubyRuntimeFactory
+ * used during during some other deployers as a MCBean available to other beans.
+ * </p>
+ * 
+ * @author Bob McWhirter
+ */
 public class RubyRuntimeFactoryPublisher extends AbstractDeployer {
 
 	public RubyRuntimeFactoryPublisher() {
@@ -38,16 +47,13 @@ public class RubyRuntimeFactoryPublisher extends AbstractDeployer {
 	}
 
 	public void deploy(DeploymentUnit unit) throws DeploymentException {
-		log.info( "Deploying " + unit );
 		RubyRuntimeFactory factory = unit.getAttachment(RubyRuntimeFactory.class);
 
 		if (factory == null) {
 			return;
 		}
-		log.info( "factory " + factory );
 
 		String factoryName = getBeanName(unit);
-		log.trace("publishing RubyRuntimeFactory: " + factoryName);
 		BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder(factoryName, RubyRuntimeFactoryProxy.class.getName());
 		builder.addConstructorParameter(RubyRuntimeFactory.class.getName(), factory);
 		BeanMetaData factoryBean = builder.getBeanMetaData();

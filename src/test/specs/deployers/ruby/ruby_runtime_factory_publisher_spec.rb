@@ -5,6 +5,7 @@ import org.jboss.ruby.core.runtime.deployers.RubyRuntimeFactoryPublisher
 import org.jboss.ruby.core.runtime.metadata.RubyRuntimeMetaData
 import org.jboss.ruby.core.runtime.spi.RubyRuntimeFactory
 import org.jboss.ruby.core.DefaultRubyRuntimeFactory
+import org.jboss.ruby.core.RubyRuntimeFactoryProxy
 import org.jboss.beans.metadata.spi.BeanMetaData
 
 describe RubyRuntimeFactoryPublisher do
@@ -18,15 +19,19 @@ describe RubyRuntimeFactoryPublisher do
   end
   
   it "should proxy the attached factory as a named MCBean" do
+    factory = DefaultRubyRuntimeFactory.new
     deployment = deploy {
       attachments {
-        attach_object( RubyRuntimeFactory, DefaultRubyRuntimeFactory.new )
+        attach_object( RubyRuntimeFactory, factory )
       }
     }
     unit = deployment_unit_for( deployment )
     bmd = unit.getAttachment( BeanMetaData.java_class.to_s + "$RubyRuntimeFactory", BeanMetaData.java_class )
     bmd.should_not be_nil
     bmd.getName().should eql( RubyRuntimeFactoryPublisher.getBeanName( unit ) )
+    
+    bmd = bmd_for( unit, RubyRuntimeFactoryProxy )
+    bmd.should_not be_nil
   end
   
 end

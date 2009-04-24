@@ -6,3 +6,4 @@ log
 tmp
 cache
 .loadpath
+.settings

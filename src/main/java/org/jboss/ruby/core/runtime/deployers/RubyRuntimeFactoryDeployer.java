@@ -38,19 +38,41 @@ import org.jboss.ruby.core.runtime.metadata.RubyRuntimeMetaData;
 import org.jboss.ruby.core.runtime.spi.RubyRuntimeFactory;
 import org.jboss.virtual.VirtualFile;
 
+/** Deployer which actually creates a RubyRuntimeFactory and attaches it to the unit.
+ * 
+ * <p>
+ * This CLASSLOADER-stage deployer actually creates an instance of RubyRuntimeFactory
+ * and attaches it to the unit.
+ * </p>
+ * 
+ * @author Bob McWhirter
+ * 
+ * @see RubyRuntimeFactoryPublisher
+ * @see RubyRuntimeFactoryProxy
+ */
 public class RubyRuntimeFactoryDeployer extends AbstractSimpleVFSRealDeployer<RubyRuntimeMetaData> {
 
+	/** Kernel. */
 	private Kernel kernel;
 
+	/** Construct. */
 	public RubyRuntimeFactoryDeployer() {
 		super(RubyRuntimeMetaData.class);
 		setStage(DeploymentStages.CLASSLOADER);
 	}
 
+	/** Set the kernel.
+	 * 
+	 * @param kernel The kernel.
+	 */
 	public void setKernel(Kernel kernel) {
 		this.kernel = kernel;
 	}
 
+	/** Get the kernel.
+	 * 
+	 * @return The kernel.
+	 */
 	public Kernel getKernel() {
 		return this.kernel;
 	}
@@ -73,6 +95,13 @@ public class RubyRuntimeFactoryDeployer extends AbstractSimpleVFSRealDeployer<Ru
 
 	}
 
+	/** Create the dynamic ClassLoader used by the Ruby runtimes for the unit.
+	 * 
+	 * @param unit The deployment unit.
+	 * @param metaData The runtime environment configuration.
+	 * @return The dynamic ClassLoader.
+	 * @throws MalformedURLException
+	 */
 	private RubyDynamicClassLoader createClassLoader(VFSDeploymentUnit unit, RubyRuntimeMetaData metaData)
 			throws MalformedURLException {
 
@@ -89,6 +118,7 @@ public class RubyRuntimeFactoryDeployer extends AbstractSimpleVFSRealDeployer<Ru
 		}
 
 		ClassLoader parentClassLoader = null;
+		
 		try {
 			parentClassLoader = unit.getClassLoader();
 		} catch (IllegalStateException e) {
