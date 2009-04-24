@@ -110,6 +110,7 @@ module DeployerTestHelper
     all_bmd = unit.getAllMetaData( BeanMetaData.java_class )
     
     all_bmd.each do |md|
+      puts "inspecting #{md}"
       if ( md.getBean() == cls.java_class.to_s )
         bmd << md 
       end 

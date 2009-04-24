@@ -28,6 +28,7 @@ import java.util.List;
 import org.apache.cxf.common.logging.LogUtils;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.DeploymentStages;
+import org.jboss.deployers.spi.deployer.helpers.AbstractDeployer;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.metadata.javaee.spec.ParamValueMetaData;
 import org.jboss.metadata.web.jboss.JBossServletMetaData;
@@ -36,36 +37,37 @@ import org.jboss.metadata.web.jboss.JBossWebMetaData;
 import org.jboss.metadata.web.spec.ServletMappingMetaData;
 import org.jboss.ruby.enterprise.endpoints.cxf.RubyCXFServlet;
 import org.jboss.ruby.enterprise.endpoints.cxf.util.JBossLoggerBridge;
+import org.jboss.ruby.enterprise.endpoints.metadata.RubyEndpointsMetaData;
 
-public class CXFServletDeployer extends AbstractCXFDeployer {
+public class CXFServletDeployer extends AbstractDeployer {
 	static {
 		LogUtils.setLoggerClass( JBossLoggerBridge.class );
 	}
 	
+	public static final String SERVLET_NAME = "ruby-cxf-servlet";
+	
 	public CXFServletDeployer() {
+		setInput( RubyEndpointsMetaData.class );
 		addInput( JBossWebMetaData.class );
 		addOutput( JBossWebMetaData.class );
-		setAllInputs(true);
 		setStage( DeploymentStages.PRE_REAL );
 		setRelativeOrder( 2000 );
 	}
 	
 	public void deploy(DeploymentUnit unit) throws DeploymentException {
-		if ( ! shouldDeploy( unit ) ) {
-			return;
-		}
 		
 		log.debug( "Deploy CXF servlet for " + unit );
 		JBossWebMetaData webMetaData = unit.getAttachment(JBossWebMetaData.class );
 		
-		
 		if ( webMetaData == null ) {
 			webMetaData = new JBossWebMetaData();
 			unit.addAttachment( JBossWebMetaData.class, webMetaData );
+			log.debug( "attaching " + webMetaData );
 		}
 		
 		JBossServletMetaData servletMetaData = new JBossServletMetaData();
-		servletMetaData.setServletName( "cxf-servlet" );
+		servletMetaData.setId( SERVLET_NAME );
+		servletMetaData.setServletName( SERVLET_NAME );
 		servletMetaData.setServletClass( RubyCXFServlet.class.getName() );
 		servletMetaData.setLoadOnStartup( 1 );
 		
@@ -86,7 +88,7 @@ public class CXFServletDeployer extends AbstractCXFDeployer {
 		servlets.add( servletMetaData );
 		
 		ServletMappingMetaData servletMapping = new ServletMappingMetaData();
-		servletMapping.setServletName( "cxf-servlet" );
+		servletMapping.setServletName( SERVLET_NAME );
 		servletMapping.setUrlPatterns( Collections.singletonList( "/endpoints/*" ) );
 		
 		List<ServletMappingMetaData> servletMappings = webMetaData.getServletMappings();
@@ -97,7 +99,6 @@ public class CXFServletDeployer extends AbstractCXFDeployer {
 		}
 		
 		servletMappings.add( servletMapping );
-		
 	}
 
 }
