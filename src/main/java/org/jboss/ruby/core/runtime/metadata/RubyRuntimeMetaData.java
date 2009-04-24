@@ -24,7 +24,7 @@ package org.jboss.ruby.core.runtime.metadata;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.jboss.ruby.core.runtime.spi.RuntimeInitializer;
+import org.jboss.ruby.core.runtime.RuntimeInitializer;
 import org.jboss.virtual.VirtualFile;
 
 public class RubyRuntimeMetaData {

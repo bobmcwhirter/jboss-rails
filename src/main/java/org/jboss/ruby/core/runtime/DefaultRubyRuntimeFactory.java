@@ -30,7 +30,6 @@ import java.util.Map;
 import org.jboss.Version;
 import org.jboss.kernel.Kernel;
 import org.jboss.ruby.core.runtime.spi.RubyRuntimeFactory;
-import org.jboss.ruby.core.runtime.spi.RuntimeInitializer;
 import org.jruby.Ruby;
 import org.jruby.RubyClass;
 import org.jruby.RubyInstanceConfig;

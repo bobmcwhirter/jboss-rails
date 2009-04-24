@@ -23,8 +23,17 @@ package org.jboss.ruby.core.runtime.spi;
 
 import org.jruby.Ruby;
 
+/** Factory to create Ruby instances.
+ * 
+ * @author Bob McWhirter
+ */
 public interface RubyRuntimeFactory {
 	
+	/** Create a new, un-managed Ruby runtime instance.
+	 * 
+	 * @return The new Ruby instance.
+	 * @throws Exception
+	 */
 	Ruby createRubyRuntime() throws Exception;
 
 }

@@ -33,6 +33,7 @@ import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.kernel.Kernel;
 import org.jboss.ruby.core.runtime.DefaultRubyRuntimeFactory;
 import org.jboss.ruby.core.runtime.RubyDynamicClassLoader;
+import org.jboss.ruby.core.runtime.RubyRuntimeFactoryProxy;
 import org.jboss.ruby.core.runtime.metadata.RubyLoadPathMetaData;
 import org.jboss.ruby.core.runtime.metadata.RubyRuntimeMetaData;
 import org.jboss.ruby.core.runtime.spi.RubyRuntimeFactory;

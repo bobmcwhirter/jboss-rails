@@ -23,8 +23,11 @@ package org.jboss.ruby.core.runtime.spi;
 
 import org.jruby.Ruby;
 
+/** Pool of managed Ruby runtime instances.
+ * 
+ * @author Bob McWhirter
+ */
 public interface RubyRuntimePool {
-
 	Ruby borrowRuntime() throws Exception;
 	void returnRuntime(Ruby runtime);
 }
