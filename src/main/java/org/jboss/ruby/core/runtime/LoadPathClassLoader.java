@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2008, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2009, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -19,21 +19,28 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.ruby.core;
+package org.jboss.ruby.core.runtime;
 
-import org.jboss.ruby.core.runtime.spi.RubyRuntimeFactory;
-import org.jboss.ruby.core.runtime.spi.RubyRuntimePool;
+import java.net.URL;
+import java.net.URLClassLoader;
 
-public abstract class AbstractRubyRuntimePool implements RubyRuntimePool {
+public class LoadPathClassLoader extends URLClassLoader {
 	
-	protected RubyRuntimeFactory factory;
+	private URL[] urls;
 	
-	public AbstractRubyRuntimePool(RubyRuntimeFactory factory) {
-		this.factory = factory;
+	public LoadPathClassLoader(URL[] urls, ClassLoader parent) {
+		super( urls, parent );
+		this.urls = urls;
+	}
+
+	@Override
+	public URL findResource(String name) {
+		URL result = super.findResource(name);
+		return result;
 	}
 	
-	public RubyRuntimeFactory getRubyRuntimeFactory() {
-		return this.factory;
+	public URL[] getURLs() {
+		return this.urls;
 	}
 
 }

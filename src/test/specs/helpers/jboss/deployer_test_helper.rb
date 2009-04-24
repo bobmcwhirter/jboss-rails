@@ -100,6 +100,12 @@ module DeployerTestHelper
   end
   
   def bmd_for(unit, cls)
+    all = all_bmd_for( unit, cls )
+    return nil if ( all.empty? )
+    all.first
+  end
+  
+  def all_bmd_for(unit, cls)
     bmd = [] 
     all_bmd = unit.getAllMetaData( BeanMetaData.java_class )
     

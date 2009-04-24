@@ -4,9 +4,8 @@ require 'deployers/shared_spec'
 import org.jboss.ruby.core.runtime.deployers.RubyRuntimeFactoryPublisher
 import org.jboss.ruby.core.runtime.metadata.RubyRuntimeMetaData
 import org.jboss.ruby.core.runtime.spi.RubyRuntimeFactory
-import org.jboss.ruby.core.DefaultRubyRuntimeFactory
-import org.jboss.ruby.core.RubyRuntimeFactoryProxy
-import org.jboss.beans.metadata.spi.BeanMetaData
+import org.jboss.ruby.core.runtime.DefaultRubyRuntimeFactory
+import org.jboss.ruby.core.runtime.RubyRuntimeFactoryProxy
 
 describe RubyRuntimeFactoryPublisher do
   
@@ -26,12 +25,10 @@ describe RubyRuntimeFactoryPublisher do
       }
     }
     unit = deployment_unit_for( deployment )
-    bmd = unit.getAttachment( BeanMetaData.java_class.to_s + "$RubyRuntimeFactory", BeanMetaData.java_class )
-    bmd.should_not be_nil
-    bmd.getName().should eql( RubyRuntimeFactoryPublisher.getBeanName( unit ) )
     
     bmd = bmd_for( unit, RubyRuntimeFactoryProxy )
     bmd.should_not be_nil
+    bmd.getName().should eql( RubyRuntimeFactoryPublisher.getBeanName( unit ) )
   end
   
 end

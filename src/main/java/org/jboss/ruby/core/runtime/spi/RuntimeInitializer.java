@@ -21,7 +21,7 @@
  */
 package org.jboss.ruby.core.runtime.spi;
 
-import org.jboss.ruby.core.RubyDynamicClassLoader;
+import org.jboss.ruby.core.runtime.RubyDynamicClassLoader;
 import org.jruby.Ruby;
 
 public interface RuntimeInitializer {

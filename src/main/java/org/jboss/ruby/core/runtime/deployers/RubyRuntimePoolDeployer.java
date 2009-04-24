@@ -29,7 +29,7 @@ import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.structure.spi.DeploymentUnit;
 import org.jboss.deployers.vfs.spi.deployer.AbstractSimpleVFSRealDeployer;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
-import org.jboss.ruby.core.SharedRubyRuntimePool;
+import org.jboss.ruby.core.runtime.SharedRubyRuntimePool;
 import org.jboss.ruby.core.runtime.metadata.RubyRuntimeMetaData;
 import org.jboss.ruby.core.runtime.spi.RubyRuntimeFactory;
 

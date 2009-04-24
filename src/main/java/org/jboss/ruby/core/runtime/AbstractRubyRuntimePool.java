@@ -19,33 +19,21 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.ruby.core;
+package org.jboss.ruby.core.runtime;
 
 import org.jboss.ruby.core.runtime.spi.RubyRuntimeFactory;
-import org.jruby.Ruby;
+import org.jboss.ruby.core.runtime.spi.RubyRuntimePool;
 
-public class SharedRubyRuntimePool extends AbstractRubyRuntimePool {
+public abstract class AbstractRubyRuntimePool implements RubyRuntimePool {
 	
-	protected Ruby instance;
+	protected RubyRuntimeFactory factory;
 	
-	public SharedRubyRuntimePool(RubyRuntimeFactory factory) {
-		super( factory );
-	}
-
-	public void start() throws Exception {
-		this.instance = factory.createRubyRuntime();
+	public AbstractRubyRuntimePool(RubyRuntimeFactory factory) {
+		this.factory = factory;
 	}
 	
-	public void stop() {
-		this.instance = null;
-	}
-	
-	public Ruby borrowRuntime() {
-		return this.instance;
-	}
-
-	public void returnRuntime(Ruby runtime) {
-		// nothing
+	public RubyRuntimeFactory getRubyRuntimeFactory() {
+		return this.factory;
 	}
 
 }

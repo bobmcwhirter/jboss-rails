@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.logging.Logger;
-import org.jboss.ruby.core.RubyDynamicClassLoader;
+import org.jboss.ruby.core.runtime.RubyDynamicClassLoader;
 import org.jboss.ruby.core.runtime.spi.RuntimeInitializer;
 import org.jboss.virtual.VirtualFile;
 import org.jruby.Ruby;

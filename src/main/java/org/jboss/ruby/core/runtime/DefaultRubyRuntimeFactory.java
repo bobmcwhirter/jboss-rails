@@ -19,7 +19,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.ruby.core;
+package org.jboss.ruby.core.runtime;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -115,7 +115,7 @@ public class DefaultRubyRuntimeFactory implements RubyRuntimeFactory {
 	}
 
 	private void setUpConstants(Ruby runtime, String applicationName) {
-		runtime.evalScriptlet( "require %q(org/jboss/ruby/core/runtime_constants)\n" );
+		runtime.evalScriptlet( "require %q(org/jboss/ruby/core/runtime/runtime_constants)\n" );
 		RubyModule jbossModule = runtime.getClassFromPath("JBoss");
 		JavaEmbedUtils.invokeMethod(runtime, jbossModule, "setup_constants", new Object[] { Version.getInstance(), applicationName }, void.class );
 	}
