@@ -44,14 +44,12 @@ public class RailsEnvYamlParsingDeployer extends AbstractDeployer {
 	}
 
 	public void deploy(DeploymentUnit unit) throws DeploymentException {
-		log.info( "deploying1: " + unit );
 		if (unit instanceof VFSDeploymentUnit) {
 			deploy((VFSDeploymentUnit) unit);
 		}
 	}
 
 	public void deploy(VFSDeploymentUnit unit) throws DeploymentException {
-		log.info( "deploying2: " + unit );
 		VirtualFile file = unit.getMetaDataFile("rails-env.yml");
 
 		log.info( "rails-env file: " + file );
