@@ -44,6 +44,9 @@ import org.jboss.ruby.enterprise.web.rack.metadata.RackWebApplicationMetaData;
 
 public class RackWebApplicationDeployer extends AbstractSimpleVFSRealDeployer<RackWebApplicationMetaData> {
 
+	public static final String FILTER_NAME = "jboss.rack";
+	public static final String SERVLET_NAME = "jboss.static";
+	
 	private static final Logger log = Logger.getLogger(RackWebApplicationDeployer.class);
 
 	public RackWebApplicationDeployer() {
@@ -67,6 +70,7 @@ public class RackWebApplicationDeployer extends AbstractSimpleVFSRealDeployer<Ra
 		}
 
 		FilterMetaData rackFilter = new FilterMetaData();
+		rackFilter.setId( "jboss.rack" );
 		rackFilter.setFilterClass(RackFilter.class.getName());
 		rackFilter.setFilterName("jboss.rack");
 
@@ -106,6 +110,7 @@ public class RackWebApplicationDeployer extends AbstractSimpleVFSRealDeployer<Ra
 			JBossServletMetaData staticServlet = new JBossServletMetaData();
 			staticServlet.setServletClass(StaticResourceServlet.class.getName());
 			staticServlet.setServletName("jboss.static");
+			staticServlet.setId( "jboss.static" );
 
 			ParamValueMetaData resourceRootParam = new ParamValueMetaData();
 			resourceRootParam.setParamName("resource.root");
