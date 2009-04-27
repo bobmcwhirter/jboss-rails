@@ -453,6 +453,32 @@
           </systemProperties>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.jboss.maven.plugins</groupId>
+        <artifactId>maven-jdocbook-plugin</artifactId>
+        <version>2.1.2</version>
+        <extensions>true</extensions>
+        <configuration>
+          <formats>
+            <format>
+              <formatName>pdf</formatName>
+              <finalName>jboss-rails-manual.pdf</finalName>
+            </format>
+            <format>
+              <formatName>html</formatName>
+              <finalName>index.html</finalName>
+            </format>
+            <format>
+              <formatName>html_single</formatName>
+              <finalName>jboss-rails-manual.html</finalName>
+            </format>
+          </formats>
+          <sourceDocumentName>master.xml</sourceDocumentName>
+          <options>
+            <xincludeSupported>true</xincludeSupported>
+          </options>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
