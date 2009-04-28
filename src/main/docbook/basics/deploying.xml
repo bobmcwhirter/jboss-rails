@@ -124,7 +124,7 @@
           <para><example>
               <title>Virtual host configuration in *-rails.yml</title>
 
-              <para><screen>web:
+              <para><screen>pweb:
   host: www.host-one.com</screen></para>
             </example></para>
         </sect4>
@@ -151,7 +151,30 @@
               <para><screen>web:
   context: /app-one</screen></para>
             </example></para>
+
+          <para>The context path and virtual host configurations can be used
+          at the same time, if desired.</para>
+
+          <para><example>
+              <title>Virtual host with context path configuration in
+              *-rails.ymls</title>
+
+              <para><screen>web:
+  host: www.mycorp.com
+  context: /app-one</screen></para>
+            </example></para>
         </sect4>
+      </sect3>
+
+      <sect3>
+        <title>Complete *-rails.yml Deployment Descriptor Example</title>
+
+        <para><screen>application:
+  RAILS_ROOT:  /path/to/myappp
+  RAILS_ENV:   development
+web:
+  host:    www.mycorp.com
+  context: /app-one</screen></para>
       </sect3>
     </sect2>
   </sect1>
