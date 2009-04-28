@@ -335,6 +335,8 @@
             <descriptor>src/main/assembly/deployer.xml</descriptor>
             <descriptor>src/main/assembly/support.xml</descriptor>
             <descriptor>src/main/assembly/bin.xml</descriptor>
+            <descriptor>src/main/assembly/docs-html.xml</descriptor>
+            <descriptor>src/main/assembly/docs-html-single.xml</descriptor>
           </descriptors>
           <finalName>${pom.artifactId}-${pom.version}</finalName>
         </configuration>
@@ -477,7 +479,10 @@
             <format>
               <formatName>pdf</formatName>
               <stylesheetResource>classpath:/xslt/org/jboss/pdf.xsl</stylesheetResource>
+<!--
               <finalName>jboss-rails-manual.pdf</finalName>
+-->
+              <finalName>${pom.artifactId}-${pom.version}.pdf</finalName>
             </format>
             <format>
               <formatName>html</formatName>
