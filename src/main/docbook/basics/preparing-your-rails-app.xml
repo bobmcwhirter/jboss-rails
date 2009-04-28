@@ -54,9 +54,9 @@
       <para><example>
           <title>Installation via git submodules</title>
 
-          <para><screen><prompt>$</prompt> <command>git submodule add \
+          <para><screen><prompt>$</prompt> git submodule add \
                 git://github.com/bobmcwhirter/jboss-rails-support \
-                vendor/plugins/jboss-rails-support</command></screen></para>
+                vendor/plugins/jboss-rails-support</screen></para>
         </example></para>
     </sect2>
   </sect1>

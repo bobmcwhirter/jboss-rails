@@ -475,13 +475,17 @@
         </dependencies>
         <configuration>
           <sourceDocumentName>master.xml</sourceDocumentName>
+          <imageResource>
+            <directory>src/main/docbook/basics/</directory>
+            <includes>
+              <include>images/*.svg</include>
+              <include>images/*.png</include>
+            </includes>
+          </imageResource>
           <formats>
             <format>
               <formatName>pdf</formatName>
               <stylesheetResource>classpath:/xslt/org/jboss/pdf.xsl</stylesheetResource>
-<!--
-              <finalName>jboss-rails-manual.pdf</finalName>
--->
               <finalName>${pom.artifactId}-${pom.version}.pdf</finalName>
             </format>
             <format>

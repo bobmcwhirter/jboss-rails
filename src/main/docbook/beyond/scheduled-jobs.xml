@@ -61,7 +61,8 @@ end</screen></para>
     fired.</para>
 
     <para><example>
-        <title>Scheduled job implementation (mail/notifier.rb)</title>
+        <title>Scheduled job implementation
+        (<filename>mail/notifier.rb</filename>)</title>
 
         <para><screen>module Mail
   class Notifier &lt; JBoss::Jobs::BaseJob

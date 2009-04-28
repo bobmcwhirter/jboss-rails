@@ -37,6 +37,11 @@
 
     <para>The JBoss AS does not need to be running for these commands to
     work.</para>
+
+    <para>By default, these tasks deploy your application to root of your
+    JBoss AS instance, without any virtual host configuration. To access the
+    application once deployed, you should use your browser to access
+    <uri>http://localhost:8080/</uri>.</para>
   </sect1>
 
   <sect1>
@@ -61,7 +66,8 @@
       <filename>-rails.yml</filename>. The prefix is arbitrary, but is usually
       some form of your application's name.</para>
 
-      <para><screen>$JBOSS_HOME/server/default/deploy/<emphasis role="bold">myapp-rails.yml</emphasis></screen></para>
+      <para><screen><filename>$JBOSS_HOME/server/default/deploy/<emphasis
+              role="bold">myapp-rails.yml</emphasis></filename></screen></para>
     </sect2>
 
     <sect2>
@@ -124,7 +130,7 @@
           <para><example>
               <title>Virtual host configuration in *-rails.yml</title>
 
-              <para><screen>pweb:
+              <para><screen>web:
   host: www.host-one.com</screen></para>
             </example></para>
         </sect4>
