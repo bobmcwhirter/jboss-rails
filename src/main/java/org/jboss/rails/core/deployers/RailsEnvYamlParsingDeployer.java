@@ -52,7 +52,6 @@ public class RailsEnvYamlParsingDeployer extends AbstractDeployer {
 	public void deploy(VFSDeploymentUnit unit) throws DeploymentException {
 		VirtualFile file = unit.getMetaDataFile("rails-env.yml");
 
-		log.info( "rails-env file: " + file );
 		if (file != null) {
 			try {
 				RailsApplicationMetaData railsAppMetaData = unit.getAttachment(RailsApplicationMetaData.class);

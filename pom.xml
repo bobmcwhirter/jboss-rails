@@ -458,18 +458,35 @@
         <artifactId>maven-jdocbook-plugin</artifactId>
         <version>2.1.2</version>
         <extensions>true</extensions>
+        <dependencies>
+          <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jbossorg-docbook-xslt</artifactId>
+            <version>1.1.0</version>
+          </dependency>
+          <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jbossorg-jdocbook-style</artifactId>
+            <version>1.1.0</version>
+            <type>jdocbook-style</type>
+          </dependency>
+        </dependencies>
         <configuration>
+          <sourceDocumentName>master.xml</sourceDocumentName>
           <formats>
             <format>
               <formatName>pdf</formatName>
+              <stylesheetResource>classpath:/xslt/org/jboss/pdf.xsl</stylesheetResource>
               <finalName>jboss-rails-manual.pdf</finalName>
             </format>
             <format>
               <formatName>html</formatName>
+              <stylesheetResource>classpath:/xslt/org/jboss/xhtml.xsl</stylesheetResource>
               <finalName>index.html</finalName>
             </format>
             <format>
               <formatName>html_single</formatName>
+              <stylesheetResource>classpath:/xslt/org/jboss/xhtml-single.xsl</stylesheetResource>
               <finalName>jboss-rails-manual.html</finalName>
             </format>
           </formats>
@@ -478,6 +495,29 @@
             <xincludeSupported>true</xincludeSupported>
           </options>
         </configuration>
+        <executions>
+          <execution>
+            <id>jdocbook-resources</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>resources</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>jdocbook-compile</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>jdocbook-package</id>
+            <phase>package</phase>
+            <goals>
+              <goal>bundle</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
