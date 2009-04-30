@@ -25,10 +25,11 @@ module JBoss
         status  = rack_response[0]
         headers = rack_response[1]
         body    = rack_response[2]
-        status_code, status_string = status.split
-        status_code.strip!
-        status_string.strip!
-        servlet_response.setStatus( status_code.to_i )
+        #status_code, status_string = status.split
+        #status_code.strip!
+        #status_string.strip!
+        #servlet_response.setStatus( status_code.to_i )
+        servlet_response.setStatus( status )
         headers.each{|key,value|
           for v in value
             servlet_response.addHeader( key, v )
