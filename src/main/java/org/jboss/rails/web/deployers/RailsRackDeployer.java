@@ -94,12 +94,12 @@ public class RailsRackDeployer extends AbstractSimpleVFSRealDeployer<RailsApplic
 		RubyRackApplicationMetaData rubyRackAppMetaData = new RubyRackApplicationMetaData();
 		
 		RailsVersionMetaData version = unit.getAttachment(RailsVersionMetaData.class);
-		log.info( "VERSION " + version );
 		RailsRackUpScriptProvider provider = findProvider( version );
 		
-		log.info( "PROVIDER " + provider );
+		if ( provider == null ) {
+			throw new DeploymentException( "Unsupport Rails version: " + version.getVersionString() );
+		}
 		
-		//rubyRackAppMetaData.setRackUpScript(getRackUpScript( rackWebAppMetaData.getContext() ));
 		rubyRackAppMetaData.setRackUpScript( provider.getRackUpScript( rackWebAppMetaData.getContext() ) );
 
 		unit.addAttachment(RubyRackApplicationMetaData.class, rubyRackAppMetaData);

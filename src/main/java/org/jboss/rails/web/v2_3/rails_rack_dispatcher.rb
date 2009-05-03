@@ -22,17 +22,8 @@
 #require 'action_controller/vendor/rack-1.0/rack/response'
 #require 'org/jboss/rails/web/deployers/servlet_rack_request'
 
-module JBoss
-  module Rails
-    module Rack
-      class Dispatcher < ActionController::Dispatcher
-        def initialize(relative_url_root)
-          super()
-          #@relative_url_root = relative_url_root
-          #ENV['RAILS_RELATIVE_URL_ROOT'] = relative_url_root
-          ActionController::Base.relative_url_root = relative_url_root
-        end
-      end
-    end
-  end
-end
+require 'action_controller/base'
+require 'org/jboss/rails/web/v2_3/servlet_session'
+
+ActionController::Base.relative_url_root = RELATIVE_URL_ROOT
+ActionController::Base.session_store     = JBoss::Session::Servlet

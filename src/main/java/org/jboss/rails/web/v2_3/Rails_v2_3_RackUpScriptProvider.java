@@ -14,9 +14,10 @@ public class Rails_v2_3_RackUpScriptProvider extends AbstractRailsRackUpScriptPr
 		}
 		
 		String script = 
+			"RELATIVE_URL_ROOT=%q(" + context + ")\n" +
 			"require %q(org/jboss/rails/web/v2_3/rails_rack_dispatcher)\n" +
 			"::Rack::Builder.new {\n" + 
-			"  run JBoss::Rails::Rack::Dispatcher.new(%q("+ context + "))\n" +
+			"  run ActionController::Dispatcher.new\n" +
 			"}.to_app\n";
 
 		return script;

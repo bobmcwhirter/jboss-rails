@@ -18,7 +18,7 @@
 # Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 # 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 
-require 'org/jboss/rails/web/sessions/servlet_session'
+require 'org/jboss/rails/web/v2_2/servlet_session'
 
 module JBoss
   module Rails

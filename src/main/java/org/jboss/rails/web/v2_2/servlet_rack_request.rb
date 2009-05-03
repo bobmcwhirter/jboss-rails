@@ -19,7 +19,7 @@
 # 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 
 require 'action_controller/rack_process'
-require 'org/jboss/rails/web/sessions/servlet_session_manager'
+require 'org/jboss/rails/web/v2_2/servlet_session_manager'
 
 module JBoss
   module Rails

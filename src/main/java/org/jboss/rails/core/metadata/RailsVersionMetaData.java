@@ -53,4 +53,8 @@ public class RailsVersionMetaData {
 		return "[RailsVersionMetaData: major=" + major + "; minor=" + minor + "; tiny=" + tiny + "]";
 	}
 
+	public String getVersionString() {
+		return major + "." + minor + "." + tiny;
+	}
+
 }
