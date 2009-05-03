@@ -18,18 +18,15 @@
 # Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 # 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 
-#require 'action_controller/vendor/rack-1.0/rack'
-require 'action_controller/vendor/rack-1.0/rack/request'
-require 'org/jboss/rails/web/deployers/servlet_session_manager'
+require 'action_controller/rack_process'
+require 'org/jboss/rails/web/sessions/servlet_session_manager'
 
 module JBoss
   module Rails
     module Rack
-      #class ServletRackRequest < ActionController::RackRequest
-      class ServletRackRequest < ::Rack::Request
+      class ServletRackRequest < ActionController::RackRequest
         def initialize(env)
-          # super( env, session_options)
-          super( env )
+          super( env, session_options)
           @servlet_request = env['servlet_request']
         end
         

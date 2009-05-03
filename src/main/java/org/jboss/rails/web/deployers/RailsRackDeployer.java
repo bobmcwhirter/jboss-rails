@@ -21,26 +21,57 @@
  */
 package org.jboss.rails.web.deployers;
 
-import org.apache.log4j.Logger;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import org.jboss.beans.metadata.api.annotations.Install;
 import org.jboss.deployers.spi.DeploymentException;
 import org.jboss.deployers.spi.deployer.DeploymentStages;
 import org.jboss.deployers.vfs.spi.deployer.AbstractSimpleVFSRealDeployer;
 import org.jboss.deployers.vfs.spi.structure.VFSDeploymentUnit;
 import org.jboss.rails.core.metadata.RailsApplicationMetaData;
+import org.jboss.rails.core.metadata.RailsVersionMetaData;
 import org.jboss.ruby.enterprise.web.rack.deployers.RubyRackApplicationFactoryDeployer;
 import org.jboss.ruby.enterprise.web.rack.metadata.RackWebApplicationMetaData;
 import org.jboss.ruby.enterprise.web.rack.metadata.RubyRackApplicationMetaData;
 
 public class RailsRackDeployer extends AbstractSimpleVFSRealDeployer<RailsApplicationMetaData> {
 
-	private static final Logger log = Logger.getLogger(RailsRackDeployer.class);
+	//private static final Logger log = Logger.getLogger(RailsRackDeployer.class);
+	
+	private SortedSet<RailsRackUpScriptProvider> providers = new TreeSet<RailsRackUpScriptProvider>();
 
 	public RailsRackDeployer() {
 		super(RailsApplicationMetaData.class);
 		addInput(RackWebApplicationMetaData.class);
+		addInput(RailsVersionMetaData.class);
 		addOutput(RackWebApplicationMetaData.class);
 		addOutput(RubyRackApplicationMetaData.class);
 		setStage(DeploymentStages.POST_PARSE);
+	}
+	
+	@Install
+	public void addRailsRackUpScriptProvider(RailsRackUpScriptProvider provider) {
+		this.providers.add( provider );
+	}
+	
+	protected RailsRackUpScriptProvider findProvider(RailsVersionMetaData version) {
+		RailsRackUpScriptProvider candidate = null;
+		
+		for ( RailsRackUpScriptProvider each : this.providers ) {
+			if ( each.getMajorVersion() > version.getMajor() ) {
+				break;
+			}
+			if ( each.getMinorVersion() > version.getMinor() ) {
+				break;
+			}
+			if ( each.getTinyVersion() > version.getTiny() ) {
+				break;
+			}
+			candidate = each;
+		}
+		
+		return candidate;
 	}
 
 	@Override
@@ -61,12 +92,21 @@ public class RailsRackDeployer extends AbstractSimpleVFSRealDeployer<RailsApplic
 		rackWebAppMetaData.setStaticPathPrefix( "/public" );
 
 		RubyRackApplicationMetaData rubyRackAppMetaData = new RubyRackApplicationMetaData();
-		rubyRackAppMetaData.setRackUpScript(getRackUpScript( rackWebAppMetaData.getContext() ));
+		
+		RailsVersionMetaData version = unit.getAttachment(RailsVersionMetaData.class);
+		log.info( "VERSION " + version );
+		RailsRackUpScriptProvider provider = findProvider( version );
+		
+		log.info( "PROVIDER " + provider );
+		
+		//rubyRackAppMetaData.setRackUpScript(getRackUpScript( rackWebAppMetaData.getContext() ));
+		rubyRackAppMetaData.setRackUpScript( provider.getRackUpScript( rackWebAppMetaData.getContext() ) );
 
 		unit.addAttachment(RubyRackApplicationMetaData.class, rubyRackAppMetaData);
 		
 	}
 
+	/*
 	protected String getRackUpScript(String context) {
 		if ( context.endsWith( "/" ) ) {
 			context = context.substring( 0, context.length() - 1 );
@@ -81,5 +121,6 @@ public class RailsRackDeployer extends AbstractSimpleVFSRealDeployer<RailsApplic
 		return script;
 
 	}
+	*/
 
 }

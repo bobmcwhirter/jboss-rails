@@ -72,6 +72,9 @@
   <bean name="RailsStructure"                       class="org.jboss.rails.core.deployers.RailsStructure"/>
   <bean name="RailsRootRecognizingDeployer"         class="org.jboss.rails.core.deployers.RailsRootRecognizingDeployer"/>
 
+  <bean name="Rails-v2.2.x-RackUp"                  class="org.jboss.rails.web.v2_2.Rails_v2_2_RackUpScriptProvider"/>
+  <bean name="Rails-v2.3.x-RackUp"                  class="org.jboss.rails.web.v2_3.Rails_v2_3_RackUpScriptProvider"/>
+
 
   <!-- Crypto -->
   <bean name="RailsCryptoYamlParsingDeployer"       class="org.jboss.rails.crypto.deployers.RailsCryptoYamlParsingDeployer"/>

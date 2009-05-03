@@ -248,10 +248,10 @@
       <layout>default</layout>
       <url>http://ws.zones.apache.org/repository2/</url>
       <snapshots>
-        <enabled>false</enabled>
+        <enabled>true</enabled>
       </snapshots>
       <releases>
-        <enabled>false</enabled>
+        <enabled>true</enabled>
       </releases>
     </repository>
   </repositories>

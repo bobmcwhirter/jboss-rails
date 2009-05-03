@@ -18,26 +18,21 @@
 # Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 # 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 
-
-require 'action_controller/vendor/rack-1.0/rack/response'
-require 'org/jboss/rails/web/deployers/servlet_rack_request'
+require 'org/jboss/rails/web/v2_2/servlet_rack_request'
 
 module JBoss
   module Rails
     module Rack
       class Dispatcher < ActionController::Dispatcher
         def initialize(relative_url_root)
-          super()
           @relative_url_root = relative_url_root
         end
-        #def call(env)
-          #puts "call with #{env.inspect}"
-          #ActionController::Base.relative_url_root = @relative_url_root
-          #@request  = JBoss::Rails::Rack::ServletRackRequest.new(env)
-          #@response = ActionController::RackResponse.new(@request)
-          #@response = ::Rack::Response.new(@request)
-          #dispatch
-        #end
+        def call(env)
+          ActionController::Base.relative_url_root = @relative_url_root
+          @request  = JBoss::Rails::Rack::ServletRackRequest.new(env)
+          @response = ActionController::RackResponse.new(@request)
+          dispatch
+        end
       end
     end
   end

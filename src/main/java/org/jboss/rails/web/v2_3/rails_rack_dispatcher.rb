@@ -18,31 +18,20 @@
 # Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 # 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 
+
+#require 'action_controller/vendor/rack-1.0/rack/response'
+#require 'org/jboss/rails/web/deployers/servlet_rack_request'
+
 module JBoss
-  module Rack
-    class ResponseHandler
-      def self.handle(rack_response, servlet_response)
-        status  = rack_response[0]
-        headers = rack_response[1]
-        body    = rack_response[2]
-        status_code = nil
-        if ( status.is_a? Array )
-          status_code, status_string = status.split
-          status_code.strip!
-          status_code = status_code.to_i
-        else
-          status_code = status.to_i
+  module Rails
+    module Rack
+      class Dispatcher < ActionController::Dispatcher
+        def initialize(relative_url_root)
+          super()
+          #@relative_url_root = relative_url_root
+          #ENV['RAILS_RELATIVE_URL_ROOT'] = relative_url_root
+          ActionController::Base.relative_url_root = relative_url_root
         end
-        servlet_response.setStatus( status_code )
-        headers.each{|key,value|
-          for v in value
-            servlet_response.addHeader( key, v )
-          end
-        }
-        out = servlet_response.getWriter()
-        body.each{|str|
-          out.write( str );
-        }
       end
     end
   end
