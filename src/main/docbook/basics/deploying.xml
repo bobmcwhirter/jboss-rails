@@ -83,6 +83,10 @@
         <listitem>
           <para>Web-specific configuration</para>
         </listitem>
+
+        <listitem>
+          <para>Sip-specific configuration</para>
+        </listitem>
       </orderedlist>
 
       <sect3>
@@ -173,6 +177,22 @@
       </sect3>
 
       <sect3>
+        <title>SIP-specific configuration</title>
+
+        <para>The sip configuration section allows you to define the appname
+        (application name) of the SIP Servlets application (mandatory) and the
+        name of the class that will handle the SIP messages :</para>
+
+        <para><example>
+            <title>SIP configuration in *-rails.yml</title>
+
+            <para><screen>sip:
+  appName: DummyApplication
+  rubycontroller: SipHandler</screen></para>
+          </example></para>
+      </sect3>
+
+      <sect3>
         <title>Complete *-rails.yml Deployment Descriptor Example</title>
 
         <para><screen>application:
@@ -180,7 +200,10 @@
   RAILS_ENV:   development
 web:
   host:    www.mycorp.com
-  context: /app-one</screen></para>
+  context: /app-one
+sip: 
+  appName: DummyApplication
+  rubycontroller: SipHandler</screen></para>
       </sect3>
     </sect2>
   </sect1>

@@ -1,65 +1,61 @@
-<?xml version='1.0' encoding="iso-8859-1"?>
-<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN" 
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
 "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
 <!--
 Id
 Generate html using:   mvn docbkx:generate-html
 -->
 <book lang="en">
-    <bookinfo>
-      <title>JBoss Rails Manual</title>
-      <subtitle>Go beyond Rails with JBoss</subtitle>
-      <releaseinfo>pre-1.0.0</releaseinfo>
-      <authorgroup>
-        <author>
-          <firstname>Bob</firstname>
-          <surname>McWhirter</surname>
-        </author>
-      </authorgroup>
-    </bookinfo>
-    
-    <toc/>
+  <bookinfo>
+    <title>JBoss Rails Manual</title>
 
-    <part>
-      <title>Basics</title>
-      <xi:include href="basics/introduction.xml"
-         xml:base="./"
-         xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <subtitle>Go beyond Rails with JBoss</subtitle>
 
-      <xi:include href="basics/deployer-installation.xml"
-         xml:base="./"
-         xmlns:xi="http://www.w3.org/2001/XInclude"/>
- 
-      <xi:include href="basics/preparing-your-rails-app.xml"
-         xml:base="./"
-         xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <releaseinfo>pre-1.0.0</releaseinfo>
 
-      <xi:include href="basics/deploying.xml"
-         xml:base="./"
-         xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <authorgroup>
+      <author>
+        <firstname>Bob</firstname>
 
-      <xi:include href="basics/managing-jboss-as.xml"
-         xml:base="./"
-         xmlns:xi="http://www.w3.org/2001/XInclude"/>
+        <surname>McWhirter</surname>
+      </author>
+    </authorgroup>
+  </bookinfo>
 
-    </part>
+  <toc></toc>
 
-    <part>
-      <title>Beyond</title>
+  <part>
+    <title>Basics</title>
 
-      <xi:include href="beyond/task-queues.xml"
-         xml:base="./"
-         xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="basics/introduction.xml"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-      <xi:include href="beyond/scheduled-jobs.xml"
-         xml:base="./"
-         xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="basics/deployer-installation.xml"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-      <xi:include href="beyond/soap-endpoints.xml"
-         xml:base="./"
-         xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    <xi:include href="basics/preparing-your-rails-app.xml"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    </part>
+    <xi:include href="basics/deploying.xml"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
 
+    <xi:include href="basics/managing-jboss-as.xml"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </part>
 
+  <part>
+    <title>Beyond</title>
+
+    <xi:include href="beyond/task-queues.xml"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+    <xi:include href="beyond/scheduled-jobs.xml"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+    <xi:include href="beyond/soap-endpoints.xml"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+    <xi:include href="beyond/telco-support.xml"
+		xmlns:xi="http://www.w3.org/2001/XInclude" />	
+  </part>
 </book>
